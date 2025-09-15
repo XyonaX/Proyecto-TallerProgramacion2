@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using Proyecto_Taller_2.Domain.Entities;
 
-namespace Proyecto_Taller_2
+
+namespace Proyecto_Taller_2.UI
 {
     public partial class Form1 : Form
     {
@@ -20,12 +22,32 @@ namespace Proyecto_Taller_2
         private readonly Color Activo = Color.FromArgb(201, 222, 201);
         private readonly Color Txt = Color.FromArgb(34, 47, 34);
 
+        private readonly Usuario _currentUser;
+
         public Form1()
         {
             InitializeComponent();
 
             if (IsDesigner()) return; // Evita correr lógica en el diseñador
 
+            initUi();
+
+            
+        }
+
+        public Form1(Usuario user)
+        {
+            InitializeComponent();
+            _currentUser = user;
+            if (IsDesigner()) return;
+            initUi();
+
+            if (lblTitulo != null && _currentUser != null)
+                lblTitulo.Text = $"Bienvenido, {_currentUser.Nombre} {_currentUser.Apellido}";
+        }
+
+        private void initUi()
+        {
             // Hover
             WireHover(btnVentas);
             WireHover(btnInventario);

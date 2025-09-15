@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using Proyecto_Taller_2.Domain.Entities;
 
-namespace Proyecto_Taller_2
+namespace Proyecto_Taller_2.UI
 {
     internal static class Program
     {
@@ -11,10 +12,13 @@ namespace Proyecto_Taller_2
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // 🔹 Cargar configuraciones
-            SettingsService.Load();
-
-            Application.Run(new Form1());
+            using (var login = new LoginForm()) 
+            {
+                if (login.ShowDialog() == DialogResult.OK && login.CurrentUser != null)
+                {
+                    Application.Run(new Form1(login.CurrentUser));
+                }
+            }
         }
     }
 }
