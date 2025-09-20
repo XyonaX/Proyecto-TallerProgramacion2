@@ -140,6 +140,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -159,8 +160,20 @@
     <Compile Include="Controls\UcConfiguracion.Designer.cs">
       <DependentUpon>UcConfiguracion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UcDashboardAdmin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UcDashboardAdmin.Designer.cs">
+      <DependentUpon>UcDashboardAdmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UcInventario.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UcReportes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UcReportes.Designer.cs">
+      <DependentUpon>UcReportes.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\UcUsuarios.cs">
       <SubType>UserControl</SubType>
@@ -189,6 +202,15 @@
     <Compile Include="ThemeHelper.cs" />
     <EmbeddedResource Include="Controls\UcConfiguracion.resx">
       <DependentUpon>UcConfiguracion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UcDashboardAdmin.resx">
+      <DependentUpon>UcDashboardAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UcReportes.resx">
+      <DependentUpon>UcReportes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UcVentas.resx">
+      <DependentUpon>UcVentas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

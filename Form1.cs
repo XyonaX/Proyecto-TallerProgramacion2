@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using Proyecto_Taller_2.Controls;
 using Proyecto_Taller_2.Domain.Entities;
 
 
@@ -53,15 +54,22 @@ namespace Proyecto_Taller_2.UI
             WireHover(btnInventario);
             WireHover(btnUsuarios);
             WireHover(btnConfiguracion);
+            WireHover(btnDashboard);
+            WireHover(btnReportes);
 
             // Clicks (aunque el Designer tenga alguno, no pasa nada)
             btnVentas.Click += btnVentas_Click;
             btnInventario.Click += btnInventario_Click;
             btnUsuarios.Click += btnUsuarios_Click;
             btnConfiguracion.Click += btnConfiguracion_Click;
+            btnDashboard.Click += btnDashboard_Click;
+            btnReportes.Click += btnReportes_Click;
 
             // Pantalla inicial
             btnInventario.PerformClick();
+
+            btnDashboard.Text = "Dashboard";
+
         }
 
         private static bool IsDesigner()
@@ -113,6 +121,18 @@ namespace Proyecto_Taller_2.UI
         }
 
         // === Clicks de menú ===
+        private void btnDashboard_Click(object sender, EventArgs e)
+        {
+            Activar(btnDashboard);
+            Mostrar(GetOrCreate<UcDashboardAdmin>(), "Dashboard Administrativo");
+        }
+
+        private void btnReportes_Click(object sender, EventArgs e)
+        {
+            Activar(btnReportes);
+            Mostrar(GetOrCreate<UcReportes>(), "Reportes");
+        }
+
         private void btnVentas_Click(object sender, EventArgs e)
         {
             Activar(btnVentas);
@@ -135,6 +155,11 @@ namespace Proyecto_Taller_2.UI
         {
             Activar(btnConfiguracion);
             Mostrar(GetOrCreate<UcConfiguracion>(), "Configuración");
+        }
+
+        private void pnlContent_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
