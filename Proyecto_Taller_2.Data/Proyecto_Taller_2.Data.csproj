@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.66" />
+		<!-- Usa una versión compatible con net472. Si 6.1.1 da problemas, 5.2.0 es segura -->
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Proyecto_Taller_2.Domain\Proyecto_Taller_2.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Data" />
+	</ItemGroup>
+</Project>

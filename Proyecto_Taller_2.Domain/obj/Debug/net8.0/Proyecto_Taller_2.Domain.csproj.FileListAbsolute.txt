@@ -1,0 +1,11 @@
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\bin\Debug\net8.0\Proyecto_Taller_2.Domain.deps.json
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\bin\Debug\net8.0\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\bin\Debug\net8.0\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\Proyecto_Taller_2.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\Proyecto_Taller_2.Domain.AssemblyInfoInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\Proyecto_Taller_2.Domain.AssemblyInfo.cs
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\Proyecto_Taller_2.Domain.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\refint\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net8.0\ref\Proyecto_Taller_2.Domain.dll

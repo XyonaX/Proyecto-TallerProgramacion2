@@ -1,0 +1,110 @@
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.AssemblyInfoInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.AssemblyInfo.cs
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Services.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Services.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Azure.Core.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Azure.Identity.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\BCrypt.Net-Next.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Dapper.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Data.SqlClient.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Identity.Client.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Logging.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Protocols.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Tokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Buffers.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Configuration.ConfigurationManager.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Diagnostics.DiagnosticSource.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.IO.FileSystem.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Memory.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Memory.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Numerics.Vectors.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.Cryptography.ProtectedData.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.Permissions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.Principal.Windows.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Text.Encodings.Web.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Text.Json.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.Threading.Tasks.Extensions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\System.ValueTuple.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Data.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto.53D29A08.Up2Date
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Services.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Services.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Azure.Core.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Azure.Identity.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\BCrypt.Net-Next.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Dapper.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Data.SqlClient.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Identity.Client.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Logging.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Protocols.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Microsoft.IdentityModel.Tokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Buffers.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Configuration.ConfigurationManager.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Diagnostics.DiagnosticSource.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.IO.FileSystem.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Memory.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Memory.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Numerics.Vectors.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.Cryptography.ProtectedData.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.Permissions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Security.Principal.Windows.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Text.Encodings.Web.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Text.Json.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.Threading.Tasks.Extensions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\System.ValueTuple.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Data.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\bin\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.AssemblyInfoInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.AssemblyInfo.cs
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto.53D29A08.Up2Date
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Services\obj\Debug\net472\Proyecto_Taller_2.Services.pdb
