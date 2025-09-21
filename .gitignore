@@ -37,18 +37,3 @@ packages/
 *.bak
 *.orig
 
-# Archivos específicos que están en la raíz y ya están en la carpeta del proyecto
-# Estos se ignoran para que el repositorio quede limpio
-App.config
-AppSettings.cs
-Form1.Designer.cs
-Form1.cs
-Form1.resx
-LoginForm.Designer.cs
-LoginForm.cs
-LoginForm.resx
-Program.cs
-Program.resx
-RoundedPanel.cs
-SettingsService.cs
-ThemeHelper.cs
