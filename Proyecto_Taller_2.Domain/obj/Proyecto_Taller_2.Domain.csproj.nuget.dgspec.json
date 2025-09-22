@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yoni_\\Desktop\\Dev\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj": {}
+    "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yoni_\\Desktop\\Dev\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj": {
+    "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yoni_\\Desktop\\Dev\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj",
         "projectName": "Proyecto_Taller_2.Domain",
-        "projectPath": "C:\\Users\\yoni_\\Desktop\\Dev\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj",
-        "packagesPath": "C:\\Users\\yoni_\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yoni_\\Desktop\\Dev\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj",
+        "packagesPath": "C:\\Users\\Lisandro\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\yoni_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lisandro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

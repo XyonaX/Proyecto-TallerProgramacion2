@@ -3,7 +3,7 @@ using System.Data;
 using System.Windows.Forms;
 
 using Proyecto_Taller_2.Domain.Entities;
-using Proyecto_Taller_2.Data.Db;
+using Proyecto_Taller_2.Data;
 using Proyecto_Taller_2.Data.Repositories.DapperImpl;
 using Proyecto_Taller_2.Services.Interfaces;
 using Proyecto_Taller_2.Services.Impl;
@@ -121,7 +121,8 @@ namespace Proyecto_Taller_2.UI
             {
                 using (IDbConnection cn = _factory.Create())
                 {
-                    cn.Open();
+                    // No vuelvas a abrir la conexión, ya está abierta por SqlConnectionFactory
+                    // cn.Open(); // Elimina esta línea
                 }
             }
             catch (Exception ex)

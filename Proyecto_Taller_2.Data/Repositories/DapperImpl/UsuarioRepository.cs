@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Data;
 using Dapper;  
-using Proyecto_Taller_2.Data.Db;                      
+using Proyecto_Taller_2.Data;                      
 using Proyecto_Taller_2.Data.Repositories.Interfaces; 
 using Proyecto_Taller_2.Domain.Entities;             
 
