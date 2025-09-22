@@ -1,0 +1,9 @@
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcConfiguracion.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Form1.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Program.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Properties.Resources.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.csproj.GenerateResource.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.pdb
