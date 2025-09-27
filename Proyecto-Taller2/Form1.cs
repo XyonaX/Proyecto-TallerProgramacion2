@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Proyecto_Taller_2.Controls;
 using Proyecto_Taller_2.Domain.Entities;
-
 
 namespace Proyecto_Taller_2.UI
 {
     public partial class Form1 : Form
     {
-        // NO declares acá los controles del Designer (ya están en Form1.Designer.cs)
-
         private Button _btnActivo;
         private readonly Dictionary<Type, UserControl> _cache = new Dictionary<Type, UserControl>();
+
 
         // Paleta de colores
         private readonly Color Sidebar = Color.FromArgb(236, 243, 236);
@@ -28,12 +27,8 @@ namespace Proyecto_Taller_2.UI
         public Form1()
         {
             InitializeComponent();
-
-            if (IsDesigner()) return; // Evita correr lógica en el diseñador
-
+            if (IsDesigner()) return;
             initUi();
-
-            
         }
 
         public Form1(Usuario user)
@@ -45,10 +40,55 @@ namespace Proyecto_Taller_2.UI
 
             if (lblTitulo != null && _currentUser != null)
                 lblTitulo.Text = $"Bienvenido, {_currentUser.Nombre} {_currentUser.Apellido}";
+                
+            ConfigureMenuAccess();
+        }
+
+        private void ConfigureMenuAccess()
+        {
+            // Por defecto, ocultar todos los botones
+            btnDashboard.Visible = false;
+            btnVentas.Visible = false;
+            btnInventario.Visible = false;
+            btnUsuarios.Visible = false;
+            btnConfiguracion.Visible = false;
+            btnReportes.Visible = false;
+            btnClientes.Visible = false;
+            btnProductos.Visible = false;
+
+            if (_currentUser == null) return;
+
+            // Configurar acceso según el rol
+            switch (_currentUser.IdRol)
+            {
+                case 1: // Administrador
+                    btnDashboard.Visible = true;
+                    btnVentas.Visible = true;
+                    btnInventario.Visible = true;
+                    btnUsuarios.Visible = true;
+                    btnConfiguracion.Visible = true;
+                    btnReportes.Visible = true;
+                    btnClientes.Visible = true;
+                    btnProductos.Visible = true;
+                    break;
+
+                case 2: // Vendedor
+                    btnVentas.Visible = true;
+                    btnClientes.Visible = true;
+                    break;
+
+                case 3: // Deposito
+                    btnInventario.Visible = true;
+                    btnProductos.Visible = true;
+                    break;
+            }
         }
 
         private void initUi()
         {
+            // Ya no se inicializa pnlSidebar, se usa pnlMenu directamente
+            // Crear nuevos botones
+
             // Hover
             WireHover(btnVentas);
             WireHover(btnInventario);
@@ -56,20 +96,49 @@ namespace Proyecto_Taller_2.UI
             WireHover(btnConfiguracion);
             WireHover(btnDashboard);
             WireHover(btnReportes);
+            WireHover(btnClientes);
+            WireHover(btnProductos);
+            WireHover(btnLogout);
 
-            // Clicks (aunque el Designer tenga alguno, no pasa nada)
+            // Clicks
             btnVentas.Click += btnVentas_Click;
             btnInventario.Click += btnInventario_Click;
             btnUsuarios.Click += btnUsuarios_Click;
             btnConfiguracion.Click += btnConfiguracion_Click;
             btnDashboard.Click += btnDashboard_Click;
             btnReportes.Click += btnReportes_Click;
+            btnClientes.Click += btnClientes_Click;
+            btnProductos.Click += btnProductos_Click;
+            btnLogout.Click += btnLogout_Click;
 
-            // Pantalla inicial
-            btnInventario.PerformClick();
+            // Pantalla inicial según el rol
+            if (_currentUser != null)
+            {
+                switch (_currentUser.IdRol)
+                {
+                    case 1: // Administrador
+                        btnDashboard.PerformClick();
+                        break;
+                    case 2: // Vendedor
+                        btnVentas.PerformClick();
+                        break;
+                    case 3: // Deposito
+                        btnInventario.PerformClick();
+                        break;
+                }
+            }
+        }
 
-            btnDashboard.Text = "Dashboard";
+        private void btnClientes_Click(object sender, EventArgs e)
+        {
+            Activar(btnClientes);
+            Mostrar(GetOrCreate<UcClientes>(), "Gestión de Clientes");
+        }
 
+        private void btnProductos_Click(object sender, EventArgs e)
+        {
+            Activar(btnProductos);
+            Mostrar(GetOrCreate<UcProductos>(), "Gestión de Productos");
         }
 
         private static bool IsDesigner()
@@ -120,7 +189,7 @@ namespace Proyecto_Taller_2.UI
             pnlContent.ResumeLayout();
         }
 
-        // === Clicks de menú ===
+        // === Clicks de menú existentes ===
         private void btnDashboard_Click(object sender, EventArgs e)
         {
             Activar(btnDashboard);
@@ -159,7 +228,33 @@ namespace Proyecto_Taller_2.UI
 
         private void pnlContent_Paint(object sender, PaintEventArgs e)
         {
+        }
 
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "¿Está seguro que desea cerrar sesión?",
+                "Cerrar Sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                // Oculta el formulario actual y muestra el login
+                this.Hide();
+                using (var login = new LoginForm())
+                {
+                    if (login.ShowDialog() == DialogResult.OK && login.CurrentUser != null)
+                    {
+                        // Si el login es exitoso, muestra el nuevo Form1
+                        var main = new Form1(login.CurrentUser);
+                        main.ShowDialog();
+                    }
+                }
+                // Cierra el formulario actual después de cerrar la nueva sesión
+                this.Close();
+            }
         }
     }
 }

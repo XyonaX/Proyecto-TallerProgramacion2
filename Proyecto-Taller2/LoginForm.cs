@@ -174,5 +174,10 @@ namespace Proyecto_Taller_2.UI
                 btnLogin.Enabled = true;
             }
         }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
