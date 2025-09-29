@@ -15,12 +15,14 @@ namespace Proyecto_Taller_2.Services.Impl
         public async Task<Usuario?> LoginAsync(string email, string password)
         {
             var user = await _repo.GetByEmailAsync(email);
-            if (user is null || user.PasswordHash is null) return null;
+            if (user is null || string.IsNullOrEmpty(user.PasswordHash))
+                return null;
 
-            var stored = Encoding.UTF8.GetString(user.PasswordHash); // hash bcrypt como texto
-            var ok = BCrypt.Net.BCrypt.Verify(password, stored);
+            // BCrypt compara directamente
+            bool ok = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
             return ok ? user : null;
         }
+
 
         public async Task<int> RegisterAsync(string nombre, string apellido, string email, string password, int idRol)
         {
@@ -28,7 +30,8 @@ namespace Proyecto_Taller_2.Services.Impl
             if (await _repo.EmailExistsAsync(email))
                 throw new InvalidOperationException("El email ya está en uso.");
 
-            var hash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
+            // Generar hash al registrar usuario
+            string hash = BCrypt.Net.BCrypt.HashPassword(password);
 
             var u = new Usuario
             {
@@ -36,7 +39,7 @@ namespace Proyecto_Taller_2.Services.Impl
                 Apellido = apellido,
                 Email = email,
                 IdRol = idRol,
-                PasswordHash = Encoding.UTF8.GetBytes(hash),
+                PasswordHash = hash,   // <-- string directo
                 Activo = true
             };
 
