@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Proyecto_Taller_2.Domain.Models;
 using Proyecto_Taller_2.Data.Repositories;
 
-
 namespace Proyecto_Taller_2
 {
     public class UcUsuarios : UserControl
@@ -220,10 +219,11 @@ namespace Proyecto_Taller_2
             DataGridViewTextBoxColumn cEmail = new DataGridViewTextBoxColumn { Name = "Email", HeaderText = "Email", FillWeight = 160, DataPropertyName = "Email" };
             DataGridViewTextBoxColumn cRol = new DataGridViewTextBoxColumn { Name = "Rol", HeaderText = "Rol", FillWeight = 90, DataPropertyName = "RolNombre" };
             DataGridViewTextBoxColumn cTelefono = new DataGridViewTextBoxColumn { Name = "Telefono", HeaderText = "Teléfono", FillWeight = 90, DataPropertyName = "Telefono" };
-            DataGridViewTextBoxColumn cEstado = new DataGridViewTextBoxColumn { Name = "Estado", HeaderText = "Estado", FillWeight = 80, DataPropertyName = "Estado" }; // bool → chip con CellFormatting
+            // IMPORTANTE: mapear a Activo (bool) y no a "Estado"
+            DataGridViewTextBoxColumn cEstado = new DataGridViewTextBoxColumn { Name = "Estado", HeaderText = "Estado", FillWeight = 80, DataPropertyName = "Activo" };
             DataGridViewTextBoxColumn cAcciones = new DataGridViewTextBoxColumn { Name = "Acciones", HeaderText = "Acciones", FillWeight = 60 };
 
-            dgv.Columns.AddRange(new DataGridViewColumn[] { cId, cDni, cAvatar, cUsuario, cEmail, cRol, cTelefono, cEstado });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { cId, cDni, cAvatar, cUsuario, cEmail, cRol, cTelefono, cEstado /*, cAcciones*/ });
 
             // Hooks
             dgv.CellPainting += Dgv_CellPainting;
@@ -290,12 +290,13 @@ namespace Proyecto_Taller_2
             {
                 Usuario u = dgv.Rows[e.RowIndex].DataBoundItem as Usuario;
                 if (u == null) return;
-                var result = MessageBox.Show($"¿Desea cambiar el estado del usuario {u.NombreCompleto}?\n\nActualmente: {(u.Estado ? "Activo" : "Inactivo")}\"",
+                var result = MessageBox.Show(
+                    $"¿Desea cambiar el estado del usuario {u.NombreCompleto}?\n\nActualmente: {(u.Activo ? "Activo" : "Inactivo")}",
                     "Cambiar estado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    u.Estado = !u.Estado;
-                    _repo.ActualizarEstadoUsuario(u.Dni, u.Estado);
+                    u.Activo = !u.Activo;
+                    _repo.ActualizarEstadoUsuario(u.Dni, u.Activo);
                     RefrescarDesdeBD();
                 }
             }
@@ -318,8 +319,8 @@ namespace Proyecto_Taller_2
 
             IEnumerable<Usuario> q = _all;
 
-            if (estadoIdx == 1) q = q.Where(x => x.Estado);           // Activo
-            else if (estadoIdx == 2) q = q.Where(x => !x.Estado);     // Inactivo
+            if (estadoIdx == 1) q = q.Where(x => x.Activo);           // Activo
+            else if (estadoIdx == 2) q = q.Where(x => !x.Activo);     // Inactivo
 
             if (term.Length > 0)
             {
@@ -357,10 +358,9 @@ namespace Proyecto_Taller_2
                 Usuario u = dgv.Rows[e.RowIndex].DataBoundItem as Usuario;
                 if (u == null) return;
 
-                Image img;
-                if (!_avatarCache.TryGetValue(u.Dni, out img))
+                if (!_avatarCache.TryGetValue(u.Dni, out Image img))
                 {
-                    img = MakeAvatar(string.Format("{0} {1}", u.Nombre, u.Apellido).Trim());
+                    img = MakeAvatar($"{u.Nombre} {u.Apellido}".Trim());
                     _avatarCache[u.Dni] = img;
                 }
                 e.Value = img;
@@ -371,9 +371,8 @@ namespace Proyecto_Taller_2
             // Estado: bool -> "Activo"/"Inactivo" (para que el chip se pinte)
             if (col == "Estado")
             {
-                if (e.Value is bool)
+                if (e.Value is bool b)
                 {
-                    bool b = (bool)e.Value;
                     e.Value = b ? "Activo" : "Inactivo";
                     e.FormattingApplied = true;
                 }
@@ -458,11 +457,9 @@ namespace Proyecto_Taller_2
             int y = cell.Y + (cell.Height - h) / 2;
 
             using (GraphicsPath path = RoundedRect(new Rectangle(x, y, w, h), radius))
+            using (SolidBrush sb = new SolidBrush(bg))
             {
-                using (SolidBrush sb = new SolidBrush(bg))
-                {
-                    g.FillPath(sb, path);
-                }
+                g.FillPath(sb, path);
             }
 
             Rectangle textRect = new Rectangle(x, y, w, h);
@@ -503,8 +500,7 @@ namespace Proyecto_Taller_2
             Usuario u = dgv.SelectedRows[0].DataBoundItem as Usuario;
             if (u == null) { RenderEmptyDetails(); return; }
 
-            Image img;
-            _avatarCache.TryGetValue(u.Dni, out img);
+            _avatarCache.TryGetValue(u.Dni, out Image img);
 
             pnlDetails.SuspendLayout();
             pnlDetails.Controls.Clear();
@@ -513,7 +509,7 @@ namespace Proyecto_Taller_2
             PictureBox pic = new PictureBox { Image = img ?? MakeAvatar((u.Nombre + " " + u.Apellido).Trim()), SizeMode = PictureBoxSizeMode.Zoom, Width = 72, Height = 72, Location = new Point(8, 8) };
             Label lblNombre = new Label { Text = u.NombreCompleto, AutoSize = true, Font = new Font("Segoe UI", 12f, FontStyle.Bold), ForeColor = ColText, Location = new Point(88, 10) };
             Label lblEmail = new Label { Text = u.Email, AutoSize = true, ForeColor = Color.FromArgb(90, 100, 90), Location = new Point(88, 36) };
-            Label lblEstado = new Label { Text = string.Format("Estado: {0} | Rol: {1}", (u.Estado ? "Activo" : "Inactivo"), u.RolNombre), AutoSize = true, ForeColor = ColText, Location = new Point(8, 90) };
+            Label lblEstado = new Label { Text = $"Estado: {(u.Activo ? "Activo" : "Inactivo")} | Rol: {u.RolNombre}", AutoSize = true, ForeColor = ColText, Location = new Point(8, 90) };
 
             topWrap.Controls.Add(lblEstado);
             topWrap.Controls.Add(lblEmail);
@@ -521,7 +517,7 @@ namespace Proyecto_Taller_2
             topWrap.Controls.Add(pic);
 
             FlowLayoutPanel flBtns = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(8, 0, 8, 0) };
-            string btnEstadoText = u.Estado ? "Dar de baja" : "Activar";
+            string btnEstadoText = u.Activo ? "Dar de baja" : "Activar";
             Button btnEstado = MakeGhost(btnEstadoText);
             Button btnEditar = MakeGhost("Editar");
             Button btnMail = MakeGhost("✉️ Enviar correo");
@@ -532,14 +528,13 @@ namespace Proyecto_Taller_2
             // Evento para cambiar estado
             btnEstado.Click += (sender2, args2) =>
             {
-                if (u == null) return;
-                bool nuevoEstado = !u.Estado;
+                bool nuevoEstado = !u.Activo;
                 string accion = nuevoEstado ? "activar" : "dar de baja";
-                var result = MessageBox.Show($"¿Desea {accion} al usuario {u.NombreCompleto}?\n\nActualmente: {(u.Estado ? "Activo" : "Inactivo")}",
+                var result = MessageBox.Show($"¿Desea {accion} al usuario {u.NombreCompleto}?\n\nActualmente: {(u.Activo ? "Activo" : "Inactivo")}",
                     btnEstado.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    u.Estado = nuevoEstado;
+                    u.Activo = nuevoEstado;
                     _repo.ActualizarEstadoUsuario(u.Dni, nuevoEstado);
                     RefrescarDesdeBD();
                 }
@@ -548,7 +543,6 @@ namespace Proyecto_Taller_2
             // Evento para editar usuario
             btnEditar.Click += (sender2, args2) =>
             {
-                if (u == null) return;
                 using (var f = new EditarUsuarioForm(_repo, u, _all))
                 {
                     if (f.ShowDialog(FindForm()) == DialogResult.OK && f.Resultado != null)
@@ -571,8 +565,13 @@ namespace Proyecto_Taller_2
             info.Controls.Add(new Label { Text = "Email: " + u.Email, AutoSize = true, ForeColor = ColText, Location = new Point(8, 8) });
             info.Controls.Add(new Label { Text = "Rol: " + u.RolNombre, AutoSize = true, ForeColor = ColText, Location = new Point(8, 30) });
             info.Controls.Add(new Label { Text = "Teléfono: " + (u.Telefono ?? "-"), AutoSize = true, ForeColor = ColText, Location = new Point(8, 52) });
-            if (u.FechaNacimiento.HasValue)
-                info.Controls.Add(new Label { Text = "Fecha Nac.: " + u.FechaNacimiento.Value.ToString("dd/MM/yyyy"), AutoSize = true, ForeColor = ColText, Location = new Point(8, 74) });
+            info.Controls.Add(new Label
+            {
+                Text = "Alta: " + u.FechaAlta.ToString("dd/MM/yyyy"),
+                AutoSize = true,
+                ForeColor = ColText,
+                Location = new Point(8, 74)
+            });
 
             pnlDetails.Controls.Add(info);
             pnlDetails.Controls.Add(flBtns);
@@ -764,8 +763,7 @@ namespace Proyecto_Taller_2
                         Email = txtEmail.Text.Trim(),
                         Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text) ? null : txtTelefono.Text.Trim(),
                         Password = txtPassword.Text, // puede ir vacío
-                        FechaNacimiento = dtpNac.Checked ? (DateTime?)dtpNac.Value.Date : null,
-                        Estado = chkActivo.Checked,
+                        Activo = chkActivo.Checked,
                         IdRol = (int)cmbRol.SelectedValue,
                         RolNombre = (cmbRol.SelectedItem as dynamic).Nombre
                     };
@@ -785,8 +783,7 @@ namespace Proyecto_Taller_2
 
             private bool Validar()
             {
-                int tmp;
-                if (!int.TryParse(txtDni.Text.Trim(), out tmp)) { MessageBox.Show("DNI inválido"); return false; }
+                if (!int.TryParse(txtDni.Text.Trim(), out _)) { MessageBox.Show("DNI inválido"); return false; }
                 if (string.IsNullOrWhiteSpace(txtNombre.Text)) { MessageBox.Show("Nombre requerido"); return false; }
                 if (string.IsNullOrWhiteSpace(txtApellido.Text)) { MessageBox.Show("Apellido requerido"); return false; }
                 if (string.IsNullOrWhiteSpace(txtEmail.Text)) { MessageBox.Show("Email requerido"); return false; }

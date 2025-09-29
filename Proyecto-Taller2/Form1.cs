@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Proyecto_Taller_2.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-
-using Proyecto_Taller_2.Controls;
 // Alias para el modelo de dominio:
 using DomainUsuario = Proyecto_Taller_2.Domain.Models.Usuario;
 
@@ -26,25 +25,25 @@ namespace Proyecto_Taller_2.UI
 
         private readonly DomainUsuario _currentUser;
 
-        public Form1(Usuario usuario)
+        // === Constructor vacío -> necesario para el Diseñador ===
+        public Form1()
         {
             InitializeComponent();
-
             if (IsDesigner()) return; // Evita correr lógica en el diseñador
-
             initUi();
         }
 
+        // === Único constructor con parámetro (elimina duplicidad) ===
         public Form1(DomainUsuario user)
         {
             InitializeComponent();
-            _currentUser = user;
+            _currentUser = user ?? throw new ArgumentNullException(nameof(user));
 
             if (IsDesigner()) return;
 
             initUi();
 
-            if (lblTitulo != null && _currentUser != null)
+            if (lblTitulo != null)
                 lblTitulo.Text = $"Bienvenido, {_currentUser.Nombre} {_currentUser.Apellido}";
         }
 
@@ -67,7 +66,7 @@ namespace Proyecto_Taller_2.UI
             btnReportes.Click += btnReportes_Click;
 
             // Pantalla inicial
-            btnInventario.PerformClick();
+            btnInventario?.PerformClick();
 
             btnDashboard.Text = "Dashboard";
         }

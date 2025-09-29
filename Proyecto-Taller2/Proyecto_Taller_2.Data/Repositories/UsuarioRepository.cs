@@ -27,10 +27,10 @@ namespace Proyecto_Taller_2.Data.Repositories
                     u.Apellido       AS Apellido,
                     u.Email          AS Email,
                     u.Telefono       AS Telefono,
-                    u.Activo         AS Estado,
-                    u.FechaAlta      AS FechaNacimiento,
+                    u.Activo         AS Activo,          -- <- OK
+                    u.FechaAlta      AS FechaAlta,       -- <- OK
                     u.IdRol          AS IdRol,
-                    r.NombreRol      AS RolNombre   -- ?? corregido
+                    r.NombreRol      AS RolNombre
                 FROM Usuario u
                 JOIN Rol r ON r.IdRol = u.IdRol";
 
@@ -38,6 +38,8 @@ namespace Proyecto_Taller_2.Data.Repositories
                 sql += " ORDER BY u.Apellido, u.Nombre;";
 
                 cmd.CommandText = sql;
+
+                if (cn.State != ConnectionState.Open) cn.Open();
                 using (var rd = cmd.ExecuteReader())
                 {
                     int oIdUsuario = rd.GetOrdinal("IdUsuario");
@@ -46,8 +48,8 @@ namespace Proyecto_Taller_2.Data.Repositories
                     int oApe = rd.GetOrdinal("Apellido");
                     int oMail = rd.GetOrdinal("Email");
                     int oTel = rd.GetOrdinal("Telefono");
-                    int oEst = rd.GetOrdinal("Estado");
-                    int oFec = rd.GetOrdinal("FechaNacimiento");
+                    int oActivo = rd.GetOrdinal("Activo");        // <- definido
+                    int oFAlta = rd.GetOrdinal("FechaAlta");     // <- definido
                     int oRol = rd.GetOrdinal("IdRol");
                     int oRolN = rd.GetOrdinal("RolNombre");
 
@@ -61,10 +63,10 @@ namespace Proyecto_Taller_2.Data.Repositories
                             Apellido = rd.GetString(oApe),
                             Email = rd.GetString(oMail),
                             Telefono = rd.IsDBNull(oTel) ? null : rd.GetString(oTel),
-                            Estado = rd.GetBoolean(oEst),
-                            FechaNacimiento = rd.IsDBNull(oFec) ? (DateTime?)null : rd.GetDateTime(oFec),
+                            Activo = rd.GetBoolean(oActivo),                      // <- ahora sí
+                            FechaAlta = rd.GetDateTime(oFAlta),                      // <- ahora sí
                             IdRol = rd.GetInt32(oRol),
-                            RolNombre = rd.GetString(oRolN)
+                            RolNombre = rd.IsDBNull(oRolN) ? null : rd.GetString(oRolN)
                         });
                     }
                 }
@@ -97,7 +99,7 @@ namespace Proyecto_Taller_2.Data.Repositories
                     throw new Exception("Ya existe un usuario con ese email.");
             }
 
-            // Generar hash con BCrypt
+            // Generar hash con BCrypt (opcional pero recomendado en alta)
             string passwordHash = null;
             if (!string.IsNullOrWhiteSpace(usuario.Password))
             {
@@ -107,22 +109,25 @@ namespace Proyecto_Taller_2.Data.Repositories
             using (var cn = new SqlConnection(_connectionString))
             using (var cmd = cn.CreateCommand())
             {
+                // Dejamos que la DB setee FechaAlta con GETDATE()
                 cmd.CommandText = @"
                     INSERT INTO Usuario
                         (Dni, Nombre, Apellido, Email, Telefono, PasswordHash, FechaAlta, Activo, IdRol)
                     VALUES
-                        (@Dni, @Nombre, @Apellido, @Email, @Telefono, @PasswordHash, @FechaAlta, @Activo, @IdRol)";
+                        (@Dni, @Nombre, @Apellido, @Email, @Telefono, @PasswordHash, GETDATE(), @Activo, @IdRol);
+                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
                 cmd.Parameters.AddWithValue("@Dni", usuario.Dni);
                 cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                 cmd.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                 cmd.Parameters.AddWithValue("@Email", usuario.Email);
                 cmd.Parameters.AddWithValue("@Telefono", (object)usuario.Telefono ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@PasswordHash", (object)passwordHash ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@FechaAlta", usuario.FechaNacimiento ?? DateTime.Now);
-                cmd.Parameters.AddWithValue("@Activo", usuario.Estado);
+                cmd.Parameters.AddWithValue("@Activo", usuario.Activo);
                 cmd.Parameters.AddWithValue("@IdRol", usuario.IdRol);
+
                 cn.Open();
-                return cmd.ExecuteNonQuery();
+                return (int)cmd.ExecuteScalar();
             }
         }
 
@@ -133,11 +138,13 @@ namespace Proyecto_Taller_2.Data.Repositories
             using (var cn = new SqlConnection(_connectionString))
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = "SELECT IdRol, NombreRol FROM Rol";
+                cmd.CommandText = "SELECT IdRol, NombreRol FROM Rol ORDER BY IdRol";
                 cn.Open();
                 using (var dr = cmd.ExecuteReader())
+                {
                     while (dr.Read())
                         roles.Add((dr.GetInt32(0), dr.GetString(1)));
+                }
             }
             return roles;
         }
@@ -153,12 +160,14 @@ namespace Proyecto_Taller_2.Data.Repositories
                 cmd.Parameters.AddWithValue("@Dni", dni);
                 cn.Open();
                 var rows = cmd.ExecuteNonQuery();
+
+                // fallback por IdUsuario si te pasan un id en 'dni'
                 if (rows == 0)
                 {
-                    cmd.CommandText = "UPDATE Usuario SET Activo = @Activo WHERE IdUsuario = @Dni";
+                    cmd.CommandText = "UPDATE Usuario SET Activo = @Activo WHERE IdUsuario = @IdUsuario";
                     cmd.Parameters.Clear();
                     cmd.Parameters.AddWithValue("@Activo", estado);
-                    cmd.Parameters.AddWithValue("@Dni", dni);
+                    cmd.Parameters.AddWithValue("@IdUsuario", dni);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -174,6 +183,9 @@ namespace Proyecto_Taller_2.Data.Repositories
             using (var cn = new SqlConnection(_connectionString))
             using (var cmd = cn.CreateCommand())
             {
+                // Usamos IdUsuario si viene (>0). Si no, cae por Dni (compatibilidad).
+                bool usaId = usuario.IdUsuario > 0;
+
                 cmd.CommandText = @"
                     UPDATE Usuario
                     SET
@@ -182,19 +194,20 @@ namespace Proyecto_Taller_2.Data.Repositories
                         Email        = @Email,
                         Telefono     = @Telefono,
                         PasswordHash = COALESCE(@PasswordHash, PasswordHash),
-                        FechaAlta    = @FechaNacimiento,
-                        Activo       = @Estado,
+                        -- FechaAlta NO se toca en edición
+                        Activo       = @Activo,
                         IdRol        = @IdRol
-                    WHERE Dni = @Dni";
+                    WHERE " + (usaId ? "IdUsuario = @Key" : "Dni = @Key");
+
                 cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                 cmd.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                 cmd.Parameters.AddWithValue("@Email", usuario.Email);
                 cmd.Parameters.AddWithValue("@Telefono", (object)usuario.Telefono ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@PasswordHash", (object)nuevoHash ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@FechaNacimiento", (object)usuario.FechaNacimiento ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Estado", usuario.Estado);
+                cmd.Parameters.AddWithValue("@Activo", usuario.Activo);
                 cmd.Parameters.AddWithValue("@IdRol", usuario.IdRol);
-                cmd.Parameters.AddWithValue("@Dni", usuario.Dni);
+                cmd.Parameters.AddWithValue("@Key", usaId ? usuario.IdUsuario : usuario.Dni);
+
                 cn.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -221,25 +234,24 @@ namespace Proyecto_Taller_2.Data.Repositories
                 {
                     if (!dr.Read()) return null;
 
-                    string storedHash = dr.IsDBNull(dr.GetOrdinal("PwdHash"))
-                        ? null
-                        : dr.GetString(dr.GetOrdinal("PwdHash"));
+                    int oPwd = dr.GetOrdinal("PwdHash");
+                    string storedHash = dr.IsDBNull(oPwd) ? null : dr.GetString(oPwd);
 
                     if (string.IsNullOrEmpty(storedHash) || !BCrypt.Net.BCrypt.Verify(password, storedHash))
                         return null;
 
                     return new Usuario
                     {
-                        IdUsuario = dr.IsDBNull(dr.GetOrdinal("IdUsuario")) ? 0 : dr.GetInt32(dr.GetOrdinal("IdUsuario")),
-                        Dni = dr.IsDBNull(dr.GetOrdinal("Dni")) ? 0 : dr.GetInt32(dr.GetOrdinal("Dni")),
-                        Nombre = dr.IsDBNull(dr.GetOrdinal("Nombre")) ? string.Empty : dr.GetString(dr.GetOrdinal("Nombre")),
-                        Apellido = dr.IsDBNull(dr.GetOrdinal("Apellido")) ? string.Empty : dr.GetString(dr.GetOrdinal("Apellido")),
-                        Email = dr.IsDBNull(dr.GetOrdinal("Email")) ? string.Empty : dr.GetString(dr.GetOrdinal("Email")),
+                        IdUsuario = dr.GetInt32(dr.GetOrdinal("IdUsuario")),
+                        Dni = dr.GetInt32(dr.GetOrdinal("Dni")),
+                        Nombre = dr.GetString(dr.GetOrdinal("Nombre")),
+                        Apellido = dr.GetString(dr.GetOrdinal("Apellido")),
+                        Email = dr.GetString(dr.GetOrdinal("Email")),
                         Telefono = dr.IsDBNull(dr.GetOrdinal("Telefono")) ? null : dr.GetString(dr.GetOrdinal("Telefono")),
-                        Estado = dr.IsDBNull(dr.GetOrdinal("Activo")) ? false : dr.GetBoolean(dr.GetOrdinal("Activo")),
-                        FechaNacimiento = dr.IsDBNull(dr.GetOrdinal("FechaAlta")) ? (DateTime?)null : dr.GetDateTime(dr.GetOrdinal("FechaAlta")),
-                        IdRol = dr.IsDBNull(dr.GetOrdinal("IdRol")) ? 0 : dr.GetInt32(dr.GetOrdinal("IdRol")),
-                        RolNombre = dr.IsDBNull(dr.GetOrdinal("NombreRol")) ? string.Empty : dr.GetString(dr.GetOrdinal("NombreRol"))
+                        Activo = dr.GetBoolean(dr.GetOrdinal("Activo")),
+                        FechaAlta = dr.GetDateTime(dr.GetOrdinal("FechaAlta")),
+                        IdRol = dr.GetInt32(dr.GetOrdinal("IdRol")),
+                        RolNombre = dr.IsDBNull(dr.GetOrdinal("NombreRol")) ? null : dr.GetString(dr.GetOrdinal("NombreRol"))
                     };
                 }
             }
