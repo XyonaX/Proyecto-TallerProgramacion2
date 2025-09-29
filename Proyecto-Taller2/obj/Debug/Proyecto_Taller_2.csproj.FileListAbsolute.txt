@@ -1,0 +1,353 @@
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.csproj.AssemblyReference.cache
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.Form1.resources
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.Properties.Resources.resources
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.csproj.GenerateResource.cache
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.csproj.CoreCompileInputs.cache
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\Proyecto_Taller_2.exe.config
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\Proyecto_Taller_2.exe
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.Program.resources
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.exe
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto_Taller_2.exe.config
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Buffers.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.IO.Pipelines.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Memory.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Text.Json.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.ValueTuple.dll
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Buffers.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.IO.Pipelines.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Memory.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Text.Encodings.Web.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Text.Json.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\bin\Debug\System.ValueTuple.xml
+C:\Users\Lisandro\source\repos\Proyecto_Taller_2\Proyecto_Taller_2\obj\Debug\Proyecto.8A39D21F.Up2Date
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe.config
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Azure.Core.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Azure.Identity.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Memory.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Memory.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.Permissions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.ValueTuple.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Dapper.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\BCrypt.Net-Next.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Azure.Core.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Azure.Identity.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Buffers.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Memory.Data.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.Permissions.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.SuggestedBindingRedirects.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe.config
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcConfiguracion.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcDashboardAdmin.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcReportes.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcVentas.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Form1.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.LoginForm.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Program.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Properties.Resources.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.GenerateResource.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto.8A39D21F.Up2Date
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe
+C:\Users\yoni_\Desktop\Dev\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe.config
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Core.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Identity.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.Data.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Permissions.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.ValueTuple.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Dapper.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\BCrypt.Net-Next.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Core.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Identity.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Buffers.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.Data.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Permissions.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.SuggestedBindingRedirects.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe.config
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcConfiguracion.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcDashboardAdmin.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcReportes.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcVentas.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Form1.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.LoginForm.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Program.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Properties.Resources.resources
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.GenerateResource.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto.8A39D21F.Up2Date
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe.config
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Core.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Identity.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.Data.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Permissions.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.ValueTuple.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Dapper.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\BCrypt.Net-Next.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Core.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Identity.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Buffers.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.Data.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Permissions.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.AssemblyReference.cache
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.SuggestedBindingRedirects.cache
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe.config
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcConfiguracion.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcDashboardAdmin.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcReportes.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcVentas.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Form1.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.LoginForm.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Program.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Properties.Resources.resources
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.GenerateResource.cache
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.CoreCompileInputs.cache
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto.8A39D21F.Up2Date
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe
+C:\Users\Lisandro\OneDrive\Desktop\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe.config
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.exe
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Core.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Identity.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.AccessControl.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.ValueTuple.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Dapper.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\BCrypt.Net-Next.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Data.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Domain.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Proyecto_Taller_2.Services.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Core.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Azure.Identity.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Identity.Client.Extensions.Msal.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Abstractions.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Logging.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Protocols.OpenIdConnect.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.IdentityModel.Tokens.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Buffers.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.IO.FileSystem.AccessControl.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Memory.Data.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Cryptography.ProtectedData.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Security.Permissions.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.AssemblyReference.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe.config
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcConfiguracion.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcDashboardAdmin.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcReportes.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcVentas.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Form1.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.LoginForm.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Program.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Properties.Resources.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.GenerateResource.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.csproj.CoreCompileInputs.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto.8A39D21F.Up2Date
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.exe
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.ClientModel.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\Microsoft.Data.SqlClient.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\System.ClientModel.xml
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcClientes.resources

@@ -205,7 +205,6 @@ namespace Proyecto_Taller_2
             dgv.AdvancedCellBorderStyle.Right = DataGridViewAdvancedCellBorderStyle.Single;
 
             // === Columnas (data-bound) ===
-            DataGridViewTextBoxColumn cId = new DataGridViewTextBoxColumn { Name = "Id", DataPropertyName = "IdUsuario", HeaderText = "Id", Visible = true, FillWeight = 40 };
             DataGridViewTextBoxColumn cDni = new DataGridViewTextBoxColumn { Name = "Dni", DataPropertyName = "Dni", HeaderText = "DNI", Visible = true, FillWeight = 60 };
             DataGridViewImageColumn cAvatar = new DataGridViewImageColumn { Name = "Avatar", HeaderText = "", FillWeight = 56, ImageLayout = DataGridViewImageCellLayout.Zoom };
             DataGridViewTextBoxColumn cUsuario = new DataGridViewTextBoxColumn
@@ -213,7 +212,7 @@ namespace Proyecto_Taller_2
                 Name = "Usuario",
                 HeaderText = "Usuario",
                 FillWeight = 180,
-                DataPropertyName = "NombreCompleto",
+                DataPropertyName = "Nombre",
                 DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True }
             };
             DataGridViewTextBoxColumn cEmail = new DataGridViewTextBoxColumn { Name = "Email", HeaderText = "Email", FillWeight = 160, DataPropertyName = "Email" };
@@ -223,7 +222,7 @@ namespace Proyecto_Taller_2
             DataGridViewTextBoxColumn cEstado = new DataGridViewTextBoxColumn { Name = "Estado", HeaderText = "Estado", FillWeight = 80, DataPropertyName = "Activo" };
             DataGridViewTextBoxColumn cAcciones = new DataGridViewTextBoxColumn { Name = "Acciones", HeaderText = "Acciones", FillWeight = 60 };
 
-            dgv.Columns.AddRange(new DataGridViewColumn[] { cId, cDni, cAvatar, cUsuario, cEmail, cRol, cTelefono, cEstado /*, cAcciones*/ });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { cDni, cAvatar, cUsuario, cEmail, cRol, cTelefono, cEstado /*, cAcciones*/ });
 
             // Hooks
             dgv.CellPainting += Dgv_CellPainting;
@@ -291,7 +290,7 @@ namespace Proyecto_Taller_2
                 Usuario u = dgv.Rows[e.RowIndex].DataBoundItem as Usuario;
                 if (u == null) return;
                 var result = MessageBox.Show(
-                    $"¿Desea cambiar el estado del usuario {u.NombreCompleto}?\n\nActualmente: {(u.Activo ? "Activo" : "Inactivo")}",
+                    $"¿Desea cambiar el estado del usuario {u.Nombre}?\n\nActualmente: {(u.Activo ? "Activo" : "Inactivo")}",
                     "Cambiar estado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
@@ -507,7 +506,7 @@ namespace Proyecto_Taller_2
 
             Panel topWrap = new Panel { Dock = DockStyle.Top, Height = 120, Padding = new Padding(8, 8, 8, 8) };
             PictureBox pic = new PictureBox { Image = img ?? MakeAvatar((u.Nombre + " " + u.Apellido).Trim()), SizeMode = PictureBoxSizeMode.Zoom, Width = 72, Height = 72, Location = new Point(8, 8) };
-            Label lblNombre = new Label { Text = u.NombreCompleto, AutoSize = true, Font = new Font("Segoe UI", 12f, FontStyle.Bold), ForeColor = ColText, Location = new Point(88, 10) };
+            Label lblNombre = new Label { Text = u.Nombre, AutoSize = true, Font = new Font("Segoe UI", 12f, FontStyle.Bold), ForeColor = ColText, Location = new Point(88, 10) };
             Label lblEmail = new Label { Text = u.Email, AutoSize = true, ForeColor = Color.FromArgb(90, 100, 90), Location = new Point(88, 36) };
             Label lblEstado = new Label { Text = $"Estado: {(u.Activo ? "Activo" : "Inactivo")} | Rol: {u.RolNombre}", AutoSize = true, ForeColor = ColText, Location = new Point(8, 90) };
 
@@ -530,7 +529,7 @@ namespace Proyecto_Taller_2
             {
                 bool nuevoEstado = !u.Activo;
                 string accion = nuevoEstado ? "activar" : "dar de baja";
-                var result = MessageBox.Show($"¿Desea {accion} al usuario {u.NombreCompleto}?\n\nActualmente: {(u.Activo ? "Activo" : "Inactivo")}",
+                var result = MessageBox.Show($"¿Desea {accion} al usuario {u.Nombre}?\n\nActualmente: {(u.Activo ? "Activo" : "Inactivo")}",
                     btnEstado.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
@@ -547,17 +546,11 @@ namespace Proyecto_Taller_2
                 {
                     if (f.ShowDialog(FindForm()) == DialogResult.OK && f.Resultado != null)
                     {
-                        try
-                        {
-                            _repo.ActualizarUsuario(f.Resultado);
-                            RefrescarDesdeBD();
-                            MessageBox.Show("Usuario editado con éxito.", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("No se pudo editar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        _repo.ActualizarUsuario(f.Resultado);
+                        RefrescarDesdeBD();
+                        MessageBox.Show("Usuario editado con éxito.", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+
                 }
             };
 

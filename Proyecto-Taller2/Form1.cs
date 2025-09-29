@@ -249,6 +249,8 @@ namespace Proyecto_Taller_2.UI
                 }
                 this.Close();
             }
+
         }
+
     }
 }

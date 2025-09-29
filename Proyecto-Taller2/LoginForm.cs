@@ -93,6 +93,7 @@ namespace Proyecto_Taller_2.UI
         {
             if (lblError != null) lblError.Text = message;
             else MessageBox.Show(message, "Login", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
 
         private void txtEmail_TextChanged(object sender, EventArgs e)
         {
