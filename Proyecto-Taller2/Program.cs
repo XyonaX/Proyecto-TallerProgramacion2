@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Proyecto_Taller_2.Domain.Entities;
+using Proyecto_Taller_2.Domain.Models;
 
 namespace Proyecto_Taller_2.UI
 {
@@ -12,11 +12,18 @@ namespace Proyecto_Taller_2.UI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using (var login = new LoginForm()) 
+            using (var login = new LoginForm())
             {
-                if (login.ShowDialog() == DialogResult.OK && login.CurrentUser != null)
+                var result = login.ShowDialog();
+                if (result == DialogResult.OK && login.CurrentUser != null)
                 {
-                    Application.Run(new Form1(login.CurrentUser));
+                    Usuario usuario = login.CurrentUser;  // 👈 Usuario del dominio
+                    Application.Run(new Form1(usuario));
+                }
+                else
+                {
+                    // Login fallido o cancelado → cerrar app
+                    return;
                 }
             }
         }

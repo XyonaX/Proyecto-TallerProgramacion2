@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Proyecto_Taller_2.Controls;
-using Proyecto_Taller_2.Domain.Entities;
 
+using Proyecto_Taller_2.Controls;
+// Alias para el modelo de dominio:
+using DomainUsuario = Proyecto_Taller_2.Domain.Models.Usuario;
 
 namespace Proyecto_Taller_2.UI
 {
@@ -23,24 +24,24 @@ namespace Proyecto_Taller_2.UI
         private readonly Color Activo = Color.FromArgb(201, 222, 201);
         private readonly Color Txt = Color.FromArgb(34, 47, 34);
 
-        private readonly Usuario _currentUser;
+        private readonly DomainUsuario _currentUser;
 
-        public Form1()
+        public Form1(Usuario usuario)
         {
             InitializeComponent();
 
             if (IsDesigner()) return; // Evita correr lógica en el diseñador
 
             initUi();
-
-            
         }
 
-        public Form1(Usuario user)
+        public Form1(DomainUsuario user)
         {
             InitializeComponent();
             _currentUser = user;
+
             if (IsDesigner()) return;
+
             initUi();
 
             if (lblTitulo != null && _currentUser != null)
@@ -57,7 +58,7 @@ namespace Proyecto_Taller_2.UI
             WireHover(btnDashboard);
             WireHover(btnReportes);
 
-            // Clicks (aunque el Designer tenga alguno, no pasa nada)
+            // Clicks
             btnVentas.Click += btnVentas_Click;
             btnInventario.Click += btnInventario_Click;
             btnUsuarios.Click += btnUsuarios_Click;
@@ -69,7 +70,6 @@ namespace Proyecto_Taller_2.UI
             btnInventario.PerformClick();
 
             btnDashboard.Text = "Dashboard";
-
         }
 
         private static bool IsDesigner()
@@ -159,7 +159,6 @@ namespace Proyecto_Taller_2.UI
 
         private void pnlContent_Paint(object sender, PaintEventArgs e)
         {
-
         }
     }
 }

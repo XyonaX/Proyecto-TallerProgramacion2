@@ -63,7 +63,7 @@ namespace Proyecto_Taller_2.UI
             this.btnConfiguracion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConfiguracion.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnConfiguracion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(47)))), ((int)(((byte)(34)))));
-            this.btnConfiguracion.Location = new System.Drawing.Point(0, 176);
+            this.btnConfiguracion.Location = new System.Drawing.Point(0, 220);
             this.btnConfiguracion.Name = "btnConfiguracion";
             this.btnConfiguracion.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnConfiguracion.Size = new System.Drawing.Size(200, 44);
@@ -80,7 +80,7 @@ namespace Proyecto_Taller_2.UI
             this.btnUsuarios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUsuarios.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnUsuarios.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(47)))), ((int)(((byte)(34)))));
-            this.btnUsuarios.Location = new System.Drawing.Point(0, 132);
+            this.btnUsuarios.Location = new System.Drawing.Point(0, 176);
             this.btnUsuarios.Name = "btnUsuarios";
             this.btnUsuarios.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnUsuarios.Size = new System.Drawing.Size(200, 44);
@@ -97,7 +97,7 @@ namespace Proyecto_Taller_2.UI
             this.btnInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInventario.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnInventario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(47)))), ((int)(((byte)(34)))));
-            this.btnInventario.Location = new System.Drawing.Point(0, 88);
+            this.btnInventario.Location = new System.Drawing.Point(0, 132);
             this.btnInventario.Name = "btnInventario";
             this.btnInventario.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnInventario.Size = new System.Drawing.Size(200, 44);
@@ -114,7 +114,7 @@ namespace Proyecto_Taller_2.UI
             this.btnVentas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVentas.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnVentas.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(47)))), ((int)(((byte)(34)))));
-            this.btnVentas.Location = new System.Drawing.Point(0, 44);
+            this.btnVentas.Location = new System.Drawing.Point(0, 88);
             this.btnVentas.Name = "btnVentas";
             this.btnVentas.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnVentas.Size = new System.Drawing.Size(200, 44);
@@ -131,7 +131,7 @@ namespace Proyecto_Taller_2.UI
             this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnDashboard.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(47)))), ((int)(((byte)(34)))));
-            this.btnDashboard.Location = new System.Drawing.Point(0, 0);
+            this.btnDashboard.Location = new System.Drawing.Point(0, 44);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.btnDashboard.Size = new System.Drawing.Size(200, 44);
@@ -139,6 +139,7 @@ namespace Proyecto_Taller_2.UI
             this.btnDashboard.Text = "Dashboard";
             this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDashboard.UseVisualStyleBackColor = false;
+            // 
             // btnReportes
             // 
             this.btnReportes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(243)))), ((int)(((byte)(236)))));
@@ -147,7 +148,6 @@ namespace Proyecto_Taller_2.UI
             this.btnReportes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReportes.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnReportes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(47)))), ((int)(((byte)(34)))));
-            //location tiene que aparecer debajo de dashboard
             this.btnReportes.Location = new System.Drawing.Point(0, 0);
             this.btnReportes.Name = "btnReportes";
             this.btnReportes.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);

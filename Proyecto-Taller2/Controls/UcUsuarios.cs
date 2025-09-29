@@ -206,7 +206,8 @@ namespace Proyecto_Taller_2
             dgv.AdvancedCellBorderStyle.Right = DataGridViewAdvancedCellBorderStyle.Single;
 
             // === Columnas (data-bound) ===
-            DataGridViewTextBoxColumn cHiddenDni = new DataGridViewTextBoxColumn { Name = "Dni", DataPropertyName = "Dni", Visible = false };
+            DataGridViewTextBoxColumn cId = new DataGridViewTextBoxColumn { Name = "Id", DataPropertyName = "IdUsuario", HeaderText = "Id", Visible = true, FillWeight = 40 };
+            DataGridViewTextBoxColumn cDni = new DataGridViewTextBoxColumn { Name = "Dni", DataPropertyName = "Dni", HeaderText = "DNI", Visible = true, FillWeight = 60 };
             DataGridViewImageColumn cAvatar = new DataGridViewImageColumn { Name = "Avatar", HeaderText = "", FillWeight = 56, ImageLayout = DataGridViewImageCellLayout.Zoom };
             DataGridViewTextBoxColumn cUsuario = new DataGridViewTextBoxColumn
             {
@@ -222,7 +223,7 @@ namespace Proyecto_Taller_2
             DataGridViewTextBoxColumn cEstado = new DataGridViewTextBoxColumn { Name = "Estado", HeaderText = "Estado", FillWeight = 80, DataPropertyName = "Estado" }; // bool → chip con CellFormatting
             DataGridViewTextBoxColumn cAcciones = new DataGridViewTextBoxColumn { Name = "Acciones", HeaderText = "Acciones", FillWeight = 60 };
 
-            dgv.Columns.AddRange(new DataGridViewColumn[] { cHiddenDni, cAvatar, cUsuario, cEmail, cRol, cTelefono, cEstado, cAcciones });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { cId, cDni, cAvatar, cUsuario, cEmail, cRol, cTelefono, cEstado });
 
             // Hooks
             dgv.CellPainting += Dgv_CellPainting;
@@ -522,8 +523,10 @@ namespace Proyecto_Taller_2
             FlowLayoutPanel flBtns = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(8, 0, 8, 0) };
             string btnEstadoText = u.Estado ? "Dar de baja" : "Activar";
             Button btnEstado = MakeGhost(btnEstadoText);
+            Button btnEditar = MakeGhost("Editar");
             Button btnMail = MakeGhost("✉️ Enviar correo");
             flBtns.Controls.Add(btnEstado);
+            flBtns.Controls.Add(btnEditar);
             flBtns.Controls.Add(btnMail);
 
             // Evento para cambiar estado
@@ -539,6 +542,28 @@ namespace Proyecto_Taller_2
                     u.Estado = nuevoEstado;
                     _repo.ActualizarEstadoUsuario(u.Dni, nuevoEstado);
                     RefrescarDesdeBD();
+                }
+            };
+
+            // Evento para editar usuario
+            btnEditar.Click += (sender2, args2) =>
+            {
+                if (u == null) return;
+                using (var f = new EditarUsuarioForm(_repo, u, _all))
+                {
+                    if (f.ShowDialog(FindForm()) == DialogResult.OK && f.Resultado != null)
+                    {
+                        try
+                        {
+                            _repo.ActualizarUsuario(f.Resultado);
+                            RefrescarDesdeBD();
+                            MessageBox.Show("Usuario editado con éxito.", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("No se pudo editar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
                 }
             };
 
