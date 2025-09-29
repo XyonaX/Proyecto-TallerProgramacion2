@@ -1,9 +1,10 @@
-﻿using Proyecto_Taller_2.Controls;
+using Proyecto_Taller_2.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 // Alias para el modelo de dominio:
 using DomainUsuario = Proyecto_Taller_2.Domain.Models.Usuario;
@@ -12,8 +13,6 @@ namespace Proyecto_Taller_2.UI
 {
     public partial class Form1 : Form
     {
-        // NO declares acá los controles del Designer (ya están en Form1.Designer.cs)
-
         private Button _btnActivo;
         private readonly Dictionary<Type, UserControl> _cache = new Dictionary<Type, UserControl>();
 
@@ -33,7 +32,7 @@ namespace Proyecto_Taller_2.UI
             initUi();
         }
 
-        // === Único constructor con parámetro (elimina duplicidad) ===
+        // === Único constructor con usuario ===
         public Form1(DomainUsuario user)
         {
             InitializeComponent();
@@ -45,17 +44,79 @@ namespace Proyecto_Taller_2.UI
 
             if (lblTitulo != null)
                 lblTitulo.Text = $"Bienvenido, {_currentUser.Nombre} {_currentUser.Apellido}";
+
+            ConfigureMenuAccess();
+
+            // Pantalla inicial según el rol
+            switch (_currentUser.IdRol)
+            {
+                case 1: // Administrador
+                    btnDashboard.PerformClick();
+                    break;
+                case 2: // Vendedor
+                    btnVentas.PerformClick();
+                    break;
+                case 3: // Depósito
+                    btnInventario.PerformClick();
+                    break;
+                default:
+                    btnDashboard.PerformClick();
+                    break;
+            }
+        }
+
+        private void ConfigureMenuAccess()
+        {
+            // Por defecto, ocultar todos los botones
+            btnDashboard.Visible = false;
+            btnVentas.Visible = false;
+            btnInventario.Visible = false;
+            btnUsuarios.Visible = false;
+            btnConfiguracion.Visible = false;
+            btnReportes.Visible = false;
+            btnClientes.Visible = false;
+            btnProductos.Visible = false;
+
+            if (_currentUser == null) return;
+
+            // Configurar acceso según el rol
+            switch (_currentUser.IdRol)
+            {
+                case 1: // Administrador
+                    btnDashboard.Visible = true;
+                    btnVentas.Visible = true;
+                    btnInventario.Visible = true;
+                    btnUsuarios.Visible = true;
+                    btnConfiguracion.Visible = true;
+                    btnReportes.Visible = true;
+                    btnClientes.Visible = true;
+                    btnProductos.Visible = true;
+                    break;
+
+                case 2: // Vendedor
+                    btnVentas.Visible = true;
+                    btnClientes.Visible = true;
+                    break;
+
+                case 3: // Depósito
+                    btnInventario.Visible = true;
+                    btnProductos.Visible = true;
+                    break;
+            }
         }
 
         private void initUi()
         {
-            // Hover
+            // Hovers
             WireHover(btnVentas);
             WireHover(btnInventario);
             WireHover(btnUsuarios);
             WireHover(btnConfiguracion);
             WireHover(btnDashboard);
             WireHover(btnReportes);
+            WireHover(btnClientes);
+            WireHover(btnProductos);
+            WireHover(btnLogout);
 
             // Clicks
             btnVentas.Click += btnVentas_Click;
@@ -64,11 +125,9 @@ namespace Proyecto_Taller_2.UI
             btnConfiguracion.Click += btnConfiguracion_Click;
             btnDashboard.Click += btnDashboard_Click;
             btnReportes.Click += btnReportes_Click;
-
-            // Pantalla inicial
-            btnInventario?.PerformClick();
-
-            btnDashboard.Text = "Dashboard";
+            btnClientes.Click += btnClientes_Click;
+            btnProductos.Click += btnProductos_Click;
+            btnLogout.Click += btnLogout_Click;
         }
 
         private static bool IsDesigner()
@@ -156,8 +215,40 @@ namespace Proyecto_Taller_2.UI
             Mostrar(GetOrCreate<UcConfiguracion>(), "Configuración");
         }
 
-        private void pnlContent_Paint(object sender, PaintEventArgs e)
+        private void btnClientes_Click(object sender, EventArgs e)
         {
+            Activar(btnClientes);
+            Mostrar(GetOrCreate<UcClientes>(), "Gestión de Clientes");
+        }
+
+        private void btnProductos_Click(object sender, EventArgs e)
+        {
+            Activar(btnProductos);
+            Mostrar(GetOrCreate<UcProductos>(), "Gestión de Productos");
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "¿Está seguro que desea cerrar sesión?",
+                "Cerrar Sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                this.Hide();
+                using (var login = new LoginForm())
+                {
+                    if (login.ShowDialog() == DialogResult.OK && login.CurrentUser != null)
+                    {
+                        var main = new Form1(login.CurrentUser);
+                        main.ShowDialog();
+                    }
+                }
+                this.Close();
+            }
         }
     }
 }
