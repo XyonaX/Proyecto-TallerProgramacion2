@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;              // 👈 agregado
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using Proyecto_Taller_2.UI.Helpers;
+using Proyecto_Taller_2.Data.Repositories;
+using Proyecto_Taller_2.Domain.Models;
 
 namespace Proyecto_Taller_2
 {
     public partial class UcInventario : UserControl
     {
-        private readonly BindingList<Producto> _data = new BindingList<Producto>();
+        private const int STOCK_SALUDABLE_MARGEN = 5;
+        private static readonly string[] CATEGORIAS = new[] { "remera", "campera" };
+
+        private readonly InventarioRepository _repo = new InventarioRepository();
+        private BindingList<InventarioItem> _data = new BindingList<InventarioItem>();
         private readonly BindingSource _bs = new BindingSource();
 
         public TextBox txtBuscar;
@@ -18,23 +26,8 @@ namespace Proyecto_Taller_2
         public ComboBox cbEstado;
         public CheckBox chkSoloBajoStock;
         public DataGridView dgv;
-        public Button btnNuevo;
-        public Button btnEntrada;
-        public Button btnSalida;
-        public Button btnAjuste;
-        public Button btnImportar;
-        public Button btnExportar;
-        public Button btnEditar;
-        public Label kpiTotalVal;
-        public Label kpiBajoVal;
-        public Label kpiValVal;
-        public Label lblDetNombre;
-        public Label lblDetSku;
-        public Label lblDetCat;
-        public Label lblDetUbic;
-        public Label lblDetStock;
-        public Label lblDetPrecio;
-        public Label lblDetActualizado;
+        public Button btnNuevo, btnEntrada, btnSalida, btnAjuste, btnImportar, btnExportar, btnEditar;
+        public Label kpiTotalVal, kpiBajoVal, kpiValVal, lblDetNombre, lblDetSku, lblDetCat, lblDetUbic, lblDetStock, lblDetPrecio, lblDetActualizado;
 
         public UcInventario()
         {
@@ -44,129 +37,22 @@ namespace Proyecto_Taller_2
             {
                 Load += UcInventario_Load;
 
-                txtBuscar.TextChanged += new EventHandler((sender, e) => ApplyFilters());
-                cbCategoria.SelectedIndexChanged += new EventHandler((sender, e) => ApplyFilters());
-                cbEstado.SelectedIndexChanged += new EventHandler((sender, e) => ApplyFilters());
-                chkSoloBajoStock.CheckedChanged += new EventHandler((sender, e) => ApplyFilters());
+                txtBuscar.TextChanged += delegate { ApplyFilters(); };
+                cbCategoria.SelectedIndexChanged += delegate { ApplyFilters(); };
+                cbEstado.SelectedIndexChanged += delegate { ApplyFilters(); };
+                chkSoloBajoStock.CheckedChanged += delegate { ApplyFilters(); };
 
-                dgv.CellFormatting += new DataGridViewCellFormattingEventHandler(Dgv_CellFormatting);
-                dgv.SelectionChanged += new EventHandler((sender, e) => UpdateDetalle());
+                dgv.CellFormatting += Dgv_CellFormatting;
+                dgv.SelectionChanged += delegate { UpdateDetalle(); };
 
-                btnNuevo.Click += new EventHandler((sender, e) => MessageBox.Show("Nuevo producto (form/modal)…"));
-                btnEntrada.Click += new EventHandler((sender, e) => MessageBox.Show("Registrar entrada de stock…"));
-                btnSalida.Click += new EventHandler((sender, e) => MessageBox.Show("Registrar salida de stock…"));
-                btnAjuste.Click += new EventHandler((sender, e) => MessageBox.Show("Ajuste de stock…"));
-                btnImportar.Click += new EventHandler((sender, e) => MessageBox.Show("Importar CSV…"));
-                btnExportar.Click += new EventHandler((sender, e) => MessageBox.Show("Exportar…"));
-                btnEditar.Click += new EventHandler((sender, e) => MessageBox.Show("Editar producto seleccionado…"));
+                btnNuevo.Click += delegate { NuevoProducto(); };
+                btnEditar.Click += delegate { EditarProductoSeleccionado(); };
+                btnEntrada.Click += delegate { RegistrarMovimiento('E'); };
+                btnSalida.Click += delegate { RegistrarMovimiento('S'); };
+                btnAjuste.Click += delegate { RegistrarMovimiento('A'); };
+                btnImportar.Click += delegate { ImportarCsv(); };
+                btnExportar.Click += delegate { ExportarCsv(); };
             }
-        }
-
-        private void InitializeComponent()
-        {
-            var mainPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(12) };
-            Controls.Add(mainPanel);
-
-            var filtrosPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                Height = 40,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 0, 0, 8)
-            };
-            mainPanel.Controls.Add(filtrosPanel);
-
-            txtBuscar = new TextBox { Width = 180, Margin = new Padding(4) };
-            cbCategoria = new ComboBox { Width = 140, Margin = new Padding(4) };
-            cbEstado = new ComboBox { Width = 100, Margin = new Padding(4) };
-            chkSoloBajoStock = new CheckBox { Text = "Solo bajo stock", Margin = new Padding(4, 8, 4, 4) };
-
-            filtrosPanel.Controls.Add(txtBuscar);
-            filtrosPanel.Controls.Add(cbCategoria);
-            filtrosPanel.Controls.Add(cbEstado);
-            filtrosPanel.Controls.Add(chkSoloBajoStock);
-
-            var botonesPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                Height = 40,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 0, 0, 8)
-            };
-            mainPanel.Controls.Add(botonesPanel);
-
-            btnNuevo = new Button { Text = "Nuevo", Width = 80, Margin = new Padding(4) };
-            btnEntrada = new Button { Text = "Entrada", Width = 80, Margin = new Padding(4) };
-            btnSalida = new Button { Text = "Salida", Width = 80, Margin = new Padding(4) };
-            btnAjuste = new Button { Text = "Ajuste", Width = 80, Margin = new Padding(4) };
-            btnImportar = new Button { Text = "Importar", Width = 80, Margin = new Padding(4) };
-            btnExportar = new Button { Text = "Exportar", Width = 80, Margin = new Padding(4) };
-            btnEditar = new Button { Text = "Editar", Width = 80, Margin = new Padding(4) };
-
-            botonesPanel.Controls.Add(btnNuevo);
-            botonesPanel.Controls.Add(btnEntrada);
-            botonesPanel.Controls.Add(btnSalida);
-            botonesPanel.Controls.Add(btnAjuste);
-            botonesPanel.Controls.Add(btnImportar);
-            botonesPanel.Controls.Add(btnExportar);
-            botonesPanel.Controls.Add(btnEditar);
-
-            var kpiPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                Height = 40,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 0, 0, 8)
-            };
-            mainPanel.Controls.Add(kpiPanel);
-
-            kpiTotalVal = new Label { Text = "0", Width = 80, Margin = new Padding(4) };
-            kpiBajoVal = new Label { Text = "0", Width = 80, Margin = new Padding(4) };
-            kpiValVal = new Label { Text = "$0", Width = 80, Margin = new Padding(4) };
-
-            kpiPanel.Controls.Add(new Label { Text = "Total:", Width = 50, Margin = new Padding(4) });
-            kpiPanel.Controls.Add(kpiTotalVal);
-            kpiPanel.Controls.Add(new Label { Text = "Bajo stock:", Width = 80, Margin = new Padding(4) });
-            kpiPanel.Controls.Add(kpiBajoVal);
-            kpiPanel.Controls.Add(new Label { Text = "Valorizado:", Width = 80, Margin = new Padding(4) });
-            kpiPanel.Controls.Add(kpiValVal);
-
-            dgv = new DataGridView
-            {
-                Dock = DockStyle.Top,
-                Height = 220,
-                Margin = new Padding(4),
-                ReadOnly = true,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
-            mainPanel.Controls.Add(dgv);
-
-            var detallePanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown,
-                Padding = new Padding(0, 8, 0, 0)
-            };
-            mainPanel.Controls.Add(detallePanel);
-
-            lblDetNombre = new Label { Text = "Nombre: —", Width = 300, Margin = new Padding(4) };
-            lblDetSku = new Label { Text = "SKU: —", Width = 300, Margin = new Padding(4) };
-            lblDetCat = new Label { Text = "Categoría: —", Width = 300, Margin = new Padding(4) };
-            lblDetUbic = new Label { Text = "Ubicación: —", Width = 300, Margin = new Padding(4) };
-            lblDetStock = new Label { Text = "Stock / Mín.: —", Width = 300, Margin = new Padding(4) };
-            lblDetPrecio = new Label { Text = "Precio: —", Width = 300, Margin = new Padding(4) };
-            lblDetActualizado = new Label { Text = "Actualizado: —", Width = 300, Margin = new Padding(4) };
-
-            detallePanel.Controls.Add(lblDetNombre);
-            detallePanel.Controls.Add(lblDetSku);
-            detallePanel.Controls.Add(lblDetCat);
-            detallePanel.Controls.Add(lblDetUbic);
-            detallePanel.Controls.Add(lblDetStock);
-            detallePanel.Controls.Add(lblDetPrecio);
-            detallePanel.Controls.Add(lblDetActualizado);
         }
 
         private static bool IsDesigner()
@@ -177,22 +63,17 @@ namespace Proyecto_Taller_2
 
         private void UcInventario_Load(object sender, EventArgs e)
         {
-            var demo = Seed();
-            foreach (var p in demo) _data.Add(p);
-
-            var categorias = new List<string> { "Todas las categorías" };
-            categorias.AddRange(_data.Select(p => p.Categoria).Distinct().OrderBy(s => s));
-            cbCategoria.DataSource = categorias;
-
             cbEstado.DataSource = new List<string> { "Todos", "Activo", "Inactivo" };
             cbEstado.SelectedIndex = 0;
 
+            cbCategoria.DataSource = new List<string> { "Todas las categorías" }.Concat(CATEGORIAS).ToList();
+            cbCategoria.SelectedIndex = 0;
+
+            ConfigurarGrid();
+            RefrescarDesdeDb();
+
             _bs.DataSource = _data;
             dgv.DataSource = _bs;
-
-            // 👇 Estilo del grid + columnas explícitas
-            SetupGridStyle();
-            SetupColumns();
 
             RefreshKpis();
 
@@ -200,153 +81,147 @@ namespace Proyecto_Taller_2
             UpdateDetalle();
         }
 
-        // ======= Estilo del DataGridView (quita el fondo gris) =======
-        private void SetupGridStyle()
+        private void RefrescarDesdeDb()
         {
-            var hover = Color.FromArgb(220, 232, 220);
-            var activo = Color.FromArgb(201, 222, 201);
-            var texto = Color.FromArgb(34, 47, 34);
+            bool? activo = null;
+            if (cbEstado != null && cbEstado.SelectedItem != null)
+            {
+                string sel = cbEstado.SelectedItem.ToString();
+                if (sel == "Activo") activo = true;
+                else if (sel == "Inactivo") activo = false;
+            }
 
+            List<InventarioItem> lista = _repo.Listar(false, null, activo);
+            _data = new BindingList<InventarioItem>(lista);
+            _bs.DataSource = _data;
+            dgv.DataSource = _bs;
+        }
+
+        private void ConfigurarGrid()
+        {
             dgv.RowHeadersVisible = false;
             dgv.EnableHeadersVisualStyles = false;
 
-            // Encabezados
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = hover;
+            Color header = Color.FromArgb(220, 232, 220);
+            Color seleccion = Color.FromArgb(201, 222, 201);
+            Color texto = Color.FromArgb(34, 47, 34);
+
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = header;
             dgv.ColumnHeadersDefaultCellStyle.ForeColor = texto;
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            dgv.ColumnHeadersHeight = 34;
 
-            // Celdas
-            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
-            dgv.DefaultCellStyle.SelectionBackColor = activo;
+            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10.5F);
+            dgv.DefaultCellStyle.SelectionBackColor = seleccion;
             dgv.DefaultCellStyle.SelectionForeColor = texto;
-
-            // Alternado
             dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 251, 248);
-
-            // 👇 Fondo blanco en todo el grid (incluyendo el área vacía)
             dgv.BackgroundColor = Color.White;
-            dgv.DefaultCellStyle.BackColor = Color.White;
-        }
 
-        // ======= Columnas explícitas y formatos =======
-        private void SetupColumns()
-        {
+            dgv.RowTemplate.Height = 28;
             dgv.AutoGenerateColumns = false;
             dgv.Columns.Clear();
 
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Sku", DataPropertyName = "Sku", Width = 90, MinimumWidth = 80 });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Sku", DataPropertyName = "Sku", Width = 90 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "Nombre", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Categoría", DataPropertyName = "Categoria", Width = 120 });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Categoría", DataPropertyName = "Categoria", Width = 140 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Ubicación", DataPropertyName = "Ubicacion", Width = 110 });
 
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Stock",
-                DataPropertyName = "Stock",
-                Width = 70,
-                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight }
-            });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Mínimo",
-                DataPropertyName = "Minimo",
-                Width = 70,
-                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight }
-            });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Precio",
-                DataPropertyName = "Precio",
-                Width = 90,
-                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }
-            });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Proveedor", DataPropertyName = "Proveedor", Width = 120 });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Estado", DataPropertyName = "Estado", Width = 90 });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Actualizado",
-                DataPropertyName = "Actualizado",
-                Width = 120,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "g" }
-            });
+            DataGridViewTextBoxColumn colStock = new DataGridViewTextBoxColumn { HeaderText = "Stock", DataPropertyName = "Stock", Width = 80 };
+            colStock.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgv.Columns.Add(colStock);
+
+            DataGridViewTextBoxColumn colMin = new DataGridViewTextBoxColumn { HeaderText = "Mínimo", DataPropertyName = "Minimo", Width = 80 };
+            colMin.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgv.Columns.Add(colMin);
+
+            DataGridViewTextBoxColumn colPrecio = new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "Precio", Width = 110 };
+            colPrecio.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colPrecio.DefaultCellStyle.Format = "C";
+            colPrecio.DefaultCellStyle.FormatProvider = new CultureInfo("es-AR");
+            dgv.Columns.Add(colPrecio);
+
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Proveedor", DataPropertyName = "Proveedor", Width = 140 });
+            DataGridViewTextBoxColumn colEstado = new DataGridViewTextBoxColumn { HeaderText = "Estado", DataPropertyName = "Estado", Width = 100 };
+            dgv.Columns.Add(colEstado);
+
+            DataGridViewTextBoxColumn colAct = new DataGridViewTextBoxColumn { HeaderText = "Actualizado", DataPropertyName = "Actualizado", Width = 150 };
+            colAct.DefaultCellStyle.Format = "g";
+            dgv.Columns.Add(colAct);
         }
 
-        private void RefreshKpis()
+        private void Dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            var total = _bs.Cast<Producto>().Count();
-            var bajo = _bs.Cast<Producto>().Count(p => p.Stock < p.Minimo);
-            var valorizado = _bs.Cast<Producto>().Sum(p => p.Stock * p.Precio);
+            if (e.RowIndex < 0) return;
 
-            kpiTotalVal.Text = total.ToString();
-            kpiBajoVal.Text = bajo.ToString();
-            kpiValVal.Text = valorizado.ToString("C2");
+            InventarioItem item = dgv.Rows[e.RowIndex].DataBoundItem as InventarioItem;
+            if (item == null) return;
+
+            if (dgv.Columns[e.ColumnIndex].DataPropertyName == "Stock")
+            {
+                if (item.Stock < item.Minimo)
+                {
+                    e.CellStyle.BackColor = Color.MistyRose;
+                    e.CellStyle.ForeColor = Color.Maroon;
+                }
+                else if (item.Stock <= item.Minimo + STOCK_SALUDABLE_MARGEN)
+                {
+                    e.CellStyle.BackColor = Color.Honeydew;
+                    e.CellStyle.ForeColor = Color.DarkGreen;
+                }
+            }
         }
 
         private void ApplyFilters()
         {
-            var q = txtBuscar.Text != null ? txtBuscar.Text.Trim().ToLower() : "";
-            var cat = cbCategoria.SelectedItem != null ? cbCategoria.SelectedItem.ToString() : "Todas las categorías";
-            var est = cbEstado.SelectedItem != null ? cbEstado.SelectedItem.ToString() : "Todos";
-            var soloBajo = chkSoloBajoStock.Checked;
+            string q = (txtBuscar != null && txtBuscar.Text != null) ? txtBuscar.Text.Trim().ToLower() : "";
+            string cat = (cbCategoria != null && cbCategoria.SelectedItem != null) ? cbCategoria.SelectedItem.ToString() : "Todas las categorías";
+            string est = (cbEstado != null && cbEstado.SelectedItem != null) ? cbEstado.SelectedItem.ToString() : "Todos";
+            bool soloBajo = (chkSoloBajoStock != null && chkSoloBajoStock.Checked);
 
-            IEnumerable<Producto> filtered = _data;
+            IEnumerable<InventarioItem> filtered = _data;
 
-            if (!string.IsNullOrEmpty(q))
+            if (q.Length > 0)
                 filtered = filtered.Where(p =>
-                    (p.Nombre != null && p.Nombre.ToLower().Contains(q)) ||
-                    (p.Sku != null && p.Sku.ToLower().Contains(q)) ||
-                    (p.Proveedor != null && p.Proveedor.ToLower().Contains(q)));
+                    ((p.Nombre ?? "").ToLower().Contains(q)) ||
+                    ((p.Sku ?? "").ToLower().Contains(q)) ||
+                    ((p.Proveedor ?? "").ToLower().Contains(q)));
 
-            if (cat != "Todas las categorías")
-                filtered = filtered.Where(p => p.Categoria == cat);
+            if (!string.IsNullOrEmpty(cat) && cat != "Todas las categorías")
+                filtered = filtered.Where(p => string.Equals(p.Categoria ?? "", cat, StringComparison.OrdinalIgnoreCase));
 
             if (est != "Todos")
-                filtered = filtered.Where(p => p.Estado == est);
+                filtered = filtered.Where(p => (p.Estado ?? "") == est);
 
             if (soloBajo)
                 filtered = filtered.Where(p => p.Stock < p.Minimo);
 
-            _bs.DataSource = new BindingList<Producto>(filtered.OrderBy(p => p.Nombre).ToList());
+            _bs.DataSource = new BindingList<InventarioItem>(filtered.OrderBy(p => p.Nombre).ToList());
             dgv.DataSource = _bs;
 
             RefreshKpis();
             UpdateDetalle();
         }
 
-        private void Dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void RefreshKpis()
         {
-            if (dgv.Columns[e.ColumnIndex].DataPropertyName == "Stock")
+            List<InventarioItem> lista = _bs.Cast<InventarioItem>().ToList();
+            int total = lista.Count;
+            int bajo = lista.Count(p => p.Stock < p.Minimo);
+            decimal valorizado = 0m;
+            foreach (InventarioItem p in lista)
             {
-                var row = dgv.Rows[e.RowIndex].DataBoundItem as Producto;
-                if (row == null) return;
-
-                if (row.Stock < row.Minimo)
-                {
-                    e.CellStyle.BackColor = System.Drawing.Color.MistyRose;
-                    e.CellStyle.ForeColor = System.Drawing.Color.Maroon;
-                }
-                else
-                {
-                    e.CellStyle.BackColor = System.Drawing.Color.Honeydew;
-                    e.CellStyle.ForeColor = System.Drawing.Color.DarkGreen;
-                }
+                int s = (p.Stock > 0) ? p.Stock : 0;
+                valorizado += s * p.Precio;
             }
 
-            if (dgv.Columns[e.ColumnIndex].DataPropertyName == "Estado")
-            {
-                if ((e.Value != null ? e.Value.ToString() : "") == "Inactivo")
-                {
-                    e.CellStyle.ForeColor = System.Drawing.Color.DimGray;
-                }
-            }
+            kpiTotalVal.Text = total.ToString("N0");
+            kpiBajoVal.Text = bajo.ToString("N0");
+            kpiValVal.Text = valorizado.ToString("C", new CultureInfo("es-AR"));
         }
 
         private void UpdateDetalle()
         {
-            Producto p = null;
-            if (dgv.CurrentRow != null && dgv.CurrentRow.DataBoundItem is Producto)
-                p = (Producto)dgv.CurrentRow.DataBoundItem;
-
+            InventarioItem p = (dgv.CurrentRow != null) ? dgv.CurrentRow.DataBoundItem as InventarioItem : null;
             if (p == null)
             {
                 lblDetNombre.Text = "Nombre: —";
@@ -364,33 +239,205 @@ namespace Proyecto_Taller_2
             lblDetCat.Text = "Categoría: " + p.Categoria;
             lblDetUbic.Text = "Ubicación: " + p.Ubicacion;
             lblDetStock.Text = "Stock / Mín.: " + p.Stock + " / " + p.Minimo;
-            lblDetPrecio.Text = "Precio: " + p.Precio.ToString("C2");
+            lblDetPrecio.Text = "Precio: " + p.Precio.ToString("C", new CultureInfo("es-AR"));
             lblDetActualizado.Text = "Actualizado: " + p.Actualizado.ToString("g");
         }
 
-        private static List<Producto> Seed()
-        {
-            var list = new List<Producto>();
-            list.Add(new Producto { Sku = "A-1001", Nombre = "Tornillo 3/8\" x 1\"", Categoria = "Ferretería", Ubicacion = "A1-01", Stock = 120, Minimo = 50, Precio = 120.00m, Proveedor = "ACME", Estado = "Activo", Actualizado = DateTime.Now.AddHours(-2) });
-            list.Add(new Producto { Sku = "A-1002", Nombre = "Arandela 3/8\"", Categoria = "Ferretería", Ubicacion = "A1-02", Stock = 30, Minimo = 60, Precio = 15.50m, Proveedor = "ACME", Estado = "Activo", Actualizado = DateTime.Now.AddDays(-1) });
-            list.Add(new Producto { Sku = "B-2001", Nombre = "Pintura Látex 4L", Categoria = "Pinturas", Ubicacion = "B3-12", Stock = 8, Minimo = 10, Precio = 9500m, Proveedor = "Colores", Estado = "Activo", Actualizado = DateTime.Now.AddMinutes(-30) });
-            list.Add(new Producto { Sku = "B-2002", Nombre = "Pincel 2”", Categoria = "Pinturas", Ubicacion = "B1-05", Stock = 85, Minimo = 20, Precio = 1700m, Proveedor = "Colores", Estado = "Activo", Actualizado = DateTime.Now.AddDays(-3) });
-            list.Add(new Producto { Sku = "C-3001", Nombre = "Guantes Nitrilo", Categoria = "Seguridad", Ubicacion = "C2-07", Stock = 0, Minimo = 25, Precio = 2500m, Proveedor = "SafeCorp", Estado = "Inactivo", Actualizado = DateTime.Now.AddDays(-8) });
-            return list;
-        }
-    }
+        // ==================== CRUD ====================
 
-    public class Producto
-    {
-        public string Sku { get; set; } = "";
-        public string Nombre { get; set; } = "";
-        public string Categoria { get; set; } = "";
-        public string Ubicacion { get; set; } = "";
-        public int Stock { get; set; }
-        public int Minimo { get; set; }
-        public decimal Precio { get; set; }
-        public string Proveedor { get; set; } = "";
-        public string Estado { get; set; } = "Activo";
-        public DateTime Actualizado { get; set; } = DateTime.Now;
+        private static string ElegirCategoriaPorNumero(string entrada)
+        {
+            if (entrada == null) return "remera";
+            string t = entrada.Trim().ToLower();
+            if (t == "2" || t == "campera") return "campera";
+            return "remera";
+        }
+
+        private void NuevoProducto()
+        {
+            string sku = FrmInput.Show("Nuevo producto", "SKU:", "");
+            if (string.IsNullOrWhiteSpace(sku)) return;
+
+            string nombre = FrmInput.Show("Nuevo producto", "Nombre:", "");
+            if (string.IsNullOrWhiteSpace(nombre)) return;
+
+            string catSel = FrmInput.Show("Nuevo producto", "Categoría (1=Remera, 2=Campera):", "1");
+            string categoria = ElegirCategoriaPorNumero(catSel);
+
+            string ubic = FrmInput.Show("Nuevo producto", "Ubicación:", "");
+            string minimoStr = FrmInput.Show("Nuevo producto", "Mínimo:", "5");
+            string precioStr = FrmInput.Show("Nuevo producto", "Precio:", "0");
+            string prov = FrmInput.Show("Nuevo producto", "Proveedor:", "");
+            string actStr = FrmInput.Show("Nuevo producto", "¿Activo? (s/n):", "s");
+            if (actStr == null) return;
+
+            int minimo = 5; int.TryParse(minimoStr, out minimo);
+            decimal precio = 0m; decimal.TryParse(precioStr, out precio);
+            string al = actStr.ToLower();
+            bool activo = (al == "s" || al == "si" || al == "sí");
+
+            Producto p = new Producto();
+            p.Sku = sku;
+            p.Nombre = nombre;
+            p.Categoria = categoria; // setter → CategoriaId
+            p.Ubicacion = ubic;
+            p.Minimo = minimo;
+            p.Precio = precio;
+            p.Proveedor = prov;
+            p.Activo = activo;
+
+            int id = new InventarioRepository().CrearProducto(p);
+            if (id > 0)
+            {
+                RefrescarDesdeDb();
+                cbCategoria.DataSource = new List<string> { "Todas las categorías", "remera", "campera" };
+                cbCategoria.SelectedItem = categoria;
+                ApplyFilters();
+                MessageBox.Show("Producto creado.");
+            }
+        }
+
+        private void EditarProductoSeleccionado()
+        {
+            InventarioItem it = (dgv.CurrentRow != null) ? dgv.CurrentRow.DataBoundItem as InventarioItem : null;
+            if (it == null) { MessageBox.Show("Seleccioná un producto."); return; }
+
+            string sku = FrmInput.Show("Editar producto", "SKU:", it.Sku);
+            if (string.IsNullOrWhiteSpace(sku)) return;
+
+            string nombre = FrmInput.Show("Editar producto", "Nombre:", it.Nombre);
+            if (string.IsNullOrWhiteSpace(nombre)) return;
+
+            string catSel = FrmInput.Show("Editar producto", "Categoría (1=Remera, 2=Campera):", it.Categoria == "campera" ? "2" : "1");
+            string categoria = ElegirCategoriaPorNumero(catSel);
+
+            string ubic = FrmInput.Show("Editar producto", "Ubicación:", it.Ubicacion);
+            string minimoStr = FrmInput.Show("Editar producto", "Mínimo:", it.Minimo.ToString());
+            string precioStr = FrmInput.Show("Editar producto", "Precio:", it.Precio.ToString());
+            string prov = FrmInput.Show("Editar producto", "Proveedor:", it.Proveedor);
+            string actStr = FrmInput.Show("Editar producto", "¿Activo? (s/n):", it.Estado == "Activo" ? "s" : "n");
+            if (actStr == null) return;
+
+            int minimo = it.Minimo; int.TryParse(minimoStr, out minimo);
+            decimal precio = it.Precio; decimal.TryParse(precioStr, out precio);
+            string al = actStr.ToLower();
+            bool activo = (al == "s" || al == "si" || al == "sí");
+
+            Producto p = new Producto();
+            p.IdProducto = it.IdProducto;
+            p.Sku = sku;
+            p.Nombre = nombre;
+            p.Categoria = categoria;
+            p.Ubicacion = ubic;
+            p.Minimo = minimo;
+            p.Precio = precio;
+            p.Proveedor = prov;
+            p.Activo = activo;
+
+            new InventarioRepository().ActualizarProducto(p);
+            RefrescarDesdeDb();
+            cbCategoria.DataSource = new List<string> { "Todas las categorías", "remera", "campera" };
+            cbCategoria.SelectedItem = categoria;
+            ApplyFilters();
+            MessageBox.Show("Producto actualizado.");
+        }
+
+        private void RegistrarMovimiento(char tipo)
+        {
+            InventarioItem it = (dgv.CurrentRow != null) ? dgv.CurrentRow.DataBoundItem as InventarioItem : null;
+            if (it == null) { MessageBox.Show("Seleccioná un producto."); return; }
+
+            string titulo = (tipo == 'E') ? "Entrada" : (tipo == 'S') ? "Salida" : "Ajuste (+/-)";
+            string cantStr = FrmInput.Show(titulo, "Cantidad:", (tipo == 'A') ? "0" : "1");
+            if (string.IsNullOrWhiteSpace(cantStr)) return;
+
+            int cant;
+            if (!int.TryParse(cantStr, out cant))
+            {
+                MessageBox.Show("Valor inválido. Ingresá un número entero (podés usar negativo en Ajuste).");
+                return;
+            }
+
+            if ((tipo == 'E' || tipo == 'S') && cant <= 0)
+            {
+                MessageBox.Show("Para Entradas/Salidas la cantidad debe ser mayor que cero.");
+                return;
+            }
+            if (tipo == 'A' && cant == 0)
+            {
+                MessageBox.Show("El Ajuste no puede ser cero (usá +N o -N).");
+                return;
+            }
+
+            string obs = FrmInput.Show(titulo, "Observación:", "");
+            new InventarioRepository().Movimiento(it.IdProducto, tipo, cant, obs, null, null);
+
+            RefrescarDesdeDb();
+            ApplyFilters();
+            MessageBox.Show(titulo + " registrada.");
+        }
+
+        private void ImportarCsv()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "CSV (*.csv)|*.csv";
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            int ok = 0, err = 0;
+            foreach (string line in System.IO.File.ReadLines(ofd.FileName).Skip(1))
+            {
+                try
+                {
+                    string[] c = line.Split(';');
+                    string catCsv = (c.Length > 2 ? c[2].Trim().ToLower() : "remera");
+                    string categoria = (catCsv == "campera") ? "campera" : "remera";
+
+                    Producto p = new Producto();
+                    p.Sku = (c.Length > 0) ? c[0].Trim() : "";
+                    p.Nombre = (c.Length > 1) ? c[1].Trim() : "";
+                    p.Categoria = categoria;
+                    p.Ubicacion = (c.Length > 3) ? c[3].Trim() : "";
+                    int m; p.Minimo = (c.Length > 4 && int.TryParse(c[4], out m)) ? m : 5;
+                    decimal pr; p.Precio = (c.Length > 5 && decimal.TryParse(c[5], out pr)) ? pr : 0m;
+                    p.Proveedor = (c.Length > 6) ? c[6].Trim() : "";
+                    p.Activo = true;
+
+                    if (string.IsNullOrEmpty(p.Sku) || string.IsNullOrEmpty(p.Nombre))
+                        throw new Exception("Datos incompletos");
+
+                    new InventarioRepository().CrearProducto(p);
+                    ok++;
+                }
+                catch { err++; }
+            }
+
+            RefrescarDesdeDb();
+            ApplyFilters();
+            MessageBox.Show("Importación finalizada. OK: " + ok + " | Errores: " + err);
+        }
+
+        private void ExportarCsv()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "CSV (*.csv)|*.csv";
+            sfd.FileName = "inventario.csv";
+            if (sfd.ShowDialog() != DialogResult.OK) return;
+
+            List<InventarioItem> items = _bs.Cast<InventarioItem>().ToList();
+            List<string> lines = new List<string>();
+            lines.Add("Sku;Nombre;Categoria;Ubicacion;Stock;Minimo;Precio;Proveedor;Estado;Actualizado");
+            foreach (InventarioItem i in items)
+            {
+                lines.Add(string.Join(";", new string[] {
+                    i.Sku, i.Nombre, i.Categoria, i.Ubicacion,
+                    i.Stock.ToString(), i.Minimo.ToString(),
+                    i.Precio.ToString("0.00"), i.Proveedor,
+                    i.Estado, i.Actualizado.ToString("yyyy-MM-dd HH:mm")
+                }));
+            }
+
+            System.IO.File.WriteAllLines(sfd.FileName, lines.ToArray(), System.Text.Encoding.UTF8);
+            MessageBox.Show("Exportado correctamente.");
+        }
     }
 }

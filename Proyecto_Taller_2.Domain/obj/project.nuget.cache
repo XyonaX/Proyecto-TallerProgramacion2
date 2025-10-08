@@ -1,8 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "Dxu2nNstL5Q=",
+  "dgSpecHash": "bw/zurJ4zlk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\Lisandro\\OneDrive\\Desktop\\Trabajos\\Proyecto de taller 2\\Proyecto_Taller_2.Domain\\Proyecto_Taller_2.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Lisandro\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\Lisandro\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
+    "C:\\Users\\Lisandro\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\Lisandro\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\Lisandro\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.3\\system.runtime.compilerservices.unsafe.4.5.3.nupkg.sha512"
+  ],
   "logs": []
 }

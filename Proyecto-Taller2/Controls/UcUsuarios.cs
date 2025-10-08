@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Proyecto_Taller_2.Data.Repositories;
+using Proyecto_Taller_2.Domain.Entities;
+using Proyecto_Taller_2.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -6,8 +9,6 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Proyecto_Taller_2.Domain.Models;
-using Proyecto_Taller_2.Data.Repositories;
 
 namespace Proyecto_Taller_2
 {
@@ -208,13 +209,14 @@ namespace Proyecto_Taller_2
             DataGridViewTextBoxColumn cDni = new DataGridViewTextBoxColumn { Name = "Dni", DataPropertyName = "Dni", HeaderText = "DNI", Visible = true, FillWeight = 60 };
             DataGridViewImageColumn cAvatar = new DataGridViewImageColumn { Name = "Avatar", HeaderText = "", FillWeight = 56, ImageLayout = DataGridViewImageCellLayout.Zoom };
             DataGridViewTextBoxColumn cUsuario = new DataGridViewTextBoxColumn
-            {
+               {
                 Name = "Usuario",
-                HeaderText = "Usuario",
+                HeaderText = "Nombre y Apellido",
                 FillWeight = 180,
-                DataPropertyName = "Nombre",
+                DataPropertyName = "NombreCompleto", 
                 DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True }
-            };
+                 }
+            ;
             DataGridViewTextBoxColumn cEmail = new DataGridViewTextBoxColumn { Name = "Email", HeaderText = "Email", FillWeight = 160, DataPropertyName = "Email" };
             DataGridViewTextBoxColumn cRol = new DataGridViewTextBoxColumn { Name = "Rol", HeaderText = "Rol", FillWeight = 90, DataPropertyName = "RolNombre" };
             DataGridViewTextBoxColumn cTelefono = new DataGridViewTextBoxColumn { Name = "Telefono", HeaderText = "Teléfono", FillWeight = 90, DataPropertyName = "Telefono" };
@@ -266,16 +268,24 @@ namespace Proyecto_Taller_2
                     if (f.ShowDialog(FindForm()) == DialogResult.OK && f.Resultado != null)
                     {
                         try
-                        {
-                            _repo.AgregarUsuario(f.Resultado);
-                            RefrescarDesdeBD();
-                            MessageBox.Show("Usuario agregado con éxito.", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            {
+                                _repo.AgregarUsuario(f.Resultado);
+                                RefrescarDesdeBD();
+                                MessageBox.Show("Usuario agregado con éxito.", "OK",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            catch (InvalidOperationException ex) // ← primero el más específico
+                            {
+                                MessageBox.Show(ex.Message, "Dato duplicado",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                            catch (Exception ex) // ← luego el genérico
+                            {
+                                MessageBox.Show("No se pudo agregar: " + ex.Message, "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("No se pudo agregar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
                 }
             };
 
@@ -295,7 +305,7 @@ namespace Proyecto_Taller_2
                 if (result == DialogResult.Yes)
                 {
                     u.Activo = !u.Activo;
-                    _repo.ActualizarEstadoUsuario(u.Dni, u.Activo);
+                    _repo.ActualizarEstadoUsuario(u.IdUsuario, u.Activo);
                     RefrescarDesdeBD();
                 }
             }
@@ -534,7 +544,7 @@ namespace Proyecto_Taller_2
                 if (result == DialogResult.Yes)
                 {
                     u.Activo = nuevoEstado;
-                    _repo.ActualizarEstadoUsuario(u.Dni, nuevoEstado);
+                    _repo.ActualizarEstadoUsuario(u.IdUsuario, nuevoEstado);
                     RefrescarDesdeBD();
                 }
             };
@@ -549,18 +559,35 @@ namespace Proyecto_Taller_2
                         _repo.ActualizarUsuario(f.Resultado);
                         RefrescarDesdeBD();
                         MessageBox.Show("Usuario editado con éxito.", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                   try
+           {
+                            _repo.ActualizarUsuario(f.Resultado);
+                            RefrescarDesdeBD();
+                            MessageBox.Show("Usuario editado con éxito.", "OK",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                       }
+                                   catch (InvalidOperationException ex) // ← duplicado DNI/Email
+           {
+                            MessageBox.Show(ex.Message, "Dato duplicado",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                       }
+                                   catch (Exception ex)
+           {
+                            MessageBox.Show("No se pudo actualizar: " + ex.Message, "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                       }
+                        }
                     }
-
                 }
-            };
+                ;
 
-            Panel info = new Panel { Dock = DockStyle.Fill, Padding = new Padding(8, 8, 8, 8) };
+                Panel info = new Panel { Dock = DockStyle.Fill, Padding = new Padding(8, 8, 8, 8) };
             info.Controls.Add(new Label { Text = "Email: " + u.Email, AutoSize = true, ForeColor = ColText, Location = new Point(8, 8) });
             info.Controls.Add(new Label { Text = "Rol: " + u.RolNombre, AutoSize = true, ForeColor = ColText, Location = new Point(8, 30) });
             info.Controls.Add(new Label { Text = "Teléfono: " + (u.Telefono ?? "-"), AutoSize = true, ForeColor = ColText, Location = new Point(8, 52) });
             info.Controls.Add(new Label
             {
-                Text = "Alta: " + u.FechaAlta.ToString("dd/MM/yyyy"),
+                Text = "Alta: " + u.FechaAlta.Value.ToString("dd/MM/yyyy"),
                 AutoSize = true,
                 ForeColor = ColText,
                 Location = new Point(8, 74)

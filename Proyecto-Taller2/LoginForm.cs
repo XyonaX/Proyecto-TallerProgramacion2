@@ -50,24 +50,21 @@ namespace Proyecto_Taller_2.UI
                 var pass = txtPassword?.Text ?? "";
 
                 if (string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(pass))
-                {
-                    ShowError("Ingrese correo y contraseña.");
-                    return;
-                }
+                { ShowError("Ingrese correo y contraseña."); return; }
+
                 if (!email.Contains("@") || !email.Contains("."))
+                { ShowError("Formato de correo inválido."); return; }
+
+                // Login devuelve una tupla
+                var (ok, usuario, error) = await Task.Run(() => _repo.Login(email, pass));
+
+                if (!ok || usuario == null)
                 {
-                    ShowError("Formato de correo inválido.");
+                    ShowError(error ?? "Credenciales inválidas o usuario inactivo.");
                     return;
                 }
 
-                var user = await Task.Run(() => _repo.Login(email, pass));
-                if (user == null)
-                {
-                    ShowError("Credenciales inválidas o usuario inactivo.");
-                    return;
-                }
-
-                CurrentUser = user;
+                CurrentUser = usuario;
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)

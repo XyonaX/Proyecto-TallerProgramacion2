@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Proyecto_Taller_2.Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6b55df489293f12e92fbeef805e5bcedd3ab31b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b492e68e08ec834f843ab8bb3d81fa0195366ebd")]
 [assembly: System.Reflection.AssemblyProductAttribute("Proyecto_Taller_2.Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Proyecto_Taller_2.Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

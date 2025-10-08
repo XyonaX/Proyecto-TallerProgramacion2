@@ -1,14 +1,22 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Configuration;
+using System.Data.SqlClient;
 
 namespace Proyecto_Taller_2.Data
 {
     public static class BDGeneral
     {
-        private static readonly ISqlConnectionFactory _factory = new SqlConnectionFactory("ERP");
-
         public static SqlConnection GetConnection()
         {
-            return _factory.Create();
+            string cs = ConfigurationManager.ConnectionStrings["ERP"].ConnectionString;
+            return new SqlConnection(cs);
+        }
+
+        public static string ConnectionString
+        {
+            get
+            {
+                return ConfigurationManager.ConnectionStrings["ERP"].ConnectionString;
+            }
         }
     }
 }

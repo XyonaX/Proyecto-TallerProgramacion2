@@ -1,121 +1,243 @@
-﻿using Microsoft.Data.SqlClient;
-using Proyecto_Taller_2.Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using Proyecto_Taller_2.Domain.Models;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Proyecto_Taller_2.Data.Repositories
 {
     public class UsuarioRepository
     {
-        // === LISTAR USUARIOS ===
+        // ============= LISTAR USUARIOS =============
         public List<Usuario> ObtenerUsuarios(bool soloActivos = false)
         {
-            using var cn = BDGeneral.GetConnection();
-
-            var sql = @"
-                SELECT 
-                    u.IdUsuario      AS Dni,
-                    u.Nombre         AS Nombre,
-                    u.Apellido       AS Apellido,
-                    u.Email          AS Email,
-                    u.Telefono       AS Telefono,
-                    u.Activo         AS Estado,
-                    u.FechaAlta      AS FechaNacimiento,
-                    u.IdRol          AS IdRol,
-                    r.NombreRol      AS RolNombre
-                FROM usuario u
-                JOIN Rol r ON r.IdRol = u.IdRol";
-
-            if (soloActivos) sql += " WHERE u.Activo = 1";
-            sql += " ORDER BY u.Apellido, u.Nombre;";
-
-            using var cmd = new SqlCommand(sql, cn);
-            using var rd = cmd.ExecuteReader();
-
             var list = new List<Usuario>();
 
-            int oDni = rd.GetOrdinal("Dni");
-            int oNom = rd.GetOrdinal("Nombre");
-            int oApe = rd.GetOrdinal("Apellido");
-            int oMail = rd.GetOrdinal("Email");
-            int oTel = rd.GetOrdinal("Telefono");
-            int oEst = rd.GetOrdinal("Estado");
-            int oFec = rd.GetOrdinal("FechaNacimiento");
-            int oRol = rd.GetOrdinal("IdRol");
-            int oRolN = rd.GetOrdinal("RolNombre");
-
-            while (rd.Read())
+            using (var cn = BDGeneral.GetConnection())
             {
-                list.Add(new Usuario
-                {
-                    Dni = rd.GetInt32(oDni),
-                    Nombre = rd.GetString(oNom),
-                    Apellido = rd.GetString(oApe),
-                    Email = rd.GetString(oMail),
-                    Telefono = rd.IsDBNull(oTel) ? null : rd.GetString(oTel),
-                    Estado = rd.GetBoolean(oEst),
-                    FechaNacimiento = rd.IsDBNull(oFec) ? (DateTime?)null : rd.GetDateTime(oFec),
-                    IdRol = rd.GetInt32(oRol),
-                    RolNombre = rd.GetString(oRolN)
-                });
-            }
+                cn.Open(); // 👈 ABRIR CONEXIÓN
 
+                string sql = @"
+SELECT
+    u.IdUsuario, u.Dni, u.Nombre, u.Apellido, u.Email, u.Telefono,
+    u.PasswordHash, u.FechaAlta, u.Activo, u.IdRol,
+    r.NombreRol AS RolNombre
+FROM Usuario u
+JOIN Rol r ON r.IdRol = u.IdRol";
+
+                if (soloActivos) sql += " WHERE u.Activo = 1";
+                sql += " ORDER BY u.Apellido, u.Nombre;";
+
+                using (var cmd = new SqlCommand(sql, cn))
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Usuario
+                        {
+                            IdUsuario = rd.GetInt32(rd.GetOrdinal("IdUsuario")),
+                            Dni = rd.GetInt32(rd.GetOrdinal("Dni")),
+                            Nombre = rd.GetString(rd.GetOrdinal("Nombre")),
+                            Apellido = rd.GetString(rd.GetOrdinal("Apellido")),
+                            Email = rd.GetString(rd.GetOrdinal("Email")),
+                            Telefono = rd.IsDBNull(rd.GetOrdinal("Telefono")) ? null : rd.GetString(rd.GetOrdinal("Telefono")),
+                            PasswordHash = rd.IsDBNull(rd.GetOrdinal("PasswordHash")) ? null : rd.GetString(rd.GetOrdinal("PasswordHash")),
+                            FechaAlta = rd.IsDBNull(rd.GetOrdinal("FechaAlta")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("FechaAlta")),
+                            Activo = rd.GetBoolean(rd.GetOrdinal("Activo")),
+                            IdRol = rd.GetInt32(rd.GetOrdinal("IdRol")),
+                            RolNombre = rd.GetString(rd.GetOrdinal("RolNombre"))
+                        });
+                    }
+                }
+            }
             return list;
         }
 
-        // === AGREGAR USUARIO ===
-        public int AgregarUsuario(Usuario usuario)
+        // ============= AGREGAR USUARIO =============
+        public int AgregarUsuario(Usuario u)
         {
-            using var cn = BDGeneral.GetConnection();
+            using (var cn = BDGeneral.GetConnection())
+            {
+                cn.Open(); // 👈 ABRIR CONEXIÓN
 
-            const string sql = @"
-                INSERT INTO usuario (Nombre, Apellido, Email, Telefono, PasswordHash, FechaAlta, IdRol, Activo)
-                VALUES (@Nombre, @Apellido, @Email, @Telefono, @PasswordHash, @FechaAlta, @IdRol, @Activo);";
+                // Verificar duplicados
+                const string checkSql = "SELECT COUNT(*) FROM Usuario WHERE Dni = @Dni OR Email = @Email;";
+                using (var checkCmd = new SqlCommand(checkSql, cn))
+                {
+                    checkCmd.Parameters.AddWithValue("@Dni", u.Dni);
+                    checkCmd.Parameters.AddWithValue("@Email", u.Email);
 
-            using var cmd = new SqlCommand(sql, cn);
+                    int existe = (int)checkCmd.ExecuteScalar();
+                    if (existe > 0)
+                        throw new InvalidOperationException("Ya existe un usuario con el mismo DNI o Email.");
+                }
 
-            cmd.Parameters.Add("@Nombre", SqlDbType.VarChar, 200).Value = usuario.Nombre;
-            cmd.Parameters.Add("@Apellido", SqlDbType.VarChar, 200).Value = usuario.Apellido;
-            cmd.Parameters.Add("@Email", SqlDbType.VarChar, 200).Value = usuario.Email;
-            cmd.Parameters.Add("@Telefono", SqlDbType.VarChar, 50).Value = (object?)usuario.Telefono ?? DBNull.Value;
-            cmd.Parameters.Add("@PasswordHash", SqlDbType.VarBinary, -1).Value = Array.Empty<byte>();
-            cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = usuario.FechaNacimiento ?? DateTime.Now;
-            cmd.Parameters.Add("@IdRol", SqlDbType.Int).Value = usuario.IdRol;
-            cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = usuario.Estado;
+                // Insertar
+                const string sql = @"
+INSERT INTO Usuario (IdRol, Nombre, Apellido, Email, PasswordHash, FechaAlta, Activo, Telefono, Dni)
+VALUES (@IdRol, @Nombre, @Apellido, @Email, @PasswordHash, @FechaAlta, @Activo, @Telefono, @Dni);";
 
-            return cmd.ExecuteNonQuery();
+                using (var cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.Add("@IdRol", SqlDbType.Int).Value = u.IdRol;
+                    cmd.Parameters.Add("@Nombre", SqlDbType.VarChar, 200).Value = u.Nombre;
+                    cmd.Parameters.Add("@Apellido", SqlDbType.VarChar, 200).Value = u.Apellido;
+                    cmd.Parameters.Add("@Email", SqlDbType.VarChar, 200).Value = u.Email;
+
+                    string hash = null;
+                    if (!string.IsNullOrWhiteSpace(u.Password))
+                        hash = BC.HashPassword(u.Password);
+
+                    cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, -1).Value = (object)hash ?? DBNull.Value;
+                    cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = u.FechaAlta ?? DateTime.Now;
+                    cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = u.Activo;
+                    cmd.Parameters.Add("@Telefono", SqlDbType.VarChar, 50).Value = (object)u.Telefono ?? DBNull.Value;
+                    cmd.Parameters.Add("@Dni", SqlDbType.Int).Value = u.Dni;
+
+                    return cmd.ExecuteNonQuery();
+                }
+            }
         }
 
-        // === ROLES PARA COMBO (lo que pide UcUsuarios) ===
-        // Devuelve tuplas (Id, Nombre) para poder usar DisplayMember=Item2 / ValueMember=Item1
+        // ============= ACTUALIZAR USUARIO =============
+        public int ActualizarUsuario(Usuario u)
+        {
+            using (var cn = BDGeneral.GetConnection())
+            {
+                cn.Open(); // 👈 ABRIR CONEXIÓN
+
+                // Verificar duplicados
+                const string checkSql = "SELECT COUNT(*) FROM Usuario WHERE (Dni = @Dni OR Email = @Email) AND IdUsuario <> @IdUsuario;";
+                using (var checkCmd = new SqlCommand(checkSql, cn))
+                {
+                    checkCmd.Parameters.AddWithValue("@Dni", u.Dni);
+                    checkCmd.Parameters.AddWithValue("@Email", u.Email);
+                    checkCmd.Parameters.AddWithValue("@IdUsuario", u.IdUsuario);
+
+                    int existe = (int)checkCmd.ExecuteScalar();
+                    if (existe > 0)
+                        throw new InvalidOperationException("Ya existe otro usuario con el mismo DNI o Email.");
+                }
+
+                string sql;
+                if (string.IsNullOrWhiteSpace(u.Password))
+                {
+                    sql = @"
+UPDATE Usuario
+SET IdRol=@IdRol, Nombre=@Nombre, Apellido=@Apellido,
+    Email=@Email, Telefono=@Telefono, Activo=@Activo, Dni=@Dni
+WHERE IdUsuario=@IdUsuario;";
+                }
+                else
+                {
+                    sql = @"
+UPDATE Usuario
+SET IdRol=@IdRol, Nombre=@Nombre, Apellido=@Apellido,
+    Email=@Email, Telefono=@Telefono, Activo=@Activo, Dni=@Dni, PasswordHash=@PasswordHash
+WHERE IdUsuario=@IdUsuario;";
+                }
+
+                using (var cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.Add("@IdUsuario", SqlDbType.Int).Value = u.IdUsuario;
+                    cmd.Parameters.Add("@IdRol", SqlDbType.Int).Value = u.IdRol;
+                    cmd.Parameters.Add("@Nombre", SqlDbType.VarChar, 200).Value = u.Nombre;
+                    cmd.Parameters.Add("@Apellido", SqlDbType.VarChar, 200).Value = u.Apellido;
+                    cmd.Parameters.Add("@Email", SqlDbType.VarChar, 200).Value = u.Email;
+                    cmd.Parameters.Add("@Telefono", SqlDbType.VarChar, 50).Value = (object)u.Telefono ?? DBNull.Value;
+                    cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = u.Activo;
+                    cmd.Parameters.Add("@Dni", SqlDbType.Int).Value = u.Dni;
+
+                    if (!string.IsNullOrWhiteSpace(u.Password))
+                    {
+                        string newHash = BC.HashPassword(u.Password);
+                        cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, -1).Value = newHash;
+                    }
+
+                    return cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ============= CAMBIO DE ESTADO =============
+        public int ActualizarEstadoUsuario(int idUsuario, bool activo)
+        {
+            using (var cn = BDGeneral.GetConnection())
+            {
+                cn.Open(); // 👈 ABRIR CONEXIÓN
+
+                using (var cmd = new SqlCommand("UPDATE Usuario SET Activo=@Activo WHERE IdUsuario=@IdUsuario;", cn))
+                {
+                    cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = activo;
+                    cmd.Parameters.Add("@IdUsuario", SqlDbType.Int).Value = idUsuario;
+                    return cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ============= ROLES =============
         public List<(int, string)> ObtenerRoles()
         {
-            using var cn = BDGeneral.GetConnection();
-
-            const string sql = @"SELECT r.IdRol, r.NombreRol FROM Rol r ORDER BY r.NombreRol;";
-            using var cmd = new SqlCommand(sql, cn);
-            using var rd = cmd.ExecuteReader();
-
             var roles = new List<(int, string)>();
-            int oId = rd.GetOrdinal("IdRol");
-            int oNm = rd.GetOrdinal("NombreRol");
+            using (var cn = BDGeneral.GetConnection())
+            {
+                cn.Open(); // 👈 ABRIR CONEXIÓN
 
-            while (rd.Read())
-                roles.Add((rd.GetInt32(oId), rd.GetString(oNm)));
-
+                using (var cmd = new SqlCommand("SELECT IdRol, NombreRol FROM Rol ORDER BY NombreRol;", cn))
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        roles.Add((rd.GetInt32(0), rd.GetString(1)));
+                }
+            }
             return roles;
         }
 
-        // === ACTUALIZAR ESTADO USUARIO ===
-        public void ActualizarEstadoUsuario(int dni, bool estado)
+        // ============= LOGIN =============
+        public (bool ok, Usuario usuario, string error) Login(string email, string password)
         {
-            using var cn = BDGeneral.GetConnection();
-            const string sql = @"UPDATE usuario SET Activo = @Activo WHERE IdUsuario = @Dni;";
-            using var cmd = new SqlCommand(sql, cn);
-            cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = estado;
-            cmd.Parameters.Add("@Dni", SqlDbType.Int).Value = dni;
-            cmd.ExecuteNonQuery();
+            using (var cn = BDGeneral.GetConnection())
+            {
+                cn.Open(); // 👈 ABRIR CONEXIÓN
+
+                const string sql = @"
+SELECT TOP 1 u.*, r.NombreRol
+FROM Usuario u
+JOIN Rol r ON r.IdRol = u.IdRol
+WHERE u.Email = @Email;";
+
+                using (var cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.Add("@Email", SqlDbType.VarChar, 200).Value = email;
+
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        if (!rd.Read())
+                            return (false, null, "Usuario no encontrado");
+
+                        var user = new Usuario
+                        {
+                            IdUsuario = rd.GetInt32(rd.GetOrdinal("IdUsuario")),
+                            Dni = rd.GetInt32(rd.GetOrdinal("Dni")),
+                            Nombre = rd.GetString(rd.GetOrdinal("Nombre")),
+                            Apellido = rd.GetString(rd.GetOrdinal("Apellido")),
+                            Email = rd.GetString(rd.GetOrdinal("Email")),
+                            Telefono = rd.IsDBNull(rd.GetOrdinal("Telefono")) ? null : rd.GetString(rd.GetOrdinal("Telefono")),
+                            PasswordHash = rd.IsDBNull(rd.GetOrdinal("PasswordHash")) ? null : rd.GetString(rd.GetOrdinal("PasswordHash")),
+                            Activo = rd.GetBoolean(rd.GetOrdinal("Activo")),
+                            IdRol = rd.GetInt32(rd.GetOrdinal("IdRol")),
+                            RolNombre = rd.GetString(rd.GetOrdinal("NombreRol"))
+                        };
+
+                        if (!user.Activo) return (false, null, "Usuario inactivo");
+                        if (string.IsNullOrWhiteSpace(user.PasswordHash)) return (false, null, "Usuario sin contraseña");
+
+                        bool ok = BC.Verify(password, user.PasswordHash);
+                        return ok ? (true, user, null) : (false, null, "Contraseña incorrecta");
+                    }
+                }
+            }
         }
     }
 }
