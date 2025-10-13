@@ -279,7 +279,7 @@ namespace Proyecto_Taller_2
             Producto p = new Producto();
             p.Sku = sku;
             p.Nombre = nombre;
-            p.Categoria = categoria; // setter → CategoriaId
+            p.SetCategoriaByName(categoria); // Usar helper method
             p.Ubicacion = ubic;
             p.Minimo = minimo;
             p.Precio = precio;
@@ -327,7 +327,7 @@ namespace Proyecto_Taller_2
             p.IdProducto = it.IdProducto;
             p.Sku = sku;
             p.Nombre = nombre;
-            p.Categoria = categoria;
+            p.SetCategoriaByName(categoria); // Usar helper method
             p.Ubicacion = ubic;
             p.Minimo = minimo;
             p.Precio = precio;
@@ -395,7 +395,7 @@ namespace Proyecto_Taller_2
                     Producto p = new Producto();
                     p.Sku = (c.Length > 0) ? c[0].Trim() : "";
                     p.Nombre = (c.Length > 1) ? c[1].Trim() : "";
-                    p.Categoria = categoria;
+                    p.SetCategoriaByName(categoria); // Usar helper method
                     p.Ubicacion = (c.Length > 3) ? c[3].Trim() : "";
                     int m; p.Minimo = (c.Length > 4 && int.TryParse(c[4], out m)) ? m : 5;
                     decimal pr; p.Precio = (c.Length > 5 && decimal.TryParse(c[5], out pr)) ? pr : 0m;

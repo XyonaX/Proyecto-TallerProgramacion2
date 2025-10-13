@@ -9,8 +9,29 @@ namespace Proyecto_Taller_2.Domain.Models
         public string Nombre { get; set; } = "";
         public string Descripcion { get; set; } = "";
 
-        public byte CategoriaId { get; set; }          // 1=remera, 2=campera
-        public string Categoria => CategoriaId == 2 ? "campera" : "remera";
+        public int CategoriaId { get; set; }          // ID de la categoría
+        
+        // Propiedad calculada básica para compatibilidad (se puede mejorar cargando desde BD)
+        public string Categoria 
+        { 
+            get
+            {
+                // Mapeo básico para compatibilidad con el código existente
+                switch (CategoriaId)
+                {
+                    case 1:
+                        return "remera";
+                    case 2:
+                        return "campera";
+                    case 3:
+                        return "pantalon";
+                    case 4:
+                        return "calzado";
+                    default:
+                        return "general";
+                }
+            }
+        }
 
         public string Ubicacion { get; set; } = "";
         public int Stock { get; set; }

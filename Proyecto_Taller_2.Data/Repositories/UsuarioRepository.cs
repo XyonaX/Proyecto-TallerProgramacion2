@@ -89,7 +89,7 @@ VALUES (@IdRol, @Nombre, @Apellido, @Email, @PasswordHash, @FechaAlta, @Activo, 
                     if (!string.IsNullOrWhiteSpace(u.Password))
                         hash = BC.HashPassword(u.Password);
 
-                    cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, -1).Value = (object)hash ?? DBNull.Value;
+                    cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, -1).Value = (object)hash ?? DBNull.Value;
                     cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = u.FechaAlta ?? DateTime.Now;
                     cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = u.Activo;
                     cmd.Parameters.Add("@Telefono", SqlDbType.VarChar, 50).Value = (object)u.Telefono ?? DBNull.Value;

@@ -122,7 +122,7 @@ namespace Proyecto_Taller_2.Data.Repositories
                 cmd.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                 cmd.Parameters.AddWithValue("@Email", usuario.Email);
                 cmd.Parameters.AddWithValue("@Telefono", (object)usuario.Telefono ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@PasswordHash", (object)passwordHash ?? DBNull.Value);
+                cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, -1).Value = (object)passwordHash ?? DBNull.Value;
                 cmd.Parameters.AddWithValue("@Activo", usuario.Activo);
                 cmd.Parameters.AddWithValue("@IdRol", usuario.IdRol);
 
@@ -203,7 +203,7 @@ namespace Proyecto_Taller_2.Data.Repositories
                 cmd.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                 cmd.Parameters.AddWithValue("@Email", usuario.Email);
                 cmd.Parameters.AddWithValue("@Telefono", (object)usuario.Telefono ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@PasswordHash", (object)nuevoHash ?? DBNull.Value);
+                cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, -1).Value = (object)nuevoHash ?? DBNull.Value;
                 cmd.Parameters.AddWithValue("@Activo", usuario.Activo);
                 cmd.Parameters.AddWithValue("@IdRol", usuario.IdRol);
                 cmd.Parameters.AddWithValue("@Key", usaId ? usuario.IdUsuario : usuario.Dni);
