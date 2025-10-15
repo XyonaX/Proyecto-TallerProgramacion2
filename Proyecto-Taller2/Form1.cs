@@ -194,7 +194,26 @@ namespace Proyecto_Taller_2.UI
         private void btnVentas_Click(object sender, EventArgs e)
         {
             Activar(btnVentas);
-            Mostrar(GetOrCreate<UcVentas>(), "Ventas");
+            var ucVentas = GetOrCreate<UcVentas>();
+            
+            // Si el control no tiene usuario configurado, configurarlo
+            if (ucVentas is UcVentas ventasControl)
+            {
+                // Crear nueva instancia con el usuario actual
+                var newVentasControl = new UcVentas(_currentUser) 
+                { 
+                    Dock = DockStyle.Fill 
+                };
+                
+                // Reemplazar en cache
+                _cache[typeof(UcVentas)] = newVentasControl;
+                
+                Mostrar(newVentasControl, "Ventas");
+            }
+            else
+            {
+                Mostrar(ucVentas, "Ventas");
+            }
         }
 
         private void btnInventario_Click(object sender, EventArgs e)
