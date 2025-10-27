@@ -310,7 +310,7 @@ namespace Proyecto_Taller_2
                 }
             }
         }
-
+    
         // =========================
         // Carga y filtro
         // =========================
@@ -489,6 +489,7 @@ namespace Proyecto_Taller_2
         }
 
         // ===== Details =====
+
         private void RenderEmptyDetails()
         {
             pnlDetails.Controls.Clear();

@@ -160,6 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Controls\EditarCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls\EditarUsuarioForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -212,6 +215,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DetalleVentaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAjusteModern.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\NuevaVentaForm.cs">
@@ -292,6 +298,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Domain\Entities\" />
     <Folder Include="Helpers\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
