@@ -1,5 +1,0 @@
-C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Data\obj\Debug\net8.0\Proyecto_Taller_2.Data.csproj.AssemblyReference.cache
-C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Data\obj\Debug\net8.0\Proyecto_Taller_2.Data.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Data\obj\Debug\net8.0\Proyecto_Taller_2.Data.AssemblyInfoInputs.cache
-C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Data\obj\Debug\net8.0\Proyecto_Taller_2.Data.AssemblyInfo.cs
-C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Data\obj\Debug\net8.0\Proyecto_Taller_2.Data.csproj.CoreCompileInputs.cache
