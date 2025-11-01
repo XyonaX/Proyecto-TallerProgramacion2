@@ -357,6 +357,7 @@ C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcConfiguracion.resources
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcDashboardAdmin.resources
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcReportes.resources
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UcVentas.resources
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Form1.resources
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.LoginForm.resources
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.UI.Program.resources
@@ -422,6 +423,3 @@ C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
 C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto.8A39D21F.Up2Date
-C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcProductos.resources
-C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Controls.UcVentas.resources
-C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto-Taller2\obj\Debug\Proyecto_Taller_2.Forms.ProductoForm.resources

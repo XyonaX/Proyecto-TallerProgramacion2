@@ -6,195 +6,99 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using Proyecto_Taller_2.UI.Helpers;
 using Proyecto_Taller_2.Data.Repositories;
-using Proyecto_Taller_2.Forms;
-using Proyecto_Taller_2.Domain.Models; // Para InventarioItem y Categoria
-using Proyecto_Taller_2.Domain.Entities; // Para Producto y MovimientoStock
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-
-using ProductoEntity = Proyecto_Taller_2.Domain.Entities.Producto;
-using ProductoModel = Proyecto_Taller_2.Domain.Models.Producto;
-
+using Proyecto_Taller_2.Domain.Models;
 
 namespace Proyecto_Taller_2
 {
     public partial class UcInventario : UserControl
     {
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, string lParam);
-        private const int EM_SETCUEBANNER = 0x1501;
-        private static void SetPlaceholder(TextBox tb, string text)
-        {
-            if (!IsDesigner() && tb != null && !tb.IsDisposed && tb.Handle != IntPtr.Zero)
-                SendMessage(tb.Handle, EM_SETCUEBANNER, 1, text);
-        }
-
         private const int STOCK_SALUDABLE_MARGEN = 5;
+        private static readonly string[] CATEGORIAS = new[] { "remera", "campera" };
 
         private readonly InventarioRepository _repo = new InventarioRepository();
         private BindingList<InventarioItem> _data = new BindingList<InventarioItem>();
         private readonly BindingSource _bs = new BindingSource();
-        private BindingList<MovimientoStock> _historialData = new BindingList<MovimientoStock>();
-        private readonly BindingSource _bsHistorial = new BindingSource();
-        private List<Categoria> _categoriasDisponibles = new List<Categoria>();
+
+        public TextBox txtBuscar;
+        public ComboBox cbCategoria;
+        public ComboBox cbEstado;
+        public CheckBox chkSoloBajoStock;
+        public DataGridView dgv;
+        public Button btnNuevo, btnEntrada, btnSalida, btnAjuste, btnImportar, btnExportar, btnEditar;
+        public Label kpiTotalVal, kpiBajoVal, kpiValVal, lblDetNombre, lblDetSku, lblDetCat, lblDetUbic, lblDetStock, lblDetPrecio, lblDetActualizado;
 
         public UcInventario()
         {
             InitializeComponent();
 
-            if (btnNuevo != null) { btnNuevo.Visible = false; btnNuevo.Enabled = false; }
-            if (btnEntrada != null) { btnEntrada.Visible = false; btnEntrada.Enabled = false; }
-            if (btnSalida != null) { btnSalida.Visible = false; btnSalida.Enabled = false; }
-
             if (!IsDesigner())
             {
                 Load += UcInventario_Load;
-                if (txtBuscar != null) txtBuscar.TextChanged += (s, e) => ApplyFilters();
-                if (cbCategoria != null) cbCategoria.SelectedIndexChanged += (s, e) => ApplyFilters();
-                if (cbEstado != null) cbEstado.SelectedIndexChanged += (s, e) => ApplyFilters();
-                if (chkSoloBajoStock != null) chkSoloBajoStock.CheckedChanged += (s, e) => ApplyFilters();
-                if (dgv != null)
-                {
-                    dgv.CellFormatting += Dgv_CellFormatting;
-                    dgv.SelectionChanged += Dgv_SelectionChanged;
-                }
 
-                if (dgvHistorial != null)
-                {
-                    dgvHistorial.SelectionChanged += DgvHistorial_SelectionChanged;
-                    dgvHistorial.CellDoubleClick += (s, e) =>
-                    {
-                        if (e.RowIndex >= 0)
-                            MessageBox.Show(
-                                dgvHistorial.Rows[e.RowIndex].Cells["Observacion"].Value?.ToString() ?? "",
-                                "Detalle Ajuste"
-                            );
-                    };
-                }
+                txtBuscar.TextChanged += delegate { ApplyFilters(); };
+                cbCategoria.SelectedIndexChanged += delegate { ApplyFilters(); };
+                cbEstado.SelectedIndexChanged += delegate { ApplyFilters(); };
+                chkSoloBajoStock.CheckedChanged += delegate { ApplyFilters(); };
 
-                if (btnEditar != null) btnEditar.Click += BtnEditar_Click;
-                if (btnAjuste != null) btnAjuste.Click += BtnAjuste_Click;
-                if (btnImportar != null) btnImportar.Click += BtnImportar_Click;
-                if (btnExportar != null) btnExportar.Click += BtnExportar_Click;
+                dgv.CellFormatting += Dgv_CellFormatting;
+                dgv.SelectionChanged += delegate { UpdateDetalle(); };
+
+                btnNuevo.Click += delegate { NuevoProducto(); };
+                btnEditar.Click += delegate { EditarProductoSeleccionado(); };
+                btnEntrada.Click += delegate { RegistrarMovimiento('E'); };
+                btnSalida.Click += delegate { RegistrarMovimiento('S'); };
+                btnAjuste.Click += delegate { RegistrarMovimiento('A'); };
+                btnImportar.Click += delegate { ImportarCsv(); };
+                btnExportar.Click += delegate { ExportarCsv(); };
             }
         }
 
         private static bool IsDesigner()
         {
-            try
-            {
-                return LicenseManager.UsageMode == LicenseUsageMode.Designtime ||
-                       Process.GetCurrentProcess().ProcessName.ToLower().Contains("devenv");
-            }
-            catch
-            {
-                return true;
-            }
+            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
+                   || Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.OrdinalIgnoreCase);
         }
 
-        private async void UcInventario_Load(object sender, EventArgs e)
+        private void UcInventario_Load(object sender, EventArgs e)
         {
-            if (cbEstado != null)
-            {
-                cbEstado.DataSource = new List<string> { "Todos", "Activo", "Inactivo" };
-                cbEstado.SelectedIndex = 0;
-            }
-            await CargarCategoriasAsync();
-            ConfigurarGridPrincipal();
-            ConfigurarGridHistorial();
+            cbEstado.DataSource = new List<string> { "Todos", "Activo", "Inactivo" };
+            cbEstado.SelectedIndex = 0;
+
+            cbCategoria.DataSource = new List<string> { "Todas las categorías" }.Concat(CATEGORIAS).ToList();
+            cbCategoria.SelectedIndex = 0;
+
+            ConfigurarGrid();
+            RefrescarDesdeDb();
+
             _bs.DataSource = _data;
-            if (dgv != null) dgv.DataSource = _bs;
-            _bsHistorial.DataSource = _historialData;
-            if (dgvHistorial != null) dgvHistorial.DataSource = _bsHistorial;
-            await RefrescarDesdeDbAsync();
-            if (txtBuscar != null) SetPlaceholder(txtBuscar, "Buscar por Sku, Nombre, Proveedor...");
+            dgv.DataSource = _bs;
+
+            RefreshKpis();
+
+            if (dgv.Rows.Count > 0) dgv.Rows[0].Selected = true;
+            UpdateDetalle();
         }
 
-        private async Task CargarCategoriasAsync()
-        {
-            try
-            {
-                _categoriasDisponibles = await _repo.ObtenerCategoriasAsync();
-                var dataSource = new List<object> { new { Id = 0, Nombre = "Todas las categorías" } };
-                dataSource.AddRange(_categoriasDisponibles.Select(c => new { Id = c.IdCategoria, Nombre = c.Nombre }).ToList<object>());
-                if (cbCategoria != null)
-                {
-                    cbCategoria.DataSource = dataSource;
-                    cbCategoria.DisplayMember = "Nombre";
-                    cbCategoria.ValueMember = "Id";
-                    cbCategoria.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar categorías: {ex.Message}");
-                if (cbCategoria != null)
-                {
-                    cbCategoria.DataSource = new List<object> { new { Id = 0, Nombre = "Error" } };
-                    cbCategoria.SelectedIndex = 0;
-                }
-            }
-        }
-
-        private async Task RefrescarDesdeDbAsync()
+        private void RefrescarDesdeDb()
         {
             bool? activo = null;
-            if (cbEstado?.SelectedItem != null)
+            if (cbEstado != null && cbEstado.SelectedItem != null)
             {
                 string sel = cbEstado.SelectedItem.ToString();
                 if (sel == "Activo") activo = true;
                 else if (sel == "Inactivo") activo = false;
             }
 
-            string q = txtBuscar?.Text.Trim().ToLower() ?? "";
-            int? catId = (cbCategoria?.SelectedValue is int id && id > 0) ? id : (int?)null;
-            bool soloBajo = chkSoloBajoStock?.Checked ?? false;
-            int? selectedProductId = (_bs.Current as InventarioItem)?.IdProducto;
-
-            if (gbLista != null) gbLista.Text = "Cargando...";
-
-            try
-            {
-                List<InventarioItem> lista = await _repo.ListarAsync(soloBajo, q, activo, catId);
-                _data = new BindingList<InventarioItem>(lista);
-                _bs.DataSource = _data;
-                RefreshKpis();
-
-                if (selectedProductId.HasValue)
-                {
-                    int newIndex = _data.ToList().FindIndex(item => item.IdProducto == selectedProductId.Value);
-                    if (newIndex >= 0)
-                        _bs.Position = newIndex;
-                    else
-                        LimpiarHistorialYDetalle();
-                }
-                else
-                    LimpiarHistorialYDetalle();
-
-                Dgv_SelectionChanged(null, null);
-
-                if (gbLista != null) gbLista.Text = "Lista de Productos";
-            }
-            catch (Exception ex)
-            {
-                if (gbLista != null) gbLista.Text = "Error al Cargar";
-                MessageBox.Show($"Error al cargar inventario: {ex.Message}", "Error DB");
-                _data = new BindingList<InventarioItem>();
-                _bs.DataSource = _data;
-                RefreshKpis();
-                LimpiarHistorialYDetalle();
-            }
-
-            if (dgv != null) dgv.ClearSelection();
+            List<InventarioItem> lista = _repo.Listar(false, null, activo);
+            _data = new BindingList<InventarioItem>(lista);
+            _bs.DataSource = _data;
+            dgv.DataSource = _bs;
         }
 
-        private void ConfigurarGridPrincipal()
+        private void ConfigurarGrid()
         {
-            if (dgv == null) return;
-
             dgv.RowHeadersVisible = false;
             dgv.EnableHeadersVisualStyles = false;
 
@@ -206,62 +110,48 @@ namespace Proyecto_Taller_2
             dgv.ColumnHeadersDefaultCellStyle.ForeColor = texto;
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             dgv.ColumnHeadersHeight = 34;
+
             dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10.5F);
             dgv.DefaultCellStyle.SelectionBackColor = seleccion;
             dgv.DefaultCellStyle.SelectionForeColor = texto;
             dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 251, 248);
             dgv.BackgroundColor = Color.White;
-            dgv.RowTemplate.Height = 28;
 
+            dgv.RowTemplate.Height = 28;
             dgv.AutoGenerateColumns = false;
             dgv.Columns.Clear();
+
             dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Sku", DataPropertyName = "Sku", Width = 90 });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "NombreProducto", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "Nombre", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Categoría", DataPropertyName = "Categoria", Width = 140 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Ubicación", DataPropertyName = "Ubicacion", Width = 110 });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Stock", DataPropertyName = "Stock", Width = 80, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Mínimo", DataPropertyName = "Minimo", Width = 80, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "PrecioProducto", Width = 110, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C", FormatProvider = new CultureInfo("es-AR") } });
+
+            DataGridViewTextBoxColumn colStock = new DataGridViewTextBoxColumn { HeaderText = "Stock", DataPropertyName = "Stock", Width = 80 };
+            colStock.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgv.Columns.Add(colStock);
+
+            DataGridViewTextBoxColumn colMin = new DataGridViewTextBoxColumn { HeaderText = "Mínimo", DataPropertyName = "Minimo", Width = 80 };
+            colMin.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgv.Columns.Add(colMin);
+
+            DataGridViewTextBoxColumn colPrecio = new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "Precio", Width = 110 };
+            colPrecio.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colPrecio.DefaultCellStyle.Format = "C";
+            colPrecio.DefaultCellStyle.FormatProvider = new CultureInfo("es-AR");
+            dgv.Columns.Add(colPrecio);
+
             dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Proveedor", DataPropertyName = "Proveedor", Width = 140 });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Estado", DataPropertyName = "Estado", Width = 100 });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Actualizado", DataPropertyName = "Actualizado", Width = 150, DefaultCellStyle = new DataGridViewCellStyle { Format = "g" } });
-        }
+            DataGridViewTextBoxColumn colEstado = new DataGridViewTextBoxColumn { HeaderText = "Estado", DataPropertyName = "Estado", Width = 100 };
+            dgv.Columns.Add(colEstado);
 
-        private void ConfigurarGridHistorial()
-        {
-            if (dgvHistorial == null) return;
-
-            dgvHistorial.RowHeadersVisible = false;
-
-            Color header = Color.FromArgb(230, 235, 230);
-            Color seleccion = Color.FromArgb(210, 225, 210);
-            Color texto = Color.FromArgb(50, 60, 50);
-
-            dgvHistorial.ColumnHeadersDefaultCellStyle.BackColor = header;
-            dgvHistorial.ColumnHeadersDefaultCellStyle.ForeColor = texto;
-            dgvHistorial.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dgvHistorial.ColumnHeadersHeight = 30;
-            dgvHistorial.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            dgvHistorial.DefaultCellStyle.SelectionBackColor = seleccion;
-            dgvHistorial.DefaultCellStyle.SelectionForeColor = texto;
-            dgvHistorial.BackgroundColor = Color.WhiteSmoke;
-            dgvHistorial.RowTemplate.Height = 24;
-            dgvHistorial.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvHistorial.MultiSelect = false;
-            dgvHistorial.AllowUserToAddRows = false;
-            dgvHistorial.AllowUserToDeleteRows = false;
-            dgvHistorial.ReadOnly = true;
-
-            dgvHistorial.AutoGenerateColumns = false;
-            dgvHistorial.Columns.Clear();
-            dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Fecha", HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 120, DefaultCellStyle = new DataGridViewCellStyle { Format = "g" } });
-            dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Cantidad", HeaderText = "Cant.", DataPropertyName = "Cantidad", Width = 60, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight } });
-            dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Observacion", HeaderText = "Observacion", DataPropertyName = "Observacion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            DataGridViewTextBoxColumn colAct = new DataGridViewTextBoxColumn { HeaderText = "Actualizado", DataPropertyName = "Actualizado", Width = 150 };
+            colAct.DefaultCellStyle.Format = "g";
+            dgv.Columns.Add(colAct);
         }
 
         private void Dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || dgv == null) return;
+            if (e.RowIndex < 0) return;
 
             InventarioItem item = dgv.Rows[e.RowIndex].DataBoundItem as InventarioItem;
             if (item == null) return;
@@ -278,296 +168,255 @@ namespace Proyecto_Taller_2
                     e.CellStyle.BackColor = Color.Honeydew;
                     e.CellStyle.ForeColor = Color.DarkGreen;
                 }
-                else
-                {
-                    e.CellStyle.BackColor = (e.RowIndex % 2 == 0) ? dgv.DefaultCellStyle.BackColor : dgv.AlternatingRowsDefaultCellStyle.BackColor;
-                    e.CellStyle.ForeColor = dgv.DefaultCellStyle.ForeColor;
-                }
-            }
-
-            if (dgv.Columns[e.ColumnIndex].DataPropertyName == "Estado")
-            {
-                e.CellStyle.ForeColor = item.Activo ? Color.DarkGreen : Color.OrangeRed;
             }
         }
 
-        private async void ApplyFilters()
+        private void ApplyFilters()
         {
-            await RefrescarDesdeDbAsync();
+            string q = (txtBuscar != null && txtBuscar.Text != null) ? txtBuscar.Text.Trim().ToLower() : "";
+            string cat = (cbCategoria != null && cbCategoria.SelectedItem != null) ? cbCategoria.SelectedItem.ToString() : "Todas las categorías";
+            string est = (cbEstado != null && cbEstado.SelectedItem != null) ? cbEstado.SelectedItem.ToString() : "Todos";
+            bool soloBajo = (chkSoloBajoStock != null && chkSoloBajoStock.Checked);
+
+            IEnumerable<InventarioItem> filtered = _data;
+
+            if (q.Length > 0)
+                filtered = filtered.Where(p =>
+                    ((p.Nombre ?? "").ToLower().Contains(q)) ||
+                    ((p.Sku ?? "").ToLower().Contains(q)) ||
+                    ((p.Proveedor ?? "").ToLower().Contains(q)));
+
+            if (!string.IsNullOrEmpty(cat) && cat != "Todas las categorías")
+                filtered = filtered.Where(p => string.Equals(p.Categoria ?? "", cat, StringComparison.OrdinalIgnoreCase));
+
+            if (est != "Todos")
+                filtered = filtered.Where(p => (p.Estado ?? "") == est);
+
+            if (soloBajo)
+                filtered = filtered.Where(p => p.Stock < p.Minimo);
+
+            _bs.DataSource = new BindingList<InventarioItem>(filtered.OrderBy(p => p.Nombre).ToList());
+            dgv.DataSource = _bs;
+
+            RefreshKpis();
+            UpdateDetalle();
         }
 
         private void RefreshKpis()
         {
-            if (kpiTotalVal == null) return;
-
             List<InventarioItem> lista = _bs.Cast<InventarioItem>().ToList();
-            kpiTotalVal.Text = lista.Count.ToString("N0");
-            kpiBajoVal.Text = lista.Count(p => p.Stock < p.Minimo).ToString("N0");
-            decimal valorizado = lista.Sum(p => (p.Stock > 0 ? p.Stock : 0) * p.PrecioProducto);
+            int total = lista.Count;
+            int bajo = lista.Count(p => p.Stock < p.Minimo);
+            decimal valorizado = 0m;
+            foreach (InventarioItem p in lista)
+            {
+                int s = (p.Stock > 0) ? p.Stock : 0;
+                valorizado += s * p.Precio;
+            }
+
+            kpiTotalVal.Text = total.ToString("N0");
+            kpiBajoVal.Text = bajo.ToString("N0");
             kpiValVal.Text = valorizado.ToString("C", new CultureInfo("es-AR"));
         }
 
-        private async void Dgv_SelectionChanged(object sender, EventArgs e)
+        private void UpdateDetalle()
         {
-            InventarioItem p = _bs.Current as InventarioItem;
-
+            InventarioItem p = (dgv.CurrentRow != null) ? dgv.CurrentRow.DataBoundItem as InventarioItem : null;
             if (p == null)
             {
-                LimpiarHistorialYDetalle();
+                lblDetNombre.Text = "Nombre: —";
+                lblDetSku.Text = "SKU: —";
+                lblDetCat.Text = "Categoría: —";
+                lblDetUbic.Text = "Ubicación: —";
+                lblDetStock.Text = "Stock / Mín.: —";
+                lblDetPrecio.Text = "Precio: —";
+                lblDetActualizado.Text = "Actualizado: —";
                 return;
             }
 
-            await CargarHistorialAsync(p.IdProducto);
+            lblDetNombre.Text = "Nombre: " + p.Nombre;
+            lblDetSku.Text = "SKU: " + p.Sku;
+            lblDetCat.Text = "Categoría: " + p.Categoria;
+            lblDetUbic.Text = "Ubicación: " + p.Ubicacion;
+            lblDetStock.Text = "Stock / Mín.: " + p.Stock + " / " + p.Minimo;
+            lblDetPrecio.Text = "Precio: " + p.Precio.ToString("C", new CultureInfo("es-AR"));
+            lblDetActualizado.Text = "Actualizado: " + p.Actualizado.ToString("g");
         }
 
-        private async Task CargarHistorialAsync(int idProducto)
+        // ==================== CRUD ====================
+
+        private static string ElegirCategoriaPorNumero(string entrada)
         {
-            if (lblHistorialTitulo != null)
-                lblHistorialTitulo.Text = $"Historial (Prod ID: {idProducto})";
+            if (entrada == null) return "remera";
+            string t = entrada.Trim().ToLower();
+            if (t == "2" || t == "campera") return "campera";
+            return "remera";
+        }
 
-            LimpiarHistorialYDetalle();
+        private void NuevoProducto()
+        {
+            string sku = FrmInput.Show("Nuevo producto", "SKU:", "");
+            if (string.IsNullOrWhiteSpace(sku)) return;
 
-            try
+            string nombre = FrmInput.Show("Nuevo producto", "Nombre:", "");
+            if (string.IsNullOrWhiteSpace(nombre)) return;
+
+            string catSel = FrmInput.Show("Nuevo producto", "Categoría (1=Remera, 2=Campera):", "1");
+            string categoria = ElegirCategoriaPorNumero(catSel);
+
+            string ubic = FrmInput.Show("Nuevo producto", "Ubicación:", "");
+            string minimoStr = FrmInput.Show("Nuevo producto", "Mínimo:", "5");
+            string precioStr = FrmInput.Show("Nuevo producto", "Precio:", "0");
+            string prov = FrmInput.Show("Nuevo producto", "Proveedor:", "");
+            string actStr = FrmInput.Show("Nuevo producto", "¿Activo? (s/n):", "s");
+            if (actStr == null) return;
+
+            int minimo = 5; int.TryParse(minimoStr, out minimo);
+            decimal precio = 0m; decimal.TryParse(precioStr, out precio);
+            string al = actStr.ToLower();
+            bool activo = (al == "s" || al == "si" || al == "sí");
+
+            Producto p = new Producto();
+            p.Sku = sku;
+            p.Nombre = nombre;
+            p.SetCategoriaByName(categoria); // Usar helper method
+            p.Ubicacion = ubic;
+            p.Minimo = minimo;
+            p.Precio = precio;
+            p.Proveedor = prov;
+            p.Activo = activo;
+
+            int id = new InventarioRepository().CrearProducto(p);
+            if (id > 0)
             {
-                var historial = await _repo.GetHistorialMovimientosAsync(idProducto);
-                _historialData = new BindingList<MovimientoStock>(historial);
-                _bsHistorial.DataSource = _historialData;
-
-                if (dgvHistorial != null && dgvHistorial.Rows.Count > 0)
-                    dgvHistorial.Rows[0].Selected = true;
-                else if (txtDetalleAjuste != null)
-                    txtDetalleAjuste.Clear();
-
-                if (dgvHistorial != null)
-                {
-                    dgvHistorial.DataSource = _bsHistorial;
-                }
+                RefrescarDesdeDb();
+                cbCategoria.DataSource = new List<string> { "Todas las categorías", "remera", "campera" };
+                cbCategoria.SelectedItem = categoria;
+                ApplyFilters();
+                MessageBox.Show("Producto creado.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar historial: {ex.Message}");
-                _historialData = new BindingList<MovimientoStock>();
-                _bsHistorial.DataSource = _historialData;
-                LimpiarHistorialYDetalle();
-            }
         }
 
-        private void LimpiarHistorialYDetalle()
+        private void EditarProductoSeleccionado()
         {
-            _historialData?.Clear();
-            if (txtDetalleAjuste != null)
-                txtDetalleAjuste.Clear();
-            if (lblHistorialTitulo != null)
-                lblHistorialTitulo.Text = "Historial de Movimientos";
+            InventarioItem it = (dgv.CurrentRow != null) ? dgv.CurrentRow.DataBoundItem as InventarioItem : null;
+            if (it == null) { MessageBox.Show("Seleccioná un producto."); return; }
+
+            string sku = FrmInput.Show("Editar producto", "SKU:", it.Sku);
+            if (string.IsNullOrWhiteSpace(sku)) return;
+
+            string nombre = FrmInput.Show("Editar producto", "Nombre:", it.Nombre);
+            if (string.IsNullOrWhiteSpace(nombre)) return;
+
+            string catSel = FrmInput.Show("Editar producto", "Categoría (1=Remera, 2=Campera):", it.Categoria == "campera" ? "2" : "1");
+            string categoria = ElegirCategoriaPorNumero(catSel);
+
+            string ubic = FrmInput.Show("Editar producto", "Ubicación:", it.Ubicacion);
+            string minimoStr = FrmInput.Show("Editar producto", "Mínimo:", it.Minimo.ToString());
+            string precioStr = FrmInput.Show("Editar producto", "Precio:", it.Precio.ToString());
+            string prov = FrmInput.Show("Editar producto", "Proveedor:", it.Proveedor);
+            string actStr = FrmInput.Show("Editar producto", "¿Activo? (s/n):", it.Estado == "Activo" ? "s" : "n");
+            if (actStr == null) return;
+
+            int minimo = it.Minimo; int.TryParse(minimoStr, out minimo);
+            decimal precio = it.Precio; decimal.TryParse(precioStr, out precio);
+            string al = actStr.ToLower();
+            bool activo = (al == "s" || al == "si" || al == "sí");
+
+            Producto p = new Producto();
+            p.IdProducto = it.IdProducto;
+            p.Sku = sku;
+            p.Nombre = nombre;
+            p.SetCategoriaByName(categoria); // Usar helper method
+            p.Ubicacion = ubic;
+            p.Minimo = minimo;
+            p.Precio = precio;
+            p.Proveedor = prov;
+            p.Activo = activo;
+
+            new InventarioRepository().ActualizarProducto(p);
+            RefrescarDesdeDb();
+            cbCategoria.DataSource = new List<string> { "Todas las categorías", "remera", "campera" };
+            cbCategoria.SelectedItem = categoria;
+            ApplyFilters();
+            MessageBox.Show("Producto actualizado.");
         }
 
-        private void DgvHistorial_SelectionChanged(object sender, EventArgs e)
+        private void RegistrarMovimiento(char tipo)
         {
-            MovimientoStock mov = _bsHistorial.Current as MovimientoStock;
-            if (txtDetalleAjuste != null)
-            {
-                txtDetalleAjuste.Text = mov?.Observacion ?? "";
-            }
-        }
+            InventarioItem it = (dgv.CurrentRow != null) ? dgv.CurrentRow.DataBoundItem as InventarioItem : null;
+            if (it == null) { MessageBox.Show("Seleccioná un producto."); return; }
 
-        private async void BtnEditar_Click(object sender, EventArgs e)
-        {
-            InventarioItem itemSeleccionado = _bs.Current as InventarioItem;
-            if (itemSeleccionado == null)
+            string titulo = (tipo == 'E') ? "Entrada" : (tipo == 'S') ? "Salida" : "Ajuste (+/-)";
+            string cantStr = FrmInput.Show(titulo, "Cantidad:", (tipo == 'A') ? "0" : "1");
+            if (string.IsNullOrWhiteSpace(cantStr)) return;
+
+            int cant;
+            if (!int.TryParse(cantStr, out cant))
             {
-                MessageBox.Show("Seleccioná un producto para editar.");
+                MessageBox.Show("Valor inválido. Ingresá un número entero (podés usar negativo en Ajuste).");
                 return;
             }
 
-            using (var form = new Form())
+            if ((tipo == 'E' || tipo == 'S') && cant <= 0)
             {
-                form.Text = "Editar Producto";
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                form.MaximizeBox = false;
-                form.MinimizeBox = false;
-                form.Width = 420;
-                form.Height = 400;
-
-                TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(12), RowCount = 2 };
-                root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
-                form.Controls.Add(root);
-
-                TableLayoutPanel grid = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, AutoSize = true, Padding = new Padding(5) };
-                grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
-                grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-                root.Controls.Add(grid, 0, 0);
-
-                var txtSku = new TextBox { Dock = DockStyle.Fill, Text = itemSeleccionado.Sku };
-                var txtNombre = new TextBox { Dock = DockStyle.Fill, Text = itemSeleccionado.NombreProducto };
-                var cmbCategoria = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Dock = DockStyle.Fill };
-                var txtUbicacion = new TextBox { Dock = DockStyle.Fill, Text = itemSeleccionado.Ubicacion };
-                var numMinimo = new NumericUpDown { Dock = DockStyle.Fill, Minimum = 0, Maximum = 10000, Value = Math.Max(0, itemSeleccionado.Minimo) };
-                var numPrecio = new NumericUpDown { Dock = DockStyle.Fill, Minimum = 0, Maximum = 1000000, DecimalPlaces = 2, Value = Math.Max(0, itemSeleccionado.PrecioProducto) };
-                var txtProveedor = new TextBox { Dock = DockStyle.Fill, Text = itemSeleccionado.Proveedor };
-                var chkActivo = new CheckBox { Text = "Activo", Checked = itemSeleccionado.Activo, Dock = DockStyle.Left };
-
-                var catDataSource = _categoriasDisponibles.Select(c => new { Id = c.IdCategoria, Nombre = c.Nombre }).ToList<object>();
-                cmbCategoria.DataSource = catDataSource;
-                cmbCategoria.DisplayMember = "Nombre";
-                cmbCategoria.ValueMember = "Id";
-                cmbCategoria.SelectedValue = itemSeleccionado.IdCategoria;
-
-                int row = 0;
-                grid.Controls.Add(new Label { Text = "SKU:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(txtSku, 1, row++);
-                grid.Controls.Add(new Label { Text = "Nombre:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(txtNombre, 1, row++);
-                grid.Controls.Add(new Label { Text = "Categoría:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(cmbCategoria, 1, row++);
-                grid.Controls.Add(new Label { Text = "Ubicación:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(txtUbicacion, 1, row++);
-                grid.Controls.Add(new Label { Text = "Mínimo:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(numMinimo, 1, row++);
-                grid.Controls.Add(new Label { Text = "Precio:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(numPrecio, 1, row++);
-                grid.Controls.Add(new Label { Text = "Proveedor:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(txtProveedor, 1, row++);
-                grid.Controls.Add(new Label { Text = "Estado:", Anchor = AnchorStyles.Left, AutoSize = true }, 0, row);
-                grid.Controls.Add(chkActivo, 1, row++);
-
-                FlowLayoutPanel panelBtns = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, Dock = DockStyle.Fill };
-                Button btnOk = new Button { Text = "Guardar", DialogResult = DialogResult.None, AutoSize = true };
-                Button btnCancel = new Button { Text = "Cancelar", DialogResult = DialogResult.Cancel, AutoSize = true };
-                panelBtns.Controls.Add(btnOk);
-                panelBtns.Controls.Add(btnCancel);
-                root.Controls.Add(panelBtns, 0, 1);
-                form.AcceptButton = btnOk;
-                form.CancelButton = btnCancel;
-
-                btnOk.Click += async (s, args) =>
-                {
-                    form.DialogResult = DialogResult.None;
-                    if (string.IsNullOrWhiteSpace(txtNombre.Text))
-                    {
-                        MessageBox.Show("El nombre no puede estar vacío.");
-                        return;
-                    }
-
-                    var p = new ProductoEntity
-
-                    {
-                        IdProducto = itemSeleccionado.IdProducto,
-                        Nombre = txtNombre.Text.Trim(),
-                        Descripcion = itemSeleccionado.DescripcionProducto,
-                        Precio = numPrecio.Value,
-                        Activo = chkActivo.Checked,
-                        Sku = txtSku.Text.Trim(),
-                        IdCategoria = (int)cmbCategoria.SelectedValue,
-                        Ubicacion = txtUbicacion.Text.Trim(),
-                        Minimo = (int)numMinimo.Value,
-                        Proveedor = txtProveedor.Text.Trim()
-                    };
-
-                    try
-                    {
-                        int v = _repo.ActualizarProducto(p);
-                        form.DialogResult = DialogResult.OK;
-                        form.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error al actualizar: {ex.Message}");
-                    }
-                };
-
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    await RefrescarDesdeDbAsync();
-                }
+                MessageBox.Show("Para Entradas/Salidas la cantidad debe ser mayor que cero.");
+                return;
             }
-        }
-
-        private async void BtnAjuste_Click(object sender, EventArgs e)
-        {
-            InventarioItem itemSeleccionado = _bs.Current as InventarioItem;
-            if (itemSeleccionado == null)
+            if (tipo == 'A' && cant == 0)
             {
-                MessageBox.Show("Seleccioná un producto.");
+                MessageBox.Show("El Ajuste no puede ser cero (usá +N o -N).");
                 return;
             }
 
-            using (var form = new FrmAjusteModern(itemSeleccionado))
-            {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    await RefrescarDesdeDbAsync();
-                }
-            }
+            string obs = FrmInput.Show(titulo, "Observación:", "");
+            new InventarioRepository().Movimiento(it.IdProducto, tipo, cant, obs, null, null);
+
+            RefrescarDesdeDb();
+            ApplyFilters();
+            MessageBox.Show(titulo + " registrada.");
         }
 
-        private async void BtnImportar_Click(object sender, EventArgs e)
+        private void ImportarCsv()
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "CSV (*.csv)|*.csv";
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
             int ok = 0, err = 0;
-            var sbErrores = new StringBuilder();
-            var repo = new InventarioRepository();
-
             foreach (string line in System.IO.File.ReadLines(ofd.FileName).Skip(1))
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                string[] c = line.Split(';');
-
                 try
                 {
-                    if (c.Length < 7) throw new Exception("Formato de línea incorrecto.");
+                    string[] c = line.Split(';');
+                    string catCsv = (c.Length > 2 ? c[2].Trim().ToLower() : "remera");
+                    string categoria = (catCsv == "campera") ? "campera" : "remera";
 
-                    var p = new ProductoEntity { };
-
-                    string skuCsv = (c.Length > 0) ? c[0].Trim() : "";
-                    string nombreCsv = (c.Length > 1) ? c[1].Trim() : "";
-                    string catCsv = (c.Length > 2 ? c[2].Trim().ToLower() : "general");
-                    string ubicacionCsv = (c.Length > 3) ? c[3].Trim() : "";
-                    int m;
-                    int minimoCsv = (c.Length > 4 && int.TryParse(c[4], out m)) ? m : 5;
-                    decimal pr;
-                    decimal precioCsv = (c.Length > 5 && decimal.TryParse(c[5], out pr)) ? pr : 0m;
-                    string proveedorCsv = (c.Length > 6) ? c[6].Trim() : "";
-
-                    var catEncontrada = _categoriasDisponibles.FirstOrDefault(cat => cat.Nombre.Equals(catCsv, StringComparison.OrdinalIgnoreCase));
-                    int catIdCsv = catEncontrada?.IdCategoria ?? 0;
-
-                    if (catIdCsv == 0)
-                    {
-                        throw new Exception($"Categoría '{catCsv}' no encontrada.");
-                    }
-                    if (string.IsNullOrEmpty(skuCsv) || string.IsNullOrEmpty(nombreCsv))
-                        throw new Exception("SKU o Nombre vacíos.");
-
-                    p.Nombre = nombreCsv;
-                    p.Precio = precioCsv;
+                    Producto p = new Producto();
+                    p.Sku = (c.Length > 0) ? c[0].Trim() : "";
+                    p.Nombre = (c.Length > 1) ? c[1].Trim() : "";
+                    p.SetCategoriaByName(categoria); // Usar helper method
+                    p.Ubicacion = (c.Length > 3) ? c[3].Trim() : "";
+                    int m; p.Minimo = (c.Length > 4 && int.TryParse(c[4], out m)) ? m : 5;
+                    decimal pr; p.Precio = (c.Length > 5 && decimal.TryParse(c[5], out pr)) ? pr : 0m;
+                    p.Proveedor = (c.Length > 6) ? c[6].Trim() : "";
                     p.Activo = true;
-                    p.Descripcion = "";
-                    p.Sku = skuCsv;
-                    p.IdCategoria = catIdCsv;
-                    p.Ubicacion = ubicacionCsv;
-                    p.Minimo = minimoCsv;
-                    p.Proveedor = proveedorCsv;
 
-                    repo.CrearProducto(p);
+                    if (string.IsNullOrEmpty(p.Sku) || string.IsNullOrEmpty(p.Nombre))
+                        throw new Exception("Datos incompletos");
+
+                    new InventarioRepository().CrearProducto(p);
                     ok++;
                 }
-                catch (Exception ex)
-                {
-                    err++;
-                    sbErrores.AppendLine($"Error en línea '{line.Substring(0, Math.Min(line.Length, 30))}...': {ex.Message}");
-                }
+                catch { err++; }
             }
 
-            await RefrescarDesdeDbAsync();
-            MessageBox.Show($"Importación finalizada.\nOK: {ok}\nErrores: {err}\n\nDetalles:\n{sbErrores.ToString()}", "Importación");
+            RefrescarDesdeDb();
+            ApplyFilters();
+            MessageBox.Show("Importación finalizada. OK: " + ok + " | Errores: " + err);
         }
 
-        private void BtnExportar_Click(object sender, EventArgs e)
+        private void ExportarCsv()
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "CSV (*.csv)|*.csv";
@@ -577,33 +426,18 @@ namespace Proyecto_Taller_2
             List<InventarioItem> items = _bs.Cast<InventarioItem>().ToList();
             List<string> lines = new List<string>();
             lines.Add("Sku;Nombre;Categoria;Ubicacion;Stock;Minimo;Precio;Proveedor;Estado;Actualizado");
-
             foreach (InventarioItem i in items)
             {
-                lines.Add(string.Join(";", new string[]
-                {
-                    i.Sku,
-                    i.NombreProducto,
-                    i.Categoria,
-                    i.Ubicacion,
-                    i.Stock.ToString(),
-                    i.Minimo.ToString(),
-                    i.PrecioProducto.ToString("0.00", CultureInfo.InvariantCulture),
-                    i.Proveedor,
-                    i.Estado,
-                    i.Actualizado.ToString("yyyy-MM-dd HH:mm")
+                lines.Add(string.Join(";", new string[] {
+                    i.Sku, i.Nombre, i.Categoria, i.Ubicacion,
+                    i.Stock.ToString(), i.Minimo.ToString(),
+                    i.Precio.ToString("0.00"), i.Proveedor,
+                    i.Estado, i.Actualizado.ToString("yyyy-MM-dd HH:mm")
                 }));
             }
 
-            try
-            {
-                System.IO.File.WriteAllLines(sfd.FileName, lines.ToArray(), System.Text.Encoding.UTF8);
-                MessageBox.Show("Exportado correctamente.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al exportar: {ex.Message}");
-            }
+            System.IO.File.WriteAllLines(sfd.FileName, lines.ToArray(), System.Text.Encoding.UTF8);
+            MessageBox.Show("Exportado correctamente.");
         }
     }
 }
