@@ -1,4 +1,4 @@
-﻿using Proyecto_Taller_2.Domain.Entities;
+﻿using Proyecto_Taller_2.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

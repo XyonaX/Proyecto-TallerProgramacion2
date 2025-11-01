@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="Dapper" Version="2.1.66" />
 		<!-- Usa una versión compatible con net472. Si 6.1.1 da problemas, 5.2.0 es segura -->
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />

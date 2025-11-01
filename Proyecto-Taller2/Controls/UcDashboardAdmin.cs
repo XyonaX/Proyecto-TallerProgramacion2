@@ -26,43 +26,68 @@ namespace Proyecto_Taller_2.Controls
             pnlTop.Padding = new Padding(10);
             pnlTop.AutoScroll = false;
 
-            // Panel central: altura más baja
+            // Panel central: altura más baja - FIX: Inicializar correctamente las columnas
             pnlCenter.Height = 350;
             pnlCenter.ColumnCount = 2;
-            pnlCenter.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 60F);
-            pnlCenter.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 40F);
+            
+            // Clear existing column styles and add new ones
+            pnlCenter.ColumnStyles.Clear();
+            pnlCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+            pnlCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
 
-            // Panel inferior: ocupa el resto
+            // Panel inferior: ocupa el resto - FIX: Inicializar correctamente las filas y columnas
             pnlBottom.RowCount = 1;
             pnlBottom.ColumnCount = 2;
-            pnlBottom.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 70F);
-            pnlBottom.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 30F);
+            
+            // Clear existing styles and add new ones
+            pnlBottom.ColumnStyles.Clear();
+            pnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
+            pnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            
+            pnlBottom.RowStyles.Clear();
+            pnlBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         }
 
         private void LoadDashboardData()
         {
-            // Limpia los paneles antes de añadir controles
-            pnlTop.Controls.Clear();
-            pnlCenter.Controls.Clear();
-            pnlBottom.Controls.Clear();
+            try
+            {
+                // Limpia los paneles antes de añadir controles
+                pnlTop.Controls.Clear();
+                pnlCenter.Controls.Clear();
+                pnlBottom.Controls.Clear();
 
-            // Crear KPIs (puedes ajustar tamaños aquí)
-            CreateKPI("Ventas Totales", "$2,847,392", "+12.5% vs. mes anterior");
-            CreateKPI("Clientes Activos", "1,247", "+8.2% vs. mes anterior");
-            CreateKPI("Productos en Stock", "3,456", "-2.1% vs. mes anterior");
-            CreateKPI("Margen de Ganancia", "23.4%", "+1.8% vs. mes anterior");
+                // Crear KPIs (puedes ajustar tamaños aquí)
+                CreateKPI("Ventas Totales", "$2,847,392", "+12.5% vs. mes anterior");
+                CreateKPI("Clientes Activos", "1,247", "+8.2% vs. mes anterior");
+                CreateKPI("Productos en Stock", "3,456", "-2.1% vs. mes anterior");
+                CreateKPI("Margen de Ganancia", "23.4%", "+1.8% vs. mes anterior");
 
-            // Crear gráfico de ventas
-            CreateSalesChart();
+                // Crear gráfico de ventas
+                CreateSalesChart();
 
-            // Crear lista de ventas recientes
-            CreateRecentSales();
+                // Crear lista de ventas recientes
+                CreateRecentSales();
 
-            // Crear paneles de stock
-            CreateStockPanels();
+                // Crear paneles de stock
+                CreateStockPanels();
 
-            // Crear alertas del sistema
-            CreateAlertsPanels();
+                // Crear alertas del sistema
+                CreateAlertsPanels();
+            }
+            catch (Exception ex)
+            {
+                // Log error and show a simple error message instead of crashing
+                var errorLabel = new Label
+                {
+                    Text = $"Error cargando dashboard: {ex.Message}",
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.Red
+                };
+                this.Controls.Clear();
+                this.Controls.Add(errorLabel);
+            }
         }
 
         private void CreateKPI(string title, string value, string percentage)
@@ -337,7 +362,7 @@ namespace Proyecto_Taller_2.Controls
             pnlBottom.Controls.Add(alertsContainer, 1, 0);
         }
 
-        private void CreateAlert(string alertText, Color alertColor, Panel parent)
+        private void CreateAlert(string alertText, Color alertColor, FlowLayoutPanel parent)
         {
             var alertPanel = new Panel();
             alertPanel.Size = new Size(400, 50);
