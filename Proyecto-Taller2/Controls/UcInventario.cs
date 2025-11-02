@@ -255,7 +255,7 @@ namespace Proyecto_Taller_2
             dgvHistorial.AutoGenerateColumns = false;
             dgvHistorial.Columns.Clear();
             dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Fecha", HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 120, DefaultCellStyle = new DataGridViewCellStyle { Format = "g" } });
-            dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Cantidad", HeaderText = "Cant.", DataPropertyName = "Cantidad", Width = 60, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight } });
+            dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Cantidad", HeaderText = "Cantidad", DataPropertyName = "Cantidad", Width = 60, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight } });
             dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { Name = "Observacion", HeaderText = "Observacion", DataPropertyName = "Observacion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
         }
 
