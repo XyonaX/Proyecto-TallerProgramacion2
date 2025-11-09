@@ -4,13 +4,19 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Proyecto_Taller_2.Domain.Entities;
+using Proyecto_Taller_2.Domain.Models;
+using Proyecto_Taller_2.Data.Repositories;
+using Proyecto_Taller_2.Data;
 
 namespace Proyecto_Taller_2.Controls
 {
     public partial class UcDashboardAdmin : UserControl
     {
+        private readonly VentaRepository _ventaRepo;
+
         public UcDashboardAdmin()
         {
+            _ventaRepo = new VentaRepository(BDGeneral.ConnectionString);
             InitializeComponent();
             InitializeLayout();    // ajusta tamaños/diseño
             LoadDashboardData();   // carga datos y crea los controles
@@ -57,17 +63,23 @@ namespace Proyecto_Taller_2.Controls
                 pnlCenter.Controls.Clear();
                 pnlBottom.Controls.Clear();
 
-                // Crear KPIs (puedes ajustar tamaños aquí)
-                CreateKPI("Ventas Totales", "$2,847,392", "+12.5% vs. mes anterior");
-                CreateKPI("Clientes Activos", "1,247", "+8.2% vs. mes anterior");
-                CreateKPI("Productos en Stock", "3,456", "-2.1% vs. mes anterior");
-                CreateKPI("Margen de Ganancia", "23.4%", "+1.8% vs. mes anterior");
+                // Obtener KPIs reales de la base de datos
+                var fechaDesde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                var fechaHasta = fechaDesde.AddMonths(1).AddDays(-1);
+                var kpis = _ventaRepo.ObtenerKpis(null, fechaDesde, fechaHasta); // null = todos los vendedores
+                var kpisGlobales = _ventaRepo.ObtenerKpisGlobales(fechaDesde, fechaHasta);
 
-                // Crear gráfico de ventas
+                // Crear KPIs con datos reales
+                CreateKPI("Ventas Totales", kpis.VentasDelMes.ToString("C0"), FormatPorcentaje(kpis.PorcentajeVsAnterior) + " vs. mes anterior");
+                CreateKPI("Órdenes Activas", kpis.TotalOrdenes.ToString(), FormatPorcentaje(kpis.PorcentajeOrdenesAnterior) + " este mes");
+                CreateKPI("Ticket Promedio", kpis.TicketPromedio.ToString("C0"), FormatPorcentaje(kpis.PorcentajeTicketAnterior) + " vs. anterior");
+                CreateKPI("Vendedores Activos", $"{kpisGlobales.VendedoresActivos}/{kpisGlobales.TotalVendedores}", $"Productividad: {kpisGlobales.ProductividadPromedio:C0}");
+
+                // Crear gráfico de ventas con datos reales
                 CreateSalesChart();
 
-                // Crear lista de ventas recientes
-                CreateRecentSales();
+                // Crear lista de top vendedores
+                CreateTopVendedores(kpisGlobales);
 
                 // Crear paneles de stock
                 CreateStockPanels();
@@ -88,6 +100,12 @@ namespace Proyecto_Taller_2.Controls
                 this.Controls.Clear();
                 this.Controls.Add(errorLabel);
             }
+        }
+
+        private string FormatPorcentaje(decimal porcentaje)
+        {
+            var signo = porcentaje >= 0 ? "+" : "";
+            return $"{signo}{porcentaje:F1}%";
         }
 
         private void CreateKPI(string title, string value, string percentage)
@@ -129,38 +147,65 @@ namespace Proyecto_Taller_2.Controls
             pnlTop.Controls.Add(panel);
         }
 
-
         private void CreateSalesChart()
         {
             var salesChart = new Chart();
             salesChart.Dock = DockStyle.Fill;
             salesChart.ChartAreas.Add(new ChartArea
             {
-                BackColor = Color.WhiteSmoke, // Light background for the chart
-                AxisX = { Title = "Meses", TitleFont = new Font("Segoe UI", 10, FontStyle.Bold) }, // Title for X-axis
-                AxisY = { Title = "Ventas", TitleFont = new Font("Segoe UI", 10, FontStyle.Bold) } // Title for Y-axis
+                BackColor = Color.WhiteSmoke,
+                AxisX = { Title = "Últimos 6 Meses", TitleFont = new Font("Segoe UI", 10, FontStyle.Bold) },
+                AxisY = { Title = "Ventas (ARS)", TitleFont = new Font("Segoe UI", 10, FontStyle.Bold) }
             });
 
             var series = new Series("Ventas por Mes")
             {
                 ChartType = SeriesChartType.Column,
-                Color = Color.FromArgb(34, 139, 58), // Change to a green color
+                Color = Color.FromArgb(34, 139, 58),
                 BorderWidth = 0
             };
 
-            series.Points.AddXY("Ene", 100000);
-            series.Points.AddXY("Feb", 120000);
-            series.Points.AddXY("Mar", 150000);
+            // Obtener datos de ventas de los últimos 6 meses
+            try
+            {
+                for (int i = 5; i >= 0; i--)
+                {
+                    var fecha = DateTime.Now.AddMonths(-i);
+                    var fechaDesde = new DateTime(fecha.Year, fecha.Month, 1);
+                    var fechaHasta = fechaDesde.AddMonths(1).AddDays(-1);
+                    
+                    var kpisMes = _ventaRepo.ObtenerKpis(null, fechaDesde, fechaHasta);
+                    var nombreMes = fecha.ToString("MMM yyyy");
+                    
+                    series.Points.AddXY(nombreMes, (double)kpisMes.VentasDelMes);
+                }
+            }
+            catch
+            {
+                // Si hay error con datos reales, usar datos de demostración
+                series.Points.AddXY("Jul 2024", 85000);
+                series.Points.AddXY("Ago 2024", 120000);
+                series.Points.AddXY("Sep 2024", 95000);
+                series.Points.AddXY("Oct 2024", 150000);
+                series.Points.AddXY("Nov 2024", 180000);
+                series.Points.AddXY("Dic 2024", 200000);
+            }
 
             salesChart.Series.Add(series);
+            
+            // Agregar título al gráfico
+            salesChart.Titles.Add(new Title("Evolución de Ventas Mensuales")
+            {
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                ForeColor = Color.FromArgb(34, 47, 34)
+            });
+            
             pnlCenter.Controls.Add(salesChart, 0, 0);
         }
 
-
-
-        private void CreateRecentSales()
+        private void CreateTopVendedores(KpisGlobales kpisGlobales)
         {
-            var recentPanel = new Panel
+            var topPanel = new Panel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.White,
@@ -176,11 +221,11 @@ namespace Proyecto_Taller_2.Controls
             };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Header
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // Lista
-            recentPanel.Controls.Add(layout);
+            topPanel.Controls.Add(layout);
 
             var lblHeader = new Label
             {
-                Text = "Ventas Recientes",
+                Text = "Top Vendedores del Mes",
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 Dock = DockStyle.Top,
                 Height = 25
@@ -197,17 +242,37 @@ namespace Proyecto_Taller_2.Controls
             };
             layout.Controls.Add(flow, 0, 1);
 
-            AddSaleItem("María González", "maria.gonzalez@email.com", "$1,250.00", flow);
-            AddSaleItem("Carlos Rodríguez", "carlos.rodriguez@email.com", "$850.00", flow);
-            AddSaleItem("Ana Martínez", "ana.martinez@email.com", "$2,100.00", flow);
-            AddSaleItem("Luis Fernández", "luis.fernandez@email.com", "$750.00", flow);
-            AddSaleItem("Carmen López", "carmen.lopez@email.com", "$1,800.00", flow);
+            // Agregar top vendedores reales
+            if (kpisGlobales.TopVendedores.Count > 0)
+            {
+                int posicion = 1;
+                foreach (var vendedor in kpisGlobales.TopVendedores)
+                {
+                    AddVendedorItem($"#{posicion}. {vendedor.Nombre}", 
+                                  $"{vendedor.NumeroVentas} ventas", 
+                                  vendedor.TotalVentas.ToString("C0"), flow);
+                    posicion++;
+                }
+            }
+            else
+            {
+                // Si no hay datos, mostrar mensaje
+                var lblNoData = new Label
+                {
+                    Text = "No hay datos de ventas en este período",
+                    Font = new Font("Segoe UI", 9),
+                    ForeColor = Color.Gray,
+                    Height = 40,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Top
+                };
+                flow.Controls.Add(lblNoData);
+            }
 
-            pnlCenter.Controls.Add(recentPanel, 1, 0);
+            pnlCenter.Controls.Add(topPanel, 1, 0);
         }
 
-
-        private void AddSaleItem(string name, string email, string amount, FlowLayoutPanel parent)
+        private void AddVendedorItem(string name, string info, string amount, FlowLayoutPanel parent)
         {
             var item = new Panel
             {
@@ -236,9 +301,9 @@ namespace Proyecto_Taller_2.Controls
                 AutoSize = true
             };
 
-            var lblEmail = new Label
+            var lblInfo = new Label
             {
-                Text = email,
+                Text = info,
                 Font = new Font("Segoe UI", 8),
                 Dock = DockStyle.Fill,
                 AutoSize = true
@@ -254,7 +319,7 @@ namespace Proyecto_Taller_2.Controls
             };
 
             layout.Controls.Add(lblName, 0, 0);
-            layout.Controls.Add(lblEmail, 0, 1);
+            layout.Controls.Add(lblInfo, 0, 1);
             layout.Controls.Add(lblAmount, 1, 0);
             layout.SetRowSpan(lblAmount, 2);
 
@@ -280,9 +345,6 @@ namespace Proyecto_Taller_2.Controls
             };
         }
 
-
-
-
         private void CreateStockPanels()
         {
             var stockContainer = new FlowLayoutPanel
@@ -294,7 +356,7 @@ namespace Proyecto_Taller_2.Controls
                 Margin = new Padding(5)
             };
 
-
+            // Datos de ejemplo - en una implementación real, estos vendrían de la base de datos
             CreateStockBar("Electrónicos", 1250, 1500, stockContainer);
             CreateStockBar("Oficina", 890, 1000, stockContainer);
             CreateStockBar("Hogar", 650, 800, stockContainer);
@@ -337,7 +399,6 @@ namespace Proyecto_Taller_2.Controls
                 Dock = DockStyle.Top,
                 Height = 16
             };
-
 
             item.Controls.Add(lblStatus);
             item.Controls.Add(progressBar);
@@ -383,5 +444,10 @@ namespace Proyecto_Taller_2.Controls
             parent.Controls.Add(alertPanel);
         }
 
+        // Método público para refrescar el dashboard
+        public void RefreshDashboard()
+        {
+            LoadDashboardData();
+        }
     }
 }

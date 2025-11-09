@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
 using Proyecto_Taller_2.Data.Repositories;
@@ -12,6 +13,7 @@ namespace Proyecto_Taller_2.Forms
     {
         private readonly Venta _venta;
         private readonly VentaRepository _ventaRepo;
+        private List<DetalleVenta> _detalles;
         private bool _modificado = false;
 
         // Controles
@@ -38,7 +40,7 @@ namespace Proyecto_Taller_2.Forms
             
             // Form
             this.Text = $"Detalle de {_venta.Tipo} - {_venta.NumeroVenta}";
-            this.Size = new Size(800, 600);
+            this.Size = new Size(900, 700);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MinimumSize = new Size(700, 500);
@@ -149,28 +151,89 @@ namespace Proyecto_Taller_2.Forms
                 ColumnHeadersHeight = 35,
                 RowHeadersVisible = false,
                 BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.Fixed3D
+                BorderStyle = BorderStyle.Fixed3D,
+                GridColor = Color.FromArgb(230, 230, 230),
+                RowTemplate = new DataGridViewRow { Height = 30 },
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
+
+            // Estilo de encabezados
+            dgvDetalles.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 255);
+            dgvDetalles.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(0, 51, 102);
+            dgvDetalles.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvDetalles.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Estilo de filas
+            dgvDetalles.DefaultCellStyle.SelectionBackColor = Color.FromArgb(220, 235, 250);
+            dgvDetalles.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvDetalles.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
 
             // Columnas
             dgvDetalles.Columns.AddRange(new DataGridViewColumn[]
             {
-                new DataGridViewTextBoxColumn { Name = "Producto", HeaderText = "Producto", Width = 200 },
-                new DataGridViewTextBoxColumn { Name = "SKU", HeaderText = "SKU", Width = 100 },
-                new DataGridViewTextBoxColumn { Name = "Cantidad", HeaderText = "Cantidad", Width = 80 },
+                new DataGridViewTextBoxColumn 
+                { 
+                    Name = "NombreProducto", 
+                    HeaderText = "Producto", 
+                    DataPropertyName = "NombreProducto",
+                    FillWeight = 40,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Alignment = DataGridViewContentAlignment.MiddleLeft,
+                        Padding = new Padding(8, 0, 0, 0)
+                    }
+                },
+                new DataGridViewTextBoxColumn 
+                { 
+                    Name = "SkuProducto", 
+                    HeaderText = "SKU", 
+                    DataPropertyName = "SkuProducto",
+                    FillWeight = 15,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Alignment = DataGridViewContentAlignment.MiddleCenter,
+                        Font = new Font("Consolas", 9, FontStyle.Regular)
+                    }
+                },
+                new DataGridViewTextBoxColumn 
+                { 
+                    Name = "Cantidad", 
+                    HeaderText = "Cantidad", 
+                    DataPropertyName = "Cantidad",
+                    FillWeight = 10,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Alignment = DataGridViewContentAlignment.MiddleCenter,
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                    }
+                },
                 new DataGridViewTextBoxColumn 
                 { 
                     Name = "PrecioUnitario", 
                     HeaderText = "Precio Unit.", 
-                    Width = 100,
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "C2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                    DataPropertyName = "PrecioUnitario",
+                    FillWeight = 15,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Format = "C2", 
+                        Alignment = DataGridViewContentAlignment.MiddleRight,
+                        Padding = new Padding(0, 0, 8, 0)
+                    }
                 },
                 new DataGridViewTextBoxColumn 
                 { 
                     Name = "Subtotal", 
                     HeaderText = "Subtotal", 
-                    Width = 100,
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "C2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                    DataPropertyName = "Subtotal",
+                    FillWeight = 20,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Format = "C2", 
+                        Alignment = DataGridViewContentAlignment.MiddleRight,
+                        Padding = new Padding(0, 0, 8, 0),
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(0, 102, 51)
+                    }
                 }
             });
 
@@ -178,18 +241,20 @@ namespace Proyecto_Taller_2.Forms
             var pnlTotal = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 50,
-                Padding = new Padding(0, 12, 0, 0)
+                Height = 60,
+                Padding = new Padding(0, 12, 0, 0),
+                BackColor = Color.FromArgb(245, 250, 255)
             };
 
             lblTotal = new Label
             {
                 Text = $"TOTAL: {_venta.Total:C2}",
                 Dock = DockStyle.Right,
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight,
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter,
                 AutoSize = true,
-                ForeColor = Color.FromArgb(34, 139, 34)
+                ForeColor = Color.FromArgb(0, 102, 51),
+                Padding = new Padding(20, 10, 20, 10)
             };
 
             pnlTotal.Controls.Add(lblTotal);
@@ -212,29 +277,36 @@ namespace Proyecto_Taller_2.Forms
                 Text = "Cerrar",
                 Height = 34,
                 Width = 100,
-                DialogResult = DialogResult.Cancel
+                DialogResult = DialogResult.Cancel,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(108, 117, 125),
+                ForeColor = Color.White
             };
+            btnCerrar.FlatAppearance.BorderSize = 0;
 
             btnImprimir = new Button
             {
-                Text = "Imprimir",
+                Text = "?? Imprimir",
                 Height = 34,
-                Width = 100,
-                Margin = new Padding(8, 0, 0, 0)
+                Width = 120,
+                Margin = new Padding(8, 0, 0, 0),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(23, 162, 184),
+                ForeColor = Color.White
             };
+            btnImprimir.FlatAppearance.BorderSize = 0;
 
             btnGuardar = new Button
             {
                 Text = "Guardar Cambios",
                 Height = 34,
-                Width = 120,
+                Width = 140,
                 Margin = new Padding(8, 0, 0, 0),
                 Enabled = false,
-                BackColor = Color.FromArgb(34, 139, 34),
+                BackColor = Color.FromArgb(40, 167, 69),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat
             };
-
             btnGuardar.FlatAppearance.BorderSize = 0;
 
             flAcciones.Controls.Add(btnCerrar);
@@ -258,19 +330,52 @@ namespace Proyecto_Taller_2.Forms
         {
             try
             {
-                // Simular carga de detalles (en implementación real vendría de la BD)
-                var detalles = new List<object>
+                this.Cursor = Cursors.WaitCursor;
+                
+                // Cargar detalles reales de la base de datos
+                _detalles = _ventaRepo.ObtenerDetalles(_venta.IdVenta);
+                
+                if (_detalles.Count == 0)
                 {
-                    new { Producto = "Producto Ejemplo 1", SKU = "PROD001", Cantidad = 2, PrecioUnitario = 150.00m, Subtotal = 300.00m },
-                    new { Producto = "Producto Ejemplo 2", SKU = "PROD002", Cantidad = 1, PrecioUnitario = (_venta.Total - 300.00m), Subtotal = (_venta.Total - 300.00m) }
-                };
+                    // Si no hay detalles en la BD, mostrar mensaje
+                    var mensaje = new List<object>
+                    {
+                        new { 
+                            NombreProducto = "No hay productos registrados para esta venta", 
+                            SkuProducto = "-", 
+                            Cantidad = 0, 
+                            PrecioUnitario = 0.00m, 
+                            Subtotal = 0.00m 
+                        }
+                    };
+                    dgvDetalles.DataSource = mensaje;
+                }
+                else
+                {
+                    // Mostrar detalles reales
+                    dgvDetalles.DataSource = _detalles;
+                }
 
-                dgvDetalles.DataSource = detalles;
+                this.Cursor = Cursors.Default;
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
                 MessageBox.Show($"Error al cargar detalles: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                
+                // En caso de error, mostrar mensaje
+                var error = new List<object>
+                {
+                    new { 
+                        NombreProducto = $"Error al cargar datos: {ex.Message}", 
+                        SkuProducto = "ERROR", 
+                        Cantidad = 0, 
+                        PrecioUnitario = 0.00m, 
+                        Subtotal = 0.00m 
+                    }
+                };
+                dgvDetalles.DataSource = error;
             }
         }
 
@@ -331,13 +436,146 @@ namespace Proyecto_Taller_2.Forms
         {
             try
             {
-                MessageBox.Show("Funcionalidad de impresión en desarrollo.", "Información", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // TODO: Implementar impresión
+                if (_detalles == null || _detalles.Count == 0)
+                {
+                    MessageBox.Show("No hay detalles para imprimir.", "Información", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Configurar impresión
+                var printDocument = new PrintDocument();
+                printDocument.PrintPage += PrintDocument_PrintPage;
+                
+                // Mostrar preview de impresión
+                var printPreview = new PrintPreviewDialog
+                {
+                    Document = printDocument,
+                    Width = 800,
+                    Height = 600,
+                    UseAntiAlias = true
+                };
+
+                if (printPreview.ShowDialog() == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al imprimir: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void PrintDocument_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            try
+            {
+                var graphics = e.Graphics;
+                var font = new Font("Arial", 10);
+                var fontBold = new Font("Arial", 10, FontStyle.Bold);
+                var fontTitle = new Font("Arial", 14, FontStyle.Bold);
+                var fontHeader = new Font("Arial", 12, FontStyle.Bold);
+
+                var brush = Brushes.Black;
+                var pen = new Pen(Color.Black, 1);
+
+                int y = 50;
+                int leftMargin = 50;
+                int rightMargin = e.PageBounds.Width - 50;
+
+                // TÍTULO
+                var title = $"FACTURA - {_venta.NumeroVenta}";
+                graphics.DrawString(title, fontTitle, brush, leftMargin, y);
+                y += 30;
+
+                // Línea separadora
+                graphics.DrawLine(pen, leftMargin, y, rightMargin, y);
+                y += 20;
+
+                // INFORMACIÓN DE LA VENTA
+                graphics.DrawString($"Fecha: {_venta.FechaVenta:dd/MM/yyyy}", font, brush, leftMargin, y);
+                graphics.DrawString($"Estado: {_venta.Estado}", font, brush, rightMargin - 200, y);
+                y += 20;
+
+                graphics.DrawString($"Cliente: {_venta.NombreCliente}", font, brush, leftMargin, y);
+                y += 20;
+
+                graphics.DrawString($"Vendedor: {_venta.NombreVendedor}", font, brush, leftMargin, y);
+                y += 30;
+
+                // ENCABEZADOS DE TABLA
+                graphics.DrawString("DETALLE DE PRODUCTOS", fontHeader, brush, leftMargin, y);
+                y += 25;
+
+                // Línea separadora
+                graphics.DrawLine(pen, leftMargin, y, rightMargin, y);
+                y += 15;
+
+                // Encabezados de columnas
+                graphics.DrawString("Producto", fontBold, brush, leftMargin, y);
+                graphics.DrawString("SKU", fontBold, brush, leftMargin + 250, y);
+                graphics.DrawString("Cant.", fontBold, brush, leftMargin + 350, y);
+                graphics.DrawString("Precio Unit.", fontBold, brush, leftMargin + 420, y);
+                graphics.DrawString("Subtotal", fontBold, brush, leftMargin + 520, y);
+                y += 20;
+
+                // Línea separadora
+                graphics.DrawLine(pen, leftMargin, y, rightMargin, y);
+                y += 15;
+
+                // DETALLES DE PRODUCTOS
+                decimal totalCalculado = 0;
+                foreach (var detalle in _detalles)
+                {
+                    if (y > e.PageBounds.Height - 100) // Nueva página si es necesario
+                        break;
+
+                    graphics.DrawString(detalle.NombreProducto, font, brush, leftMargin, y);
+                    graphics.DrawString(detalle.SkuProducto, font, brush, leftMargin + 250, y);
+                    graphics.DrawString(detalle.Cantidad.ToString(), font, brush, leftMargin + 350, y);
+                    graphics.DrawString(detalle.PrecioUnitario.ToString("C2"), font, brush, leftMargin + 420, y);
+                    graphics.DrawString(detalle.Subtotal.ToString("C2"), font, brush, leftMargin + 520, y);
+
+                    totalCalculado += detalle.Subtotal;
+                    y += 18;
+                }
+
+                y += 10;
+                
+                // Línea separadora final
+                graphics.DrawLine(pen, leftMargin, y, rightMargin, y);
+                y += 20;
+
+                // TOTAL
+                var totalText = $"TOTAL: {_venta.Total:C2}";
+                var totalSize = graphics.MeasureString(totalText, fontHeader);
+                graphics.DrawString(totalText, fontHeader, brush, rightMargin - totalSize.Width, y);
+                y += 30;
+
+                // OBSERVACIONES
+                if (!string.IsNullOrEmpty(_venta.Observaciones))
+                {
+                    y += 10;
+                    graphics.DrawString("Observaciones:", fontBold, brush, leftMargin, y);
+                    y += 20;
+                    graphics.DrawString(_venta.Observaciones, font, brush, leftMargin, y);
+                }
+
+                // PIE DE PÁGINA
+                y = e.PageBounds.Height - 80;
+                graphics.DrawLine(pen, leftMargin, y, rightMargin, y);
+                y += 15;
+                graphics.DrawString($"Documento generado el {DateTime.Now:dd/MM/yyyy HH:mm}", 
+                    new Font("Arial", 8), brush, leftMargin, y);
+                graphics.DrawString("Sistema ERP - Gestión de Ventas", 
+                    new Font("Arial", 8), brush, rightMargin - 200, y);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error durante la impresión: {ex.Message}", "Error de Impresión", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

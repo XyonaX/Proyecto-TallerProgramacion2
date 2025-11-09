@@ -35,7 +35,6 @@ namespace Proyecto_Taller_2.Controls
         private List<Categoria> _categorias = new List<Categoria>();
 
         private DataGridView dgv;
-        private Panel pnlDetails;
         private TextBox txtBuscar;
         private ComboBox cbCategoria, cbStock, cbEstado;
         private Button btnNuevo, btnImportar, btnExportar;

@@ -248,5 +248,67 @@ WHERE IdProducto=@Id";
             cn.Open();
             return (int)cmd.ExecuteScalar();
         }
+
+        /// <summary>
+        /// Actualiza solo el stock de un producto específico
+        /// </summary>
+        /// <param name="idProducto">ID del producto</param>
+        /// <param name="nuevoStock">Nueva cantidad de stock</param>
+        /// <returns>Número de filas afectadas</returns>
+        public int ActualizarStock(int idProducto, int nuevoStock)
+        {
+            using var cn = new SqlConnection(_connStr);
+            const string sql = @"
+                UPDATE Producto 
+                SET Stock = @Stock, 
+                    Actualizado = @Actualizado
+                WHERE IdProducto = @IdProducto";
+            
+            using var cmd = new SqlCommand(sql, cn);
+            cmd.Parameters.Add("@IdProducto", SqlDbType.Int).Value = idProducto;
+            cmd.Parameters.Add("@Stock", SqlDbType.Int).Value = nuevoStock;
+            cmd.Parameters.Add("@Actualizado", SqlDbType.DateTime).Value = DateTime.Now;
+            
+            cn.Open();
+            return cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Reduce el stock de un producto por una cantidad específica
+        /// </summary>
+        /// <param name="idProducto">ID del producto</param>
+        /// <param name="cantidadAReducir">Cantidad a reducir del stock</param>
+        /// <returns>Número de filas afectadas</returns>
+        public int ReducirStock(int idProducto, int cantidadAReducir)
+        {
+            using var cn = new SqlConnection(_connStr);
+            
+            // Primero verificar que hay suficiente stock
+            const string sqlVerificar = "SELECT Stock FROM Producto WHERE IdProducto = @IdProducto";
+            using var cmdVerificar = new SqlCommand(sqlVerificar, cn);
+            cmdVerificar.Parameters.AddWithValue("@IdProducto", idProducto);
+            
+            cn.Open();
+            var stockActual = Convert.ToInt32(cmdVerificar.ExecuteScalar() ?? 0);
+            
+            if (stockActual < cantidadAReducir)
+            {
+                throw new InvalidOperationException($"Stock insuficiente. Stock actual: {stockActual}, cantidad a reducir: {cantidadAReducir}");
+            }
+            
+            // Reducir el stock
+            const string sqlReducir = @"
+                UPDATE Producto 
+                SET Stock = Stock - @CantidadAReducir, 
+                    Actualizado = @Actualizado
+                WHERE IdProducto = @IdProducto";
+            
+            using var cmdReducir = new SqlCommand(sqlReducir, cn);
+            cmdReducir.Parameters.Add("@IdProducto", SqlDbType.Int).Value = idProducto;
+            cmdReducir.Parameters.Add("@CantidadAReducir", SqlDbType.Int).Value = cantidadAReducir;
+            cmdReducir.Parameters.Add("@Actualizado", SqlDbType.DateTime).Value = DateTime.Now;
+            
+            return cmdReducir.ExecuteNonQuery();
+        }
     }
 }
