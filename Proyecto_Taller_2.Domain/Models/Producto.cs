@@ -5,6 +5,8 @@ namespace Proyecto_Taller_2.Domain.Models
 {
     public class Producto
     {
+        public object Costo;
+
         public int IdProducto { get; set; }
         public string? Sku { get; set; } = "";
         public string Nombre { get; set; } = "";
