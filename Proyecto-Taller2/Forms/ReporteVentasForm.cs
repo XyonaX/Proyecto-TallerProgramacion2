@@ -47,7 +47,7 @@ namespace Proyecto_Taller_2.Forms
                 RowCount = 3,
                 Padding = new Padding(16)
             };
-            tlRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 120)); // Filtros
+            tlRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 160)); // Filtros - Aumentado de 120 a 160
             tlRoot.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // Reporte
             tlRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 50)); // Botones
 
@@ -63,12 +63,12 @@ namespace Proyecto_Taller_2.Forms
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 4,
-                RowCount = 3
+                RowCount = 4  // Aumentado a 4 filas
             };
 
             // Fila 1
             tlFiltros.Controls.Add(new Label { Text = "Tipo de Reporte:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 0, 0);
-            tlFiltros.Controls.Add(new Label { Text = "Período:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 1, 0);
+            tlFiltros.Controls.Add(new Label { Text = "Periodo:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 1, 0);
             tlFiltros.Controls.Add(new Label { Text = "Vendedor:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 2, 0);
 
             cbTipoReporte = new ComboBox
@@ -86,7 +86,7 @@ namespace Proyecto_Taller_2.Forms
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Margin = new Padding(0, 4, 8, 0)
             };
-            cbPeriodo.Items.AddRange(new[] { "Este mes", "Mes anterior", "Últimos 3 meses", "Este año", "Personalizado" });
+            cbPeriodo.Items.AddRange(new[] { "Este mes", "Mes anterior", "ï¿½ltimos 3 meses", "Este aï¿½o", "Personalizado" });
             cbPeriodo.SelectedIndex = 0;
             cbPeriodo.SelectedIndexChanged += CbPeriodo_SelectedIndexChanged;
 
@@ -131,11 +131,13 @@ namespace Proyecto_Taller_2.Forms
             {
                 Text = "Generar Reporte",
                 Dock = DockStyle.Fill,
-                Height = 30,
+                Height = 36,
                 BackColor = Color.FromArgb(34, 139, 34),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Margin = new Padding(0, 4, 0, 0)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Margin = new Padding(0, 8, 0, 4),
+                Cursor = Cursors.Hand
             };
             btnGenerar.FlatAppearance.BorderSize = 0;
             btnGenerar.Click += BtnGenerar_Click;
@@ -148,10 +150,10 @@ namespace Proyecto_Taller_2.Forms
             for (int i = 0; i < 4; i++)
                 tlFiltros.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
 
-            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));  // Labels
+            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));  // Combos - Aumentado de 30 a 34
+            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));  // Labels fechas
+            tlFiltros.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));  // Fechas + BotÃ³n - Cambiado de Percent a Absolute
 
             gbFiltros.Controls.Add(tlFiltros);
 
@@ -254,7 +256,7 @@ namespace Proyecto_Taller_2.Forms
         {
             var ventas = _ventas.AsEnumerable();
 
-            // Filtrar por período
+            // Filtrar por perï¿½odo
             DateTime fechaDesde, fechaHasta;
             switch (cbPeriodo.SelectedIndex)
             {
@@ -267,11 +269,11 @@ namespace Proyecto_Taller_2.Forms
                     fechaDesde = new DateTime(mesAnterior.Year, mesAnterior.Month, 1);
                     fechaHasta = fechaDesde.AddMonths(1).AddDays(-1);
                     break;
-                case 2: // Últimos 3 meses
+                case 2: // ï¿½ltimos 3 meses
                     fechaDesde = DateTime.Now.AddMonths(-3);
                     fechaHasta = DateTime.Now;
                     break;
-                case 3: // Este año
+                case 3: // Este aï¿½o
                     fechaDesde = new DateTime(DateTime.Now.Year, 1, 1);
                     fechaHasta = DateTime.Now;
                     break;
@@ -304,7 +306,7 @@ namespace Proyecto_Taller_2.Forms
 
             sb.AppendLine($"REPORTE DE VENTAS - {tipoReporte.ToUpper()}");
             sb.AppendLine($"Generado: {DateTime.Now:dd/MM/yyyy HH:mm}");
-            sb.AppendLine($"Período: {cbPeriodo.SelectedItem}");
+            sb.AppendLine($"Perï¿½odo: {cbPeriodo.SelectedItem}");
             if (cbVendedor.SelectedIndex > 0)
                 sb.AppendLine($"Vendedor: {cbVendedor.SelectedItem}");
             sb.AppendLine(new string('=', 80));
@@ -334,8 +336,8 @@ namespace Proyecto_Taller_2.Forms
 
         private void GenerarResumenGeneral(System.Text.StringBuilder sb, List<Venta> ventas)
         {
-            var ventasCompletadas = ventas.Where(v => v.Estado == "Completada").ToList();
-            var cotizaciones = ventas.Where(v => v.Tipo == "Cotización").ToList();
+            var ventasCompletadas = ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
+            var cotizaciones = ventas.Where(v => v.Tipo == "CotizaciÃ³n").ToList();
 
             sb.AppendLine("RESUMEN GENERAL");
             sb.AppendLine(new string('-', 40));
@@ -347,8 +349,8 @@ namespace Proyecto_Taller_2.Forms
             sb.AppendLine();
             sb.AppendLine($"Total facturado: {ventasCompletadas.Sum(v => v.Total):C2}");
             sb.AppendLine($"Ticket promedio: {(ventasCompletadas.Count > 0 ? ventasCompletadas.Average(v => v.Total) : 0):C2}");
-            sb.AppendLine($"Venta máxima: {(ventasCompletadas.Count > 0 ? ventasCompletadas.Max(v => v.Total) : 0):C2}");
-            sb.AppendLine($"Venta mínima: {(ventasCompletadas.Count > 0 ? ventasCompletadas.Min(v => v.Total) : 0):C2}");
+            sb.AppendLine($"Venta mÃ¡xima: {(ventasCompletadas.Count > 0 ? ventasCompletadas.Max(v => v.Total) : 0):C2}");
+            sb.AppendLine($"Venta mÃ­nima: {(ventasCompletadas.Count > 0 ? ventasCompletadas.Min(v => v.Total) : 0):C2}");
         }
 
         private void GenerarReportePorVendedor(System.Text.StringBuilder sb, List<Venta> ventas)
@@ -358,7 +360,7 @@ namespace Proyecto_Taller_2.Forms
             sb.AppendLine($"{"Vendedor",-25} {"Ventas",-8} {"Total",-12} {"Promedio",-12}");
             sb.AppendLine(new string('-', 60));
 
-            var porVendedor = ventas.Where(v => v.Estado == "Completada")
+            var porVendedor = ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta")
                                   .GroupBy(v => v.NombreVendedor)
                                   .Select(g => new
                                   {
@@ -382,7 +384,7 @@ namespace Proyecto_Taller_2.Forms
             sb.AppendLine($"{"Cliente",-25} {"Ventas",-8} {"Total",-12} {"Promedio",-12}");
             sb.AppendLine(new string('-', 60));
 
-            var porCliente = ventas.Where(v => v.Estado == "Completada")
+            var porCliente = ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta")
                                  .GroupBy(v => v.NombreCliente)
                                  .Select(g => new
                                  {
@@ -407,7 +409,7 @@ namespace Proyecto_Taller_2.Forms
             sb.AppendLine($"{"Mes",-15} {"Ventas",-8} {"Total",-12} {"Promedio",-12}");
             sb.AppendLine(new string('-', 50));
 
-            var porMes = ventas.Where(v => v.Estado == "Completada")
+            var porMes = ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta")
                              .GroupBy(v => new { v.FechaVenta.Year, v.FechaVenta.Month })
                              .Select(g => new
                              {
@@ -430,15 +432,29 @@ namespace Proyecto_Taller_2.Forms
             {
                 using (var saveDialog = new SaveFileDialog())
                 {
-                    saveDialog.Filter = "Archivo de Texto (*.txt)|*.txt";
+                    saveDialog.Filter = "Archivo CSV (*.csv)|*.csv|Archivo Excel (*.xlsx)|*.xlsx|Archivo de Texto (*.txt)|*.txt";
                     saveDialog.Title = "Exportar Reporte";
-                    saveDialog.FileName = $"Reporte_Ventas_{DateTime.Now:yyyy-MM-dd_HHmm}.txt";
+                    saveDialog.FileName = $"Reporte_Ventas_{DateTime.Now:yyyy-MM-dd_HHmm}";
 
                     if (saveDialog.ShowDialog() == DialogResult.OK)
                     {
-                        System.IO.File.WriteAllText(saveDialog.FileName, rtbReporte.Text, System.Text.Encoding.UTF8);
+                        var extension = System.IO.Path.GetExtension(saveDialog.FileName).ToLower();
+                        
+                        switch (extension)
+                        {
+                            case ".csv":
+                                ExportarCSV(saveDialog.FileName);
+                                break;
+                            case ".xlsx":
+                                ExportarExcel(saveDialog.FileName);
+                                break;
+                            case ".txt":
+                                System.IO.File.WriteAllText(saveDialog.FileName, rtbReporte.Text, System.Text.Encoding.UTF8);
+                                break;
+                        }
+                        
                         MessageBox.Show($"Reporte exportado exitosamente a:\n{saveDialog.FileName}", 
-                            "Exportación Completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "ExportaciÃ³n Completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
@@ -446,6 +462,87 @@ namespace Proyecto_Taller_2.Forms
             {
                 MessageBox.Show($"Error al exportar reporte: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ExportarCSV(string filePath)
+        {
+            var ventas = FiltrarVentas();
+            var sb = new System.Text.StringBuilder();
+
+            // Encabezado
+            sb.AppendLine("NÃºmero Venta,Fecha,Vendedor,Cliente,Tipo,Estado,Total,Observaciones");
+
+            // Datos
+            foreach (var venta in ventas.OrderByDescending(v => v.FechaVenta))
+            {
+                sb.AppendLine($"\"{venta.NumeroVenta}\",\"{venta.FechaVenta:dd/MM/yyyy}\",\"{venta.NombreVendedor}\",\"{venta.NombreCliente}\",\"{venta.Tipo}\",\"{venta.Estado}\",{venta.Total},\"{venta.Observaciones?.Replace("\"", "\"\"")}\"");
+            }
+
+            System.IO.File.WriteAllText(filePath, sb.ToString(), System.Text.Encoding.UTF8);
+        }
+
+        private void ExportarExcel(string filePath)
+        {
+            try
+            {
+                var ventas = FiltrarVentas();
+                
+                // Crear archivo CSV temporal que Excel puede abrir
+                var csvContent = new System.Text.StringBuilder();
+                
+                // InformaciÃ³n del reporte
+                csvContent.AppendLine($"REPORTE DE VENTAS - {cbTipoReporte.SelectedItem}");
+                csvContent.AppendLine($"Generado: {DateTime.Now:dd/MM/yyyy HH:mm}");
+                csvContent.AppendLine($"PerÃ­odo: {cbPeriodo.SelectedItem}");
+                if (cbVendedor.SelectedIndex > 0)
+                    csvContent.AppendLine($"Vendedor: {cbVendedor.SelectedItem}");
+                csvContent.AppendLine();
+
+                // Resumen
+                var ventasCompletadas = ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
+                csvContent.AppendLine("RESUMEN");
+                csvContent.AppendLine($"Total Ventas,{ventasCompletadas.Count}");
+                csvContent.AppendLine($"Total Facturado,{ventasCompletadas.Sum(v => v.Total):F2}");
+                csvContent.AppendLine($"Ticket Promedio,{(ventasCompletadas.Count > 0 ? ventasCompletadas.Average(v => v.Total) : 0):F2}");
+                csvContent.AppendLine();
+
+                // Detalle de ventas
+                csvContent.AppendLine("DETALLE DE VENTAS");
+                csvContent.AppendLine("NÃºmero,Fecha,Vendedor,Cliente,Empresa,Tipo,Estado,Total,Observaciones");
+
+                foreach (var venta in ventas.OrderByDescending(v => v.FechaVenta))
+                {
+                    var empresa = !string.IsNullOrEmpty(venta.EmpresaCliente) ? venta.EmpresaCliente : "-";
+                    csvContent.AppendLine($"\"{venta.NumeroVenta}\",\"{venta.FechaVenta:dd/MM/yyyy}\",\"{venta.NombreVendedor}\",\"{venta.NombreCliente}\",\"{empresa}\",\"{venta.Tipo}\",\"{venta.Estado}\",{venta.Total:F2},\"{venta.Observaciones?.Replace("\"", "\"\"")}\"");
+                }
+
+                csvContent.AppendLine();
+                csvContent.AppendLine("ANÃLISIS POR VENDEDOR");
+                csvContent.AppendLine("Vendedor,Cantidad Ventas,Total Facturado,Promedio por Venta");
+                
+                var porVendedor = ventasCompletadas.GroupBy(v => v.NombreVendedor)
+                                                  .Select(g => new
+                                                  {
+                                                      Vendedor = g.Key,
+                                                      Cantidad = g.Count(),
+                                                      Total = g.Sum(v => v.Total),
+                                                      Promedio = g.Average(v => v.Total)
+                                                  })
+                                                  .OrderByDescending(x => x.Total);
+
+                foreach (var item in porVendedor)
+                {
+                    csvContent.AppendLine($"\"{item.Vendedor}\",{item.Cantidad},{item.Total:F2},{item.Promedio:F2}");
+                }
+
+                // Guardar con codificaciÃ³n UTF-8 con BOM para que Excel lo abra correctamente
+                var encoding = new System.Text.UTF8Encoding(true);
+                System.IO.File.WriteAllText(filePath, csvContent.ToString(), encoding);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al exportar a Excel: {ex.Message}", ex);
             }
         }
     }

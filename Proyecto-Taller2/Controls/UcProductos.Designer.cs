@@ -38,7 +38,6 @@ namespace Proyecto_Taller_2.Controls
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "UcProductos";
             this.Size = new System.Drawing.Size(1600, 985);
-            this.Load += new System.EventHandler(this.UcProductos_Load);
             this.ResumeLayout(false);
 
         }

@@ -474,21 +474,48 @@ namespace Proyecto_Taller_2.Controls
 
                 int? usuarioId = _currentUser.IdRol == 2 ? _currentUser.IdUsuario : (int?)null;
                 var fechaDesde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-                var kpis = _ventaRepo.ObtenerKpis(usuarioId, fechaDesde);
+                var fechaHasta = fechaDesde.AddMonths(1).AddDays(-1);
+                
+                var kpis = _ventaRepo.ObtenerKpis(usuarioId, fechaDesde, fechaHasta);
 
                 if (_currentUser.IdRol == 1) // Administrador
                 {
-                    cardVentasMes = MakeKpiCard("Ventas del Mes", kpis.VentasDelMes.ToString("C0"), $"+{kpis.PorcentajeVsAnterior:F1}% vs. mes anterior");
-                    cardOrdenes = MakeKpiCard("Total Órdenes", kpis.TotalOrdenes.ToString(), $"+{kpis.PorcentajeOrdenesAnterior:F1}% este mes");
-                    cardTicket = MakeKpiCard("Ticket Promedio", kpis.TicketPromedio.ToString("C0"), $"+{kpis.PorcentajeTicketAnterior:F1}% vs. promedio");
-                    cardCotizaciones = MakeKpiCard("Cotizaciones", kpis.CotizacionesPendientes.ToString(), $"{kpis.TotalCotizaciones} total este mes");
+                    // Para administradores, mostrar KPIs globales y agregar información adicional
+                    var kpisGlobales = _ventaRepo.ObtenerKpisGlobales(fechaDesde, fechaHasta);
+                    
+                    cardVentasMes = MakeKpiCard("Ventas del Mes", 
+                        kpis.VentasDelMes.ToString("C0"), 
+                        $"{FormatPorcentaje(kpis.PorcentajeVsAnterior)} vs. mes anterior");
+                        
+                    cardOrdenes = MakeKpiCard("Total Órdenes", 
+                        kpis.TotalOrdenes.ToString(), 
+                        $"{FormatPorcentaje(kpis.PorcentajeOrdenesAnterior)} este mes");
+                        
+                    cardTicket = MakeKpiCard("Ticket Promedio", 
+                        kpis.TicketPromedio.ToString("C0"), 
+                        $"{FormatPorcentaje(kpis.PorcentajeTicketAnterior)} vs. promedio");
+                        
+                    cardCotizaciones = MakeKpiCard("Cotizaciones", 
+                        kpis.CotizacionesPendientes.ToString(), 
+                        $"{kpis.TotalCotizaciones} total este mes");
                 }
                 else // Vendedor
                 {
-                    cardVentasMes = MakeKpiCard("Mis Ventas del Mes", kpis.VentasDelMes.ToString("C0"), $"+{kpis.PorcentajeVsAnterior:F1}% vs. mes anterior");
-                    cardOrdenes = MakeKpiCard("Mis Órdenes", kpis.TotalOrdenes.ToString(), $"+{kpis.PorcentajeOrdenesAnterior:F1}% este mes");
-                    cardTicket = MakeKpiCard("Mi Ticket Promedio", kpis.TicketPromedio.ToString("C0"), $"+{kpis.PorcentajeTicketAnterior:F1}% vs. promedio");
-                    cardCotizaciones = MakeKpiCard("Mis Cotizaciones", kpis.CotizacionesPendientes.ToString(), $"{kpis.TotalCotizaciones} total este mes");
+                    cardVentasMes = MakeKpiCard("Mis Ventas del Mes", 
+                        kpis.VentasDelMes.ToString("C0"), 
+                        $"{FormatPorcentaje(kpis.PorcentajeVsAnterior)} vs. mes anterior");
+                        
+                    cardOrdenes = MakeKpiCard("Mis Órdenes", 
+                        kpis.TotalOrdenes.ToString(), 
+                        $"{FormatPorcentaje(kpis.PorcentajeOrdenesAnterior)} este mes");
+                        
+                    cardTicket = MakeKpiCard("Mi Ticket Promedio", 
+                        kpis.TicketPromedio.ToString("C0"), 
+                        $"{FormatPorcentaje(kpis.PorcentajeTicketAnterior)} vs. promedio");
+                        
+                    cardCotizaciones = MakeKpiCard("Mis Cotizaciones", 
+                        kpis.CotizacionesPendientes.ToString(), 
+                        $"{kpis.TotalCotizaciones} total este mes");
                 }
 
                 tlKpis.Controls.Add(cardVentasMes, 0, 0);
@@ -500,7 +527,20 @@ namespace Proyecto_Taller_2.Controls
             {
                 MessageBox.Show($"Error al cargar KPIs: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                
+                // Mostrar KPIs vacíos en caso de error
+                tlKpis.Controls.Clear();
+                tlKpis.Controls.Add(MakeKpiCard("Ventas del Mes", "$0", "Sin datos"), 0, 0);
+                tlKpis.Controls.Add(MakeKpiCard("Órdenes", "0", "Sin datos"), 1, 0);
+                tlKpis.Controls.Add(MakeKpiCard("Ticket Promedio", "$0", "Sin datos"), 2, 0);
+                tlKpis.Controls.Add(MakeKpiCard("Cotizaciones", "0", "Sin datos"), 3, 0);
             }
+        }
+
+        private string FormatPorcentaje(decimal porcentaje)
+        {
+            var signo = porcentaje >= 0 ? "+" : "";
+            return $"{signo}{porcentaje:F1}%";
         }
 
         private void AplicarFiltros()

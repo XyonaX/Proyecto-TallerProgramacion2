@@ -1,4 +1,4 @@
-using System;
+锘縰sing System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +16,7 @@ namespace Proyecto_Taller_2.Forms
     public partial class NuevaVentaForm : Form
     {
         private readonly VentaRepository _ventaRepo;
+        private readonly ProductoRepository _productoRepo;
         private readonly Usuario _currentUser;
         private readonly List<Cliente> _clientes;
         private readonly List<DetalleVenta> _detalles;
@@ -36,6 +37,7 @@ namespace Proyecto_Taller_2.Forms
         {
             _currentUser = currentUser;
             _ventaRepo = new VentaRepository(BDGeneral.ConnectionString);
+            _productoRepo = new ProductoRepository(BDGeneral.ConnectionString);
             _clientes = new List<Cliente>();
             _detalles = new List<DetalleVenta>();
 
@@ -50,11 +52,10 @@ namespace Proyecto_Taller_2.Forms
             
             // Form
             this.Text = "Nueva Venta";
-            this.Size = new Size(800, 600);
+            this.Size = new Size(900, 700);
             this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MinimumSize = new Size(800, 600);
 
             // Root Layout
             tlRoot = new TableLayoutPanel
@@ -73,58 +74,64 @@ namespace Proyecto_Taller_2.Forms
             {
                 Text = "Datos Generales",
                 Dock = DockStyle.Fill,
-                Padding = new Padding(12)
+                Padding = new Padding(12),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
 
             var tlDatos = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 4,
-                RowCount = 3
+                RowCount = 4
             };
             
             // Fila 1
-            tlDatos.Controls.Add(new Label { Text = "Cliente:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 0, 0);
-            tlDatos.Controls.Add(new Label { Text = "Tipo:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 2, 0);
+            tlDatos.Controls.Add(new Label { Text = "Cliente:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, Font = new Font("Segoe UI", 9, FontStyle.Bold) }, 0, 0);
+            tlDatos.Controls.Add(new Label { Text = "Tipo:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, Font = new Font("Segoe UI", 9, FontStyle.Bold) }, 2, 0);
 
             cbCliente = new ComboBox
             {
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Margin = new Padding(0, 4, 8, 0)
+                Margin = new Padding(0, 4, 8, 0),
+                Font = new Font("Segoe UI", 9)
             };
 
             cbTipo = new ComboBox
             {
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Margin = new Padding(0, 4, 0, 0)
+                Margin = new Padding(0, 4, 0, 0),
+                Font = new Font("Segoe UI", 9)
             };
-            cbTipo.Items.AddRange(new[] { "Venta", "Cotizaci髇" });
+            cbTipo.Items.AddRange(new[] { "Venta", "Cotizaci贸n" });
 
             tlDatos.SetColumnSpan(cbCliente, 2);
             tlDatos.Controls.Add(cbCliente, 0, 1);
             tlDatos.Controls.Add(cbTipo, 2, 1);
 
             // Fila 2
-            tlDatos.Controls.Add(new Label { Text = "Fecha:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 0, 2);
+            tlDatos.Controls.Add(new Label { Text = "Fecha:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, Font = new Font("Segoe UI", 9, FontStyle.Bold) }, 0, 2);
             
             dtpFecha = new DateTimePicker
             {
                 Dock = DockStyle.Fill,
                 Format = DateTimePickerFormat.Short,
                 Value = DateTime.Now,
-                Margin = new Padding(0, 4, 8, 0)
+                Margin = new Padding(0, 4, 8, 0),
+                Font = new Font("Segoe UI", 9)
             };
             tlDatos.Controls.Add(dtpFecha, 0, 3);
 
             // Observaciones
-            tlDatos.Controls.Add(new Label { Text = "Observaciones:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom }, 1, 2);
+            tlDatos.Controls.Add(new Label { Text = "Observaciones:", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, Font = new Font("Segoe UI", 9, FontStyle.Bold) }, 1, 2);
             txtObservaciones = new TextBox
             {
                 Dock = DockStyle.Fill,
                 Multiline = true,
-                Margin = new Padding(0, 4, 0, 0)
+                Margin = new Padding(0, 4, 0, 0),
+                Font = new Font("Segoe UI", 9),
+                ScrollBars = ScrollBars.Vertical
             };
             tlDatos.SetColumnSpan(txtObservaciones, 3);
             tlDatos.Controls.Add(txtObservaciones, 1, 3);
@@ -145,7 +152,8 @@ namespace Proyecto_Taller_2.Forms
             {
                 Text = "Detalles de la Venta",
                 Dock = DockStyle.Fill,
-                Padding = new Padding(12)
+                Padding = new Padding(12),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
 
             var pnlDetalles = new Panel { Dock = DockStyle.Fill };
@@ -154,26 +162,36 @@ namespace Proyecto_Taller_2.Forms
             var flBotones = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
-                Height = 40,
+                Height = 50,
                 FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 0, 0, 8)
+                Padding = new Padding(0, 0, 0, 12)
             };
 
             btnAgregar = new Button
             {
-                Text = "Agregar Item",
-                Height = 28,
+                Text = "[+] Seleccionar Productos",
+                Height = 36,
                 AutoSize = true,
-                Margin = new Padding(0, 0, 8, 0)
+                Margin = new Padding(0, 0, 12, 0),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9, FontStyle.Bold)
             };
+            btnAgregar.FlatAppearance.BorderSize = 0;
 
             btnQuitar = new Button
             {
-                Text = "Quitar Seleccionado",
-                Height = 28,
+                Text = "[-] Quitar Seleccionado",
+                Height = 36,
                 AutoSize = true,
-                Enabled = false
+                Enabled = false,
+                BackColor = Color.FromArgb(220, 53, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9)
             };
+            btnQuitar.FlatAppearance.BorderSize = 0;
 
             flBotones.Controls.Add(btnAgregar);
             flBotones.Controls.Add(btnQuitar);
@@ -184,34 +202,99 @@ namespace Proyecto_Taller_2.Forms
                 Dock = DockStyle.Fill,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
+                AllowUserToResizeRows = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 AutoGenerateColumns = false,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
-                ColumnHeadersHeight = 35,
-                RowHeadersVisible = false
+                ColumnHeadersHeight = 40,
+                RowHeadersVisible = false,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.Fixed3D,
+                GridColor = Color.FromArgb(230, 230, 230),
+                RowTemplate = { Height = 35 },
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
 
-            // Columnas del grid
+            // Estilo de encabezados
+            dgvDetalles.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 255);
+            dgvDetalles.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(0, 51, 102);
+            dgvDetalles.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvDetalles.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Estilo de filas
+            dgvDetalles.DefaultCellStyle.SelectionBackColor = Color.FromArgb(220, 235, 250);
+            dgvDetalles.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvDetalles.DefaultCellStyle.Font = new Font("Segoe UI", 9);
+            dgvDetalles.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
+
+            // Columnas del grid mejoradas
             dgvDetalles.Columns.AddRange(new DataGridViewColumn[]
             {
-                new DataGridViewTextBoxColumn { Name = "Producto", HeaderText = "Producto", Width = 200, DataPropertyName = "NombreProducto" },
-                new DataGridViewTextBoxColumn { Name = "SKU", HeaderText = "SKU", Width = 100, DataPropertyName = "SkuProducto" },
-                new DataGridViewTextBoxColumn { Name = "Cantidad", HeaderText = "Cantidad", Width = 80, DataPropertyName = "Cantidad" },
+                new DataGridViewTextBoxColumn 
+                { 
+                    Name = "Producto", 
+                    HeaderText = "Producto", 
+                    DataPropertyName = "NombreProducto",
+                    FillWeight = 40,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Alignment = DataGridViewContentAlignment.MiddleLeft,
+                        Padding = new Padding(8, 0, 0, 0)
+                    }
+                },
+                new DataGridViewTextBoxColumn 
+                { 
+                    Name = "SKU", 
+                    HeaderText = "SKU", 
+                    DataPropertyName = "SkuProducto",
+                    FillWeight = 15,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Alignment = DataGridViewContentAlignment.MiddleCenter,
+                        Font = new Font("Consolas", 9, FontStyle.Regular),
+                        ForeColor = Color.FromArgb(0, 102, 153)
+                    }
+                },
+                new DataGridViewTextBoxColumn 
+                { 
+                    Name = "Cantidad", 
+                    HeaderText = "Cantidad", 
+                    DataPropertyName = "Cantidad",
+                    FillWeight = 10,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Alignment = DataGridViewContentAlignment.MiddleCenter,
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(0, 102, 51)
+                    }
+                },
                 new DataGridViewTextBoxColumn 
                 { 
                     Name = "PrecioUnitario", 
                     HeaderText = "Precio Unit.", 
-                    Width = 100, 
                     DataPropertyName = "PrecioUnitario",
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "C2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                    FillWeight = 15,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Format = "C2", 
+                        Alignment = DataGridViewContentAlignment.MiddleRight,
+                        Padding = new Padding(0, 0, 8, 0)
+                    }
                 },
                 new DataGridViewTextBoxColumn 
                 { 
                     Name = "Subtotal", 
                     HeaderText = "Subtotal", 
-                    Width = 100,
                     DataPropertyName = "Subtotal",
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "C2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                    FillWeight = 20,
+                    DefaultCellStyle = new DataGridViewCellStyle 
+                    { 
+                        Format = "C2", 
+                        Alignment = DataGridViewContentAlignment.MiddleRight,
+                        Padding = new Padding(0, 0, 8, 0),
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(0, 102, 51)
+                    }
                 }
             });
 
@@ -221,17 +304,20 @@ namespace Proyecto_Taller_2.Forms
             var pnlTotal = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 40,
-                Padding = new Padding(0, 8, 0, 0)
+                Height = 60,
+                Padding = new Padding(0, 12, 0, 0),
+                BackColor = Color.FromArgb(245, 250, 255)
             };
 
             lblTotal = new Label
             {
                 Text = "TOTAL: $0.00",
                 Dock = DockStyle.Right,
-                Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight,
-                AutoSize = true
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter,
+                AutoSize = true,
+                ForeColor = Color.FromArgb(0, 102, 51),
+                Padding = new Padding(20, 10, 20, 10)
             };
 
             pnlTotal.Controls.Add(lblTotal);
@@ -253,18 +339,28 @@ namespace Proyecto_Taller_2.Forms
             btnCancelar = new Button
             {
                 Text = "Cancelar",
-                Height = 34,
-                Width = 100,
-                DialogResult = DialogResult.Cancel
+                Height = 38,
+                Width = 110,
+                DialogResult = DialogResult.Cancel,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(108, 117, 125),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9)
             };
+            btnCancelar.FlatAppearance.BorderSize = 0;
 
             btnGuardar = new Button
             {
-                Text = "Guardar",
-                Height = 34,
-                Width = 100,
-                Margin = new Padding(8, 0, 0, 0)
+                Text = "[SAVE] Guardar",
+                Height = 38,
+                Width = 130,
+                Margin = new Padding(12, 0, 0, 0),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9, FontStyle.Bold)
             };
+            btnGuardar.FlatAppearance.BorderSize = 0;
 
             flAcciones.Controls.Add(btnCancelar);
             flAcciones.Controls.Add(btnGuardar);
@@ -286,11 +382,11 @@ namespace Proyecto_Taller_2.Forms
 
         private void ConfigurarFormulario(string tipo)
         {
-            if (tipo == "Cotizaci髇")
+            if (tipo == "Cotizaci贸n")
             {
-                this.Text = "Nueva Cotizaci髇";
-                gbDetalles.Text = "Detalles de la Cotizaci髇";
-                cbTipo.SelectedItem = "Cotizaci髇";
+                this.Text = "Nueva Cotizaci贸n";
+                gbDetalles.Text = "Detalles de la Cotizaci贸n";
+                cbTipo.SelectedItem = "Cotizaci贸n";
             }
             else
             {
@@ -311,8 +407,19 @@ namespace Proyecto_Taller_2.Forms
                 cbCliente.ValueMember = "IdCliente";
                 cbCliente.DataSource = _clientes;
 
+                // Asegurar que hay una selecci贸n v谩lida
                 if (cbCliente.Items.Count > 0)
+                {
                     cbCliente.SelectedIndex = 0;
+                }
+                else
+                {
+                    MessageBox.Show("No hay clientes disponibles. Por favor, agregue al menos un cliente antes de crear una venta.", 
+                        "Sin clientes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -323,18 +430,32 @@ namespace Proyecto_Taller_2.Forms
 
         private void BtnAgregar_Click(object sender, EventArgs e)
         {
-            // Simulaci髇 de agregar un producto (en una implementaci髇 real ser韆 un formulario separado)
-            using (var form = new AgregarItemForm())
+            // Nueva funcionalidad mejorada para seleccionar productos
+            using (var form = new SeleccionarProductosForm(_productoRepo, _detalles))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    var detalle = form.DetalleCreado;
-                    if (detalle != null)
+                    var productosSeleccionados = form.ProductosSeleccionados;
+                    
+                    foreach (var producto in productosSeleccionados)
                     {
-                        _detalles.Add(detalle);
-                        ActualizarTotal();
-                        RefrescarGrid();
+                        // Verificar si el producto ya existe en la lista
+                        var existente = _detalles.FirstOrDefault(d => d.IdProducto == producto.IdProducto);
+                        
+                        if (existente != null)
+                        {
+                            // Si existe, actualizar cantidad
+                            existente.Cantidad += producto.Cantidad;
+                        }
+                        else
+                        {
+                            // Si no existe, agregar nuevo
+                            _detalles.Add(producto);
+                        }
                     }
+                    
+                    ActualizarTotal();
+                    RefrescarGrid();
                 }
             }
         }
@@ -346,28 +467,53 @@ namespace Proyecto_Taller_2.Forms
                 var index = dgvDetalles.SelectedRows[0].Index;
                 if (index >= 0 && index < _detalles.Count)
                 {
-                    _detalles.RemoveAt(index);
-                    ActualizarTotal();
-                    RefrescarGrid();
+                    var detalle = _detalles[index];
+                    var resultado = MessageBox.Show(
+                        $"驴Est谩 seguro de quitar '{detalle.NombreProducto}' de la venta?",
+                        "Confirmar eliminaci贸n",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                        
+                    if (resultado == DialogResult.Yes)
+                    {
+                        _detalles.RemoveAt(index);
+                        ActualizarTotal();
+                        RefrescarGrid();
+                    }
                 }
             }
         }
 
         private void DgvDetalles_SelectionChanged(object sender, EventArgs e)
         {
-            btnQuitar.Enabled = dgvDetalles.SelectedRows.Count > 0;
+            btnQuitar.Enabled = dgvDetalles.SelectedRows.Count > 0 && _detalles.Count > 0;
         }
 
         private void RefrescarGrid()
         {
             dgvDetalles.DataSource = null;
             dgvDetalles.DataSource = _detalles;
+            dgvDetalles.Refresh();
+            
+            // Ajustar altura de filas si es necesario
+            foreach (DataGridViewRow row in dgvDetalles.Rows)
+            {
+                row.Height = 35;
+            }
         }
 
         private void ActualizarTotal()
         {
             var total = _detalles.Sum(d => d.Subtotal);
             lblTotal.Text = $"TOTAL: {total:C2}";
+            
+            // Cambiar color seg煤n el monto
+            if (total > 1000)
+                lblTotal.ForeColor = Color.FromArgb(0, 102, 51); // Verde
+            else if (total > 500)
+                lblTotal.ForeColor = Color.FromArgb(255, 165, 0); // Naranja
+            else
+                lblTotal.ForeColor = Color.FromArgb(108, 117, 125); // Gris
         }
 
         private void BtnGuardar_Click(object sender, EventArgs e)
@@ -377,13 +523,25 @@ namespace Proyecto_Taller_2.Forms
                 if (!ValidarFormulario())
                     return;
 
+                // Mostrar confirmaci贸n antes de guardar
+                var tipoOperacion = cbTipo.SelectedItem.ToString();
+                var mensaje = tipoOperacion == "Venta" 
+                    ? "驴Confirma la creaci贸n de esta VENTA? Esto actualizar谩 el stock de los productos."
+                    : "驴Confirma la creaci贸n de esta COTIZACI脫N?";
+
+                var confirmacion = MessageBox.Show(mensaje, "Confirmar " + tipoOperacion, 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (confirmacion != DialogResult.Yes)
+                    return;
+
                 var venta = new Venta
                 {
                     IdUsuario = _currentUser.IdUsuario,
-                    IdCliente = (int)cbCliente.SelectedValue,
+                    IdCliente = Convert.ToInt32(cbCliente.SelectedValue),
                     FechaVenta = dtpFecha.Value,
-                    Tipo = cbTipo.SelectedItem.ToString(),
-                    Estado = cbTipo.SelectedItem.ToString() == "Cotizaci髇" ? "Pendiente" : "Completada",
+                    Tipo = tipoOperacion,
+                    Estado = tipoOperacion == "Cotizaci贸n" ? "Pendiente" : "Completada",
                     Total = _detalles.Sum(d => d.Subtotal),
                     Observaciones = txtObservaciones.Text.Trim(),
                     Detalles = _detalles.ToList()
@@ -394,11 +552,22 @@ namespace Proyecto_Taller_2.Forms
 
                 VentaCreada = venta;
 
-                MessageBox.Show($"{venta.Tipo} creada exitosamente.\nN鷐ero: {venta.NumeroVenta}", 
-                    "蓌ito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var mensajeExito = $"{venta.Tipo} creada exitosamente.\nN煤mero: {venta.NumeroVenta}";
+                if (venta.Tipo == "Venta")
+                {
+                    mensajeExito += "\n\nEl stock de los productos ha sido actualizado autom谩ticamente.";
+                }
+
+                MessageBox.Show(mensajeExito, "脡xito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Error de stock insuficiente
+                MessageBox.Show($"No se pudo completar la venta:\n\n{ex.Message}", "Stock Insuficiente", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
@@ -409,159 +578,39 @@ namespace Proyecto_Taller_2.Forms
 
         private bool ValidarFormulario()
         {
-            if (cbCliente.SelectedValue == null)
+            // Validar que hay un cliente seleccionado
+            if (cbCliente.SelectedIndex == -1 || cbCliente.SelectedValue == null || !(cbCliente.SelectedValue is int clienteId) || clienteId <= 0)
             {
-                MessageBox.Show("Debe seleccionar un cliente.", "Validaci髇", 
+                MessageBox.Show("Debe seleccionar un cliente v谩lido.", "Validaci贸n", 
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbCliente.Focus();
                 return false;
             }
 
             if (_detalles.Count == 0)
             {
-                MessageBox.Show("Debe agregar al menos un item.", "Validaci髇", 
+                MessageBox.Show("Debe agregar al menos un producto a la venta.", "Validaci贸n", 
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                btnAgregar.Focus();
                 return false;
             }
 
-            return true;
-        }
-    }
-
-    // Formulario auxiliar para agregar items
-    public partial class AgregarItemForm : Form
-    {
-        private TextBox txtProducto, txtSku, txtCantidad, txtPrecio;
-        private Button btnOk, btnCancelar;
-
-        public DetalleVenta DetalleCreado { get; private set; }
-
-        public AgregarItemForm()
-        {
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            this.Text = "Agregar Item";
-            this.Size = new Size(400, 250);
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-
-            var tl = new TableLayoutPanel
+            // Validar que todos los productos tienen cantidad v谩lida
+            foreach (var detalle in _detalles)
             {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 6,
-                Padding = new Padding(16)
-            };
-
-            // Producto
-            tl.Controls.Add(new Label { Text = "Producto:", Anchor = AnchorStyles.Left }, 0, 0);
-            txtProducto = new TextBox { Dock = DockStyle.Fill };
-            tl.Controls.Add(txtProducto, 1, 0);
-
-            // SKU
-            tl.Controls.Add(new Label { Text = "SKU:", Anchor = AnchorStyles.Left }, 0, 1);
-            txtSku = new TextBox { Dock = DockStyle.Fill };
-            tl.Controls.Add(txtSku, 1, 1);
-
-            // Cantidad
-            tl.Controls.Add(new Label { Text = "Cantidad:", Anchor = AnchorStyles.Left }, 0, 2);
-            txtCantidad = new TextBox { Dock = DockStyle.Fill, Text = "1" };
-            tl.Controls.Add(txtCantidad, 1, 2);
-
-            // Precio
-            tl.Controls.Add(new Label { Text = "Precio Unitario:", Anchor = AnchorStyles.Left }, 0, 3);
-            txtPrecio = new TextBox { Dock = DockStyle.Fill };
-            tl.Controls.Add(txtPrecio, 1, 3);
-
-            // Botones
-            var flBotones = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.RightToLeft
-            };
-
-            btnCancelar = new Button
-            {
-                Text = "Cancelar",
-                DialogResult = DialogResult.Cancel,
-                Height = 28,
-                Width = 80
-            };
-
-            btnOk = new Button
-            {
-                Text = "Agregar",
-                Height = 28,
-                Width = 80,
-                Margin = new Padding(8, 0, 0, 0)
-            };
-
-            btnOk.Click += BtnOk_Click;
-
-            flBotones.Controls.Add(btnCancelar);
-            flBotones.Controls.Add(btnOk);
-
-            tl.SetColumnSpan(flBotones, 2);
-            tl.Controls.Add(flBotones, 0, 5);
-
-            // Estilos de fila
-            tl.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            tl.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            tl.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            tl.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            tl.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            tl.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
-
-            tl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-            tl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-
-            this.Controls.Add(tl);
-        }
-
-        private void BtnOk_Click(object sender, EventArgs e)
-        {
-            if (Validar())
-            {
-                var cantidad = int.Parse(txtCantidad.Text);
-                var precio = decimal.Parse(txtPrecio.Text);
-
-                DetalleCreado = new DetalleVenta
+                if (detalle.Cantidad <= 0)
                 {
-                    IdProducto = 1, // Simulado
-                    NombreProducto = txtProducto.Text.Trim(),
-                    SkuProducto = txtSku.Text.Trim(),
-                    Cantidad = cantidad,
-                    PrecioUnitario = precio
-                    // Subtotal se calcula autom醫icamente
-                };
-
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-        }
-
-        private bool Validar()
-        {
-            if (string.IsNullOrWhiteSpace(txtProducto.Text))
-            {
-                MessageBox.Show("Ingrese el nombre del producto.", "Validaci髇");
-                return false;
-            }
-
-            if (!int.TryParse(txtCantidad.Text, out int cantidad) || cantidad <= 0)
-            {
-                MessageBox.Show("Ingrese una cantidad v醠ida.", "Validaci髇");
-                return false;
-            }
-
-            if (!decimal.TryParse(txtPrecio.Text, out decimal precio) || precio <= 0)
-            {
-                MessageBox.Show("Ingrese un precio v醠ido.", "Validaci髇");
-                return false;
+                    MessageBox.Show($"La cantidad para '{detalle.NombreProducto}' debe ser mayor a 0.", 
+                        "Validaci贸n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                
+                if (detalle.PrecioUnitario <= 0)
+                {
+                    MessageBox.Show($"El precio para '{detalle.NombreProducto}' debe ser mayor a 0.", 
+                        "Validaci贸n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
             }
 
             return true;

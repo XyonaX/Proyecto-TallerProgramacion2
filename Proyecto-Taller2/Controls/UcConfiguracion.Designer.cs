@@ -35,6 +35,9 @@ namespace Proyecto_Taller_2
         private TextBox txtBackup;
         private Button btnElegirBackup;
         private CheckBox chkAutoBackup;
+        private Button btnCrearBackup;
+        private Button btnRestaurarBackup;
+        private Label lblUltimoBackup;
         private Button btnExportar;
         private Button btnImportar;
         private Button btnReset;
@@ -151,7 +154,7 @@ namespace Proyecto_Taller_2
             tlDatos.AutoSize = true;
             tlDatos.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tlDatos.ColumnCount = 3;
-            tlDatos.RowCount = 5;
+            tlDatos.RowCount = 7; // Aumentado de 5 a 7
             tlDatos.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));        // etiqueta
             tlDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));   // campo elástico
             tlDatos.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));        // botón
@@ -172,12 +175,57 @@ namespace Proyecto_Taller_2
             tlDatos.Controls.Add(this.txtBackup,      1, 1);
             tlDatos.Controls.Add(this.btnElegirBackup,2, 1);
 
-            // fila 2: backup automático
+            // fila 2: información último backup
+            this.lblUltimoBackup = new Label 
+            { 
+                Text = "Cargando información de backup...", 
+                AutoSize = true, 
+                Margin = new Padding(0, 8, 0, 0),
+                ForeColor = Color.FromArgb(100, 100, 100)
+            };
+            tlDatos.Controls.Add(this.lblUltimoBackup, 0, 2);
+            tlDatos.SetColumnSpan(this.lblUltimoBackup, 3);
+
+            // fila 3: botones de backup
+            this.btnCrearBackup = new Button 
+            { 
+                Text = "Crear Backup Ahora", 
+                AutoSize = true,
+                BackColor = Color.FromArgb(34, 139, 34),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Height = 32,
+                Cursor = Cursors.Hand,
+                Margin = new Padding(0, 8, 0, 0)
+            };
+            this.btnCrearBackup.FlatAppearance.BorderSize = 0;
+
+            this.btnRestaurarBackup = new Button 
+            { 
+                Text = "Restaurar Backup", 
+                AutoSize = true,
+                Margin = new Padding(8, 8, 0, 0),
+                Height = 32
+            };
+
+            var filaBackup = new FlowLayoutPanel 
+            { 
+                FlowDirection = FlowDirection.LeftToRight, 
+                AutoSize = true, 
+                WrapContents = false 
+            };
+            filaBackup.Controls.Add(this.btnCrearBackup);
+            filaBackup.Controls.Add(this.btnRestaurarBackup);
+
+            tlDatos.Controls.Add(filaBackup, 0, 3);
+            tlDatos.SetColumnSpan(filaBackup, 3);
+
+            // fila 4: backup automático
             this.chkAutoBackup = new CheckBox { Text = "Hacer backup automático al cerrar", AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
-            tlDatos.Controls.Add(this.chkAutoBackup, 0, 2);
+            tlDatos.Controls.Add(this.chkAutoBackup, 0, 4);
             tlDatos.SetColumnSpan(this.chkAutoBackup, 3);
 
-            // fila 3: exportar / importar
+            // fila 5: exportar / importar
             this.btnExportar = new Button { Text = "Exportar configuración…", AutoSize = true };
             this.btnImportar = new Button { Text = "Importar configuración…", AutoSize = true, Margin = new Padding(8, 0, 0, 0) };
 
@@ -185,12 +233,12 @@ namespace Proyecto_Taller_2
             filaEI.Controls.Add(this.btnExportar);
             filaEI.Controls.Add(this.btnImportar);
 
-            tlDatos.Controls.Add(filaEI, 0, 3);
+            tlDatos.Controls.Add(filaEI, 0, 5);
             tlDatos.SetColumnSpan(filaEI, 3);
 
-            // fila 4: reset
+            // fila 6: reset
             this.btnReset = new Button { Text = "Restablecer valores", AutoSize = true, Margin = new Padding(0, 8, 0, 0) };
-            tlDatos.Controls.Add(this.btnReset, 0, 4);
+            tlDatos.Controls.Add(this.btnReset, 0, 6);
             tlDatos.SetColumnSpan(this.btnReset, 3);
 
             // montar en card

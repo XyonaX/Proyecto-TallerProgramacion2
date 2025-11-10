@@ -30,7 +30,7 @@ namespace Proyecto_Taller_2.Forms
             this.SuspendLayout();
             
             // Form
-            this.Text = "Análisis Detallado de Ventas";
+            this.Text = "AnÃ¡lisis Detallado de Ventas";
             this.Size = new Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -70,46 +70,56 @@ namespace Proyecto_Taller_2.Forms
         {
             var panel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20), AutoScroll = true };
 
-            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada").ToList();
+            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
             var totalFacturado = ventasCompletadas.Sum(v => v.Total);
             var promedioVenta = ventasCompletadas.Count > 0 ? ventasCompletadas.Average(v => v.Total) : 0;
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("ANÁLISIS EJECUTIVO DE VENTAS");
+            sb.AppendLine("ANÃLISIS EJECUTIVO DE VENTAS");
             sb.AppendLine(new string('=', 50));
             sb.AppendLine();
-            sb.AppendLine("?? MÉTRICAS PRINCIPALES");
-            sb.AppendLine($"• Total facturado: {totalFacturado:C2}");
-            sb.AppendLine($"• Número de ventas: {ventasCompletadas.Count}");
-            sb.AppendLine($"• Ticket promedio: {promedioVenta:C2}");
-            sb.AppendLine($"• Tasa de conversión: {CalcularTasaConversion():P1}");
+            sb.AppendLine("ðŸ“Š MÃ‰TRICAS PRINCIPALES");
+            sb.AppendLine($"â€¢ Total facturado: {totalFacturado:C2}");
+            sb.AppendLine($"â€¢ NÃºmero de ventas: {ventasCompletadas.Count}");
+            sb.AppendLine($"â€¢ Ticket promedio: {promedioVenta:C2}");
+            sb.AppendLine($"â€¢ Tasa de conversiÃ³n: {CalcularTasaConversion():P1}");
             sb.AppendLine();
 
-            sb.AppendLine("?? RENDIMIENTO POR VENDEDOR");
-            var topVendedores = ventasCompletadas.GroupBy(v => v.NombreVendedor)
-                                               .Select(g => new { Vendedor = g.Key, Total = g.Sum(v => v.Total), Ventas = g.Count() })
-                                               .OrderByDescending(x => x.Total)
-                                               .Take(5);
-
-            foreach (var vendedor in topVendedores)
+            if (ventasCompletadas.Any())
             {
-                sb.AppendLine($"• {vendedor.Vendedor}: {vendedor.Total:C0} ({vendedor.Ventas} ventas)");
-            }
-            sb.AppendLine();
+                sb.AppendLine("ðŸ‘¥ RENDIMIENTO POR VENDEDOR");
+                var topVendedores = ventasCompletadas.GroupBy(v => v.NombreVendedor)
+                                                   .Select(g => new { Vendedor = g.Key, Total = g.Sum(v => v.Total), Ventas = g.Count() })
+                                                   .OrderByDescending(x => x.Total)
+                                                   .Take(5);
 
-            sb.AppendLine("?? TOP CLIENTES");
+                foreach (var vendedor in topVendedores)
+                {
+                    sb.AppendLine($"â€¢ {vendedor.Vendedor}: {vendedor.Total:C0} ({vendedor.Ventas} ventas)");
+                }
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("ðŸŽ¯ TOP CLIENTES");
             var topClientes = ventasCompletadas.GroupBy(v => v.NombreCliente)
                                              .Select(g => new { Cliente = g.Key, Total = g.Sum(v => v.Total), Ventas = g.Count() })
                                              .OrderByDescending(x => x.Total)
                                              .Take(5);
 
-            foreach (var cliente in topClientes)
+            if (topClientes.Any())
             {
-                sb.AppendLine($"• {cliente.Cliente}: {cliente.Total:C0} ({cliente.Ventas} ventas)");
+                foreach (var cliente in topClientes)
+                {
+                    sb.AppendLine($"â€¢ {cliente.Cliente}: {cliente.Total:C0} ({cliente.Ventas} ventas)");
+                }
+            }
+            else
+            {
+                sb.AppendLine("â€¢ No hay datos disponibles");
             }
             sb.AppendLine();
 
-            sb.AppendLine("?? ANÁLISIS TEMPORAL");
+            sb.AppendLine("ðŸ“… ANÃLISIS TEMPORAL");
             var ventasPorMes = ventasCompletadas.GroupBy(v => new { v.FechaVenta.Year, v.FechaVenta.Month })
                                               .Select(g => new { 
                                                   Periodo = $"{g.Key.Year}-{g.Key.Month:D2}", 
@@ -118,9 +128,16 @@ namespace Proyecto_Taller_2.Forms
                                               })
                                               .OrderBy(x => x.Periodo);
 
-            foreach (var mes in ventasPorMes.Skip(Math.Max(0, ventasPorMes.Count() - 6)))
+            if (ventasPorMes.Any())
             {
-                sb.AppendLine($"• {mes.Periodo}: {mes.Total:C0} ({mes.Cantidad} ventas)");
+                foreach (var mes in ventasPorMes.Skip(Math.Max(0, ventasPorMes.Count() - 6)))
+                {
+                    sb.AppendLine($"â€¢ {mes.Periodo}: {mes.Total:C0} ({mes.Cantidad} ventas)");
+                }
+            }
+            else
+            {
+                sb.AppendLine("â€¢ No hay datos disponibles");
             }
 
             var rtb = new RichTextBox
@@ -140,15 +157,15 @@ namespace Proyecto_Taller_2.Forms
         {
             var panel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20), AutoScroll = true };
 
-            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada").ToList();
+            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("ANÁLISIS DE TENDENCIAS");
+            sb.AppendLine("ANÃLISIS DE TENDENCIAS");
             sb.AppendLine(new string('=', 50));
             sb.AppendLine();
 
             // Tendencia mensual
-            sb.AppendLine("?? TENDENCIA MENSUAL");
+            sb.AppendLine("ðŸ“ˆ TENDENCIA MENSUAL");
             var ventasPorMes = ventasCompletadas.GroupBy(v => new { v.FechaVenta.Year, v.FechaVenta.Month })
                                               .Select(g => new { 
                                                   Periodo = new DateTime(g.Key.Year, g.Key.Month, 1),
@@ -162,43 +179,66 @@ namespace Proyecto_Taller_2.Forms
             {
                 var ultimoMes = ventasPorMes.Last();
                 var mesAnterior = ventasPorMes[ventasPorMes.Count - 2];
-                var crecimiento = ((ultimoMes.Total - mesAnterior.Total) / mesAnterior.Total) * 100;
+                var crecimiento = mesAnterior.Total > 0 ? ((ultimoMes.Total - mesAnterior.Total) / mesAnterior.Total) * 100 : 0;
                 
-                sb.AppendLine($"• Crecimiento mes actual vs anterior: {crecimiento:+0.0;-0.0;0.0}%");
-                sb.AppendLine($"• Mes actual: {ultimoMes.Total:C0} ({ultimoMes.Cantidad} ventas)");
-                sb.AppendLine($"• Mes anterior: {mesAnterior.Total:C0} ({mesAnterior.Cantidad} ventas)");
+                sb.AppendLine($"â€¢ Crecimiento mes actual vs anterior: {crecimiento:+0.0;-0.0;0.0}%");
+                sb.AppendLine($"â€¢ Mes actual: {ultimoMes.Total:C0} ({ultimoMes.Cantidad} ventas)");
+                sb.AppendLine($"â€¢ Mes anterior: {mesAnterior.Total:C0} ({mesAnterior.Cantidad} ventas)");
+            }
+            else if (ventasPorMes.Count == 1)
+            {
+                var mes = ventasPorMes.First();
+                sb.AppendLine($"â€¢ Solo hay datos de un mes: {mes.Total:C0} ({mes.Cantidad} ventas)");
+            }
+            else
+            {
+                sb.AppendLine("â€¢ No hay datos suficientes para anÃ¡lisis de tendencia");
             }
             sb.AppendLine();
 
-            // Tendencia por día de la semana
-            sb.AppendLine("?? VENTAS POR DÍA DE LA SEMANA");
-            var ventasPorDia = ventasCompletadas.GroupBy(v => v.FechaVenta.DayOfWeek)
-                                              .Select(g => new { 
-                                                  Dia = g.Key.ToString(),
-                                                  Promedio = g.Average(v => v.Total),
-                                                  Cantidad = g.Count()
-                                              })
-                                              .OrderByDescending(x => x.Promedio);
-
-            foreach (var dia in ventasPorDia)
+            // Tendencia por dÃ­a de la semana
+            sb.AppendLine("ðŸ“… VENTAS POR DÃA DE LA SEMANA");
+            if (ventasCompletadas.Any())
             {
-                sb.AppendLine($"• {dia.Dia}: Promedio {dia.Promedio:C0} ({dia.Cantidad} ventas)");
+                var ventasPorDia = ventasCompletadas.GroupBy(v => v.FechaVenta.DayOfWeek)
+                                                  .Select(g => new { 
+                                                      Dia = TranslateDay(g.Key),
+                                                      Promedio = g.Average(v => v.Total),
+                                                      Cantidad = g.Count()
+                                                  })
+                                                  .OrderByDescending(x => x.Promedio);
+
+                foreach (var dia in ventasPorDia)
+                {
+                    sb.AppendLine($"â€¢ {dia.Dia}: Promedio {dia.Promedio:C0} ({dia.Cantidad} ventas)");
+                }
+            }
+            else
+            {
+                sb.AppendLine("â€¢ No hay datos disponibles");
             }
             sb.AppendLine();
 
-            // Análisis de estacionalidad
-            sb.AppendLine("?? ANÁLISIS ESTACIONAL");
-            var ventasPorTrimestre = ventasCompletadas.GroupBy(v => $"Q{(v.FechaVenta.Month - 1) / 3 + 1}-{v.FechaVenta.Year}")
-                                                    .Select(g => new {
-                                                        Trimestre = g.Key,
-                                                        Total = g.Sum(v => v.Total),
-                                                        Cantidad = g.Count()
-                                                    })
-                                                    .OrderBy(x => x.Trimestre);
-
-            foreach (var trimestre in ventasPorTrimestre)
+            // AnÃ¡lisis de estacionalidad
+            sb.AppendLine("ðŸ“Š ANÃLISIS ESTACIONAL");
+            if (ventasCompletadas.Any())
             {
-                sb.AppendLine($"• {trimestre.Trimestre}: {trimestre.Total:C0} ({trimestre.Cantidad} ventas)");
+                var ventasPorTrimestre = ventasCompletadas.GroupBy(v => $"Q{(v.FechaVenta.Month - 1) / 3 + 1}-{v.FechaVenta.Year}")
+                                                        .Select(g => new {
+                                                            Trimestre = g.Key,
+                                                            Total = g.Sum(v => v.Total),
+                                                            Cantidad = g.Count()
+                                                        })
+                                                        .OrderBy(x => x.Trimestre);
+
+                foreach (var trimestre in ventasPorTrimestre)
+                {
+                    sb.AppendLine($"â€¢ {trimestre.Trimestre}: {trimestre.Total:C0} ({trimestre.Cantidad} ventas)");
+                }
+            }
+            else
+            {
+                sb.AppendLine("â€¢ No hay datos disponibles");
             }
 
             var rtb = new RichTextBox
@@ -219,49 +259,56 @@ namespace Proyecto_Taller_2.Forms
             var panel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20), AutoScroll = true };
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("ANÁLISIS COMPARATIVO");
+            sb.AppendLine("ANÃLISIS COMPARATIVO");
             sb.AppendLine(new string('=', 50));
             sb.AppendLine();
 
-            // Comparación Ventas vs Cotizaciones
+            // ComparaciÃ³n Ventas vs Cotizaciones
             var ventas = _ventas.Where(v => v.Tipo == "Venta" && v.Estado == "Completada").ToList();
-            var cotizaciones = _ventas.Where(v => v.Tipo == "Cotización").ToList();
+            var cotizaciones = _ventas.Where(v => v.Tipo == "CotizaciÃ³n").ToList();
 
-            sb.AppendLine("?? VENTAS vs COTIZACIONES");
-            sb.AppendLine($"• Ventas completadas: {ventas.Count} ({ventas.Sum(v => v.Total):C0})");
-            sb.AppendLine($"• Cotizaciones totales: {cotizaciones.Count} ({cotizaciones.Sum(v => v.Total):C0})");
-            sb.AppendLine($"• Cotizaciones pendientes: {cotizaciones.Count(c => c.Estado == "Pendiente")}");
-            sb.AppendLine($"• Tasa de conversión estimada: {CalcularTasaConversion():P1}");
+            sb.AppendLine("ðŸ’° VENTAS vs COTIZACIONES");
+            sb.AppendLine($"â€¢ Ventas completadas: {ventas.Count} ({ventas.Sum(v => v.Total):C0})");
+            sb.AppendLine($"â€¢ Cotizaciones totales: {cotizaciones.Count} ({cotizaciones.Sum(v => v.Total):C0})");
+            sb.AppendLine($"â€¢ Cotizaciones pendientes: {cotizaciones.Count(c => c.Estado == "Pendiente")}");
+            sb.AppendLine($"â€¢ Tasa de conversiÃ³n estimada: {CalcularTasaConversion():P1}");
             sb.AppendLine();
 
-            // Comparación por vendedor
-            sb.AppendLine("?? COMPARACIÓN ENTRE VENDEDORES");
-            var ventasPorVendedor = ventas.GroupBy(v => v.NombreVendedor)
-                                        .Select(g => new {
-                                            Vendedor = g.Key,
-                                            Total = g.Sum(v => v.Total),
-                                            Cantidad = g.Count(),
-                                            Promedio = g.Average(v => v.Total),
-                                            MaxVenta = g.Max(v => v.Total)
-                                        })
-                                        .OrderByDescending(x => x.Total);
-
-            sb.AppendLine($"{"Vendedor",-20} {"Total",-12} {"Ventas",-8} {"Promedio",-10} {"Máxima",-10}");
-            sb.AppendLine(new string('-', 65));
-            
-            foreach (var vendedor in ventasPorVendedor)
+            // ComparaciÃ³n por vendedor
+            sb.AppendLine("ðŸ‘¥ COMPARACIÃ“N ENTRE VENDEDORES");
+            if (ventas.Any())
             {
-                sb.AppendLine($"{vendedor.Vendedor,-20} {vendedor.Total,-12:C0} {vendedor.Cantidad,-8} {vendedor.Promedio,-10:C0} {vendedor.MaxVenta,-10:C0}");
+                var ventasPorVendedor = ventas.GroupBy(v => v.NombreVendedor)
+                                            .Select(g => new {
+                                                Vendedor = g.Key,
+                                                Total = g.Sum(v => v.Total),
+                                                Cantidad = g.Count(),
+                                                Promedio = g.Average(v => v.Total),
+                                                MaxVenta = g.Max(v => v.Total)
+                                            })
+                                            .OrderByDescending(x => x.Total);
+
+                sb.AppendLine($"{"Vendedor",-20} {"Total",-12} {"Ventas",-8} {"Promedio",-10} {"MÃ¡xima",-10}");
+                sb.AppendLine(new string('-', 65));
+                
+                foreach (var vendedor in ventasPorVendedor)
+                {
+                    sb.AppendLine($"{vendedor.Vendedor,-20} {vendedor.Total,-12:C0} {vendedor.Cantidad,-8} {vendedor.Promedio,-10:C0} {vendedor.MaxVenta,-10:C0}");
+                }
+            }
+            else
+            {
+                sb.AppendLine("â€¢ No hay datos de ventas disponibles");
             }
             sb.AppendLine();
 
-            // Análisis de ticket promedio por tipo de cliente
-            sb.AppendLine("?? ANÁLISIS POR TIPO DE CLIENTE");
-            var clientesPersonaFisica = ventas.Where(v => !string.IsNullOrEmpty(v.EmpresaCliente) == false).ToList();
+            // AnÃ¡lisis de ticket promedio por tipo de cliente
+            sb.AppendLine("ðŸ¢ ANÃLISIS POR TIPO DE CLIENTE");
+            var clientesPersonaFisica = ventas.Where(v => string.IsNullOrEmpty(v.EmpresaCliente)).ToList();
             var clientesEmpresa = ventas.Where(v => !string.IsNullOrEmpty(v.EmpresaCliente)).ToList();
 
-            sb.AppendLine($"• Clientes Persona Física: {clientesPersonaFisica.Count} ventas, promedio: {(clientesPersonaFisica.Count > 0 ? clientesPersonaFisica.Average(v => v.Total) : 0):C0}");
-            sb.AppendLine($"• Clientes Empresa: {clientesEmpresa.Count} ventas, promedio: {(clientesEmpresa.Count > 0 ? clientesEmpresa.Average(v => v.Total) : 0):C0}");
+            sb.AppendLine($"â€¢ Clientes Persona FÃ­sica: {clientesPersonaFisica.Count} ventas, promedio: {(clientesPersonaFisica.Count > 0 ? clientesPersonaFisica.Average(v => v.Total) : 0):C0}");
+            sb.AppendLine($"â€¢ Clientes Empresa: {clientesEmpresa.Count} ventas, promedio: {(clientesEmpresa.Count > 0 ? clientesEmpresa.Average(v => v.Total) : 0):C0}");
 
             var rtb = new RichTextBox
             {
@@ -283,7 +330,8 @@ namespace Proyecto_Taller_2.Forms
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 3,
-                Padding = new Padding(20)
+                Padding = new Padding(20),
+                BackColor = Color.White
             };
 
             // Configurar estilos
@@ -293,17 +341,23 @@ namespace Proyecto_Taller_2.Forms
             panel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33f));
             panel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33f));
 
-            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada").ToList();
+            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
+            var totalFacturado = ventasCompletadas.Sum(v => v.Total);
+            var ticketPromedio = ventasCompletadas.Count > 0 ? ventasCompletadas.Average(v => v.Total) : 0;
+            var ventasMesActual = ventasCompletadas.Count(v => v.FechaVenta.Month == DateTime.Now.Month && v.FechaVenta.Year == DateTime.Now.Year);
+            var tasaConversion = CalcularTasaConversion();
+            var mejorVendedor = ObtenerMejorVendedor();
+            var crecimiento = CalcularCrecimientoMensual();
 
             // KPI Cards
             var kpis = new[]
             {
-                new { Titulo = "Total Facturado", Valor = ventasCompletadas.Sum(v => v.Total).ToString("C0"), Desc = "Ventas completadas" },
-                new { Titulo = "Ticket Promedio", Valor = (ventasCompletadas.Count > 0 ? ventasCompletadas.Average(v => v.Total) : 0).ToString("C0"), Desc = "Promedio por venta" },
-                new { Titulo = "Ventas del Mes", Valor = ventasCompletadas.Count(v => v.FechaVenta.Month == DateTime.Now.Month).ToString(), Desc = "Mes actual" },
-                new { Titulo = "Tasa Conversión", Valor = CalcularTasaConversion().ToString("P1"), Desc = "Cotizaciones ? Ventas" },
-                new { Titulo = "Mejor Vendedor", Valor = ObtenerMejorVendedor(), Desc = "Por volumen de ventas" },
-                new { Titulo = "Crecimiento", Valor = CalcularCrecimientoMensual().ToString("+0.0%;-0.0%;0.0%"), Desc = "vs mes anterior" }
+                new { Titulo = "Total Facturado", Valor = totalFacturado.ToString("C0"), Desc = "Ventas completadas" },
+                new { Titulo = "Ticket Promedio", Valor = ticketPromedio.ToString("C0"), Desc = "Promedio por venta" },
+                new { Titulo = "Ventas del Mes", Valor = ventasMesActual.ToString(), Desc = "Mes actual" },
+                new { Titulo = "Tasa ConversiÃ³n", Valor = tasaConversion.ToString("P1"), Desc = "Cotizaciones â†’ Ventas" },
+                new { Titulo = "Mejor Vendedor", Valor = mejorVendedor, Desc = "Por volumen de ventas" },
+                new { Titulo = "Crecimiento", Valor = crecimiento.ToString("+0.0%;-0.0%;0.0%"), Desc = "vs mes anterior" }
             };
 
             for (int i = 0; i < kpis.Length; i++)
@@ -361,16 +415,16 @@ namespace Proyecto_Taller_2.Forms
 
         private decimal CalcularTasaConversion()
         {
-            var cotizaciones = _ventas.Where(v => v.Tipo == "Cotización").Count();
+            var cotizaciones = _ventas.Where(v => v.Tipo == "CotizaciÃ³n").Count();
             var ventas = _ventas.Where(v => v.Tipo == "Venta" && v.Estado == "Completada").Count();
             
-            if (cotizaciones == 0) return 0;
+            if (cotizaciones == 0) return ventas > 0 ? 1 : 0;
             return (decimal)ventas / (cotizaciones + ventas);
         }
 
         private string ObtenerMejorVendedor()
         {
-            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada").ToList();
+            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
             if (!ventasCompletadas.Any()) return "N/A";
 
             var mejor = ventasCompletadas.GroupBy(v => v.NombreVendedor)
@@ -382,18 +436,40 @@ namespace Proyecto_Taller_2.Forms
 
         private decimal CalcularCrecimientoMensual()
         {
-            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada").ToList();
+            var ventasCompletadas = _ventas.Where(v => v.Estado == "Completada" && v.Tipo == "Venta").ToList();
             
-            var mesActual = ventasCompletadas.Where(v => v.FechaVenta.Month == DateTime.Now.Month && 
-                                                        v.FechaVenta.Year == DateTime.Now.Year)
+            var fechaActual = DateTime.Now;
+            var primerDiaMesActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
+            var primerDiaMesSiguiente = primerDiaMesActual.AddMonths(1);
+            
+            var fechaAnterior = fechaActual.AddMonths(-1);
+            var primerDiaMesAnterior = new DateTime(fechaAnterior.Year, fechaAnterior.Month, 1);
+            var primerDiaMesActual2 = primerDiaMesAnterior.AddMonths(1);
+            
+            var mesActual = ventasCompletadas.Where(v => v.FechaVenta >= primerDiaMesActual && v.FechaVenta < primerDiaMesSiguiente)
                                            .Sum(v => v.Total);
             
-            var mesAnterior = ventasCompletadas.Where(v => v.FechaVenta.Month == DateTime.Now.AddMonths(-1).Month && 
-                                                          v.FechaVenta.Year == DateTime.Now.AddMonths(-1).Year)
+            var mesAnterior = ventasCompletadas.Where(v => v.FechaVenta >= primerDiaMesAnterior && v.FechaVenta < primerDiaMesActual2)
                                             .Sum(v => v.Total);
 
-            if (mesAnterior == 0) return 0;
+            if (mesAnterior == 0) return mesActual > 0 ? 100 : 0;
             return ((mesActual - mesAnterior) / mesAnterior) * 100;
+        }
+        
+
+        private string TranslateDay(DayOfWeek day)
+        {
+            switch (day)
+            {
+                case DayOfWeek.Sunday: return "Domingo";
+                case DayOfWeek.Monday: return "Lunes";
+                case DayOfWeek.Tuesday: return "Martes";
+                case DayOfWeek.Wednesday: return "MiÃ©rcoles";
+                case DayOfWeek.Thursday: return "Jueves";
+                case DayOfWeek.Friday: return "Viernes";
+                case DayOfWeek.Saturday: return "SÃ¡bado";
+                default: return day.ToString();
+            }
         }
     }
 }

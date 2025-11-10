@@ -1,191 +1,154 @@
-﻿// UcDashboardAdmin.cs
+﻿using Proyecto_Taller_2.Data.Repositories;
+using Proyecto_Taller_2.Domain.Models.Dtos;
 using System;
+using System.Configuration;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using Proyecto_Taller_2.Domain.Entities;
 
 namespace Proyecto_Taller_2.Controls
 {
     public partial class UcDashboardAdmin : UserControl
     {
+        // Usamos el nuevo repositorio especializado
+        private readonly DashboardRepository _dashboardRepo;
+
         public UcDashboardAdmin()
         {
             InitializeComponent();
-            InitializeLayout();    // ajusta tamaños/diseño
-            LoadDashboardData();   // carga datos y crea los controles
+            // Inicializamos el repositorio con la cadena de conexión "ERP"
+            string connectionString = ConfigurationManager.ConnectionStrings["ERP"].ConnectionString;
+            _dashboardRepo = new DashboardRepository(connectionString);
+
+            InitializeLayout();
+
+            // Cargar datos al iniciar
+            this.Load += async (s, e) => await CargarDatosAsync();
         }
 
-        // Ajusta tamaños y estilos en los paneles definidos en el diseñador
-        private void InitializeLayout()
-        {
-            // Panel para KPIs: altura más baja y márgenes
-            pnlTop.Height = 150;
-            pnlTop.WrapContents = false;
-            pnlTop.FlowDirection = FlowDirection.LeftToRight;
-            pnlTop.Padding = new Padding(10);
-            pnlTop.AutoScroll = false;
-
-            // Panel central: altura más baja - FIX: Inicializar correctamente las columnas
-            pnlCenter.Height = 350;
-            pnlCenter.ColumnCount = 2;
-            
-            // Clear existing column styles and add new ones
-            pnlCenter.ColumnStyles.Clear();
-            pnlCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
-            pnlCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
-
-            // Panel inferior: ocupa el resto - FIX: Inicializar correctamente las filas y columnas
-            pnlBottom.RowCount = 1;
-            pnlBottom.ColumnCount = 2;
-            
-            // Clear existing styles and add new ones
-            pnlBottom.ColumnStyles.Clear();
-            pnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
-            pnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
-            
-            pnlBottom.RowStyles.Clear();
-            pnlBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        }
-
-        private void LoadDashboardData()
+        private async Task CargarDatosAsync()
         {
             try
             {
-                // Limpia los paneles antes de añadir controles
+                this.Cursor = Cursors.WaitCursor;
+
+                // 1. Obtener todos los datos del repositorio en una sola llamada
+                var data = await _dashboardRepo.ObtenerDatosHomeAsync();
+
+                // 2. Limpiar paneles antes de recargar
                 pnlTop.Controls.Clear();
                 pnlCenter.Controls.Clear();
                 pnlBottom.Controls.Clear();
 
-                // Crear KPIs (puedes ajustar tamaños aquí)
-                CreateKPI("Ventas Totales", "$2,847,392", "+12.5% vs. mes anterior");
-                CreateKPI("Clientes Activos", "1,247", "+8.2% vs. mes anterior");
-                CreateKPI("Productos en Stock", "3,456", "-2.1% vs. mes anterior");
-                CreateKPI("Margen de Ganancia", "23.4%", "+1.8% vs. mes anterior");
+                // 3. Llenar KPIs Superiores
+                CreateKPI("Ventas Totales", data.VentasTotales.ToString("C0"), FormatPorcentaje(data.PorcentajeVentasVsAnterior) + " vs. mes anterior");
+                CreateKPI("Órdenes Activas", data.OrdenesActivas.ToString(), FormatPorcentaje(data.PorcentajeOrdenesVsAnterior) + " vs. mes anterior");
+                CreateKPI("Ticket Promedio", data.TicketPromedio.ToString("C0"), FormatPorcentaje(data.PorcentajeTicketVsAnterior) + " vs. mes anterior");
+                CreateKPI("Vendedores Activos", $"{data.VendedoresActivos}/{data.TotalVendedores}", $"Productividad prom: {data.ProductividadPromedio:C0}");
 
-                // Crear gráfico de ventas
-                CreateSalesChart();
+                // 4. Crear Gráfico Central
+                CreateSalesChart(data);
 
-                // Crear lista de ventas recientes
-                CreateRecentSales();
+                // 5. Crear Lista Top Vendedores
+                CreateTopVendedores(data);
 
-                // Crear paneles de stock
-                CreateStockPanels();
+                // 6. Crear Paneles Inferiores (Stock por Categoría y Alertas)
+                CreateBottomPanels(data);
 
-                // Crear alertas del sistema
-                CreateAlertsPanels();
             }
             catch (Exception ex)
             {
-                // Log error and show a simple error message instead of crashing
-                var errorLabel = new Label
-                {
-                    Text = $"Error cargando dashboard: {ex.Message}",
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    ForeColor = Color.Red
-                };
-                this.Controls.Clear();
-                this.Controls.Add(errorLabel);
+                MessageBox.Show($"Error al cargar el dashboard: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        private string FormatPorcentaje(decimal porcentaje)
+        {
+            return (porcentaje >= 0 ? "+" : "") + porcentaje.ToString("F1") + "%";
+        }
+
+        // =======================================================
+        // MÉTODOS DE CREACIÓN DE UI (Actualizados para usar DTO)
+        // =======================================================
+
+        private void InitializeLayout()
+        {
+            pnlTop.Height = 150;
+            pnlTop.WrapContents = false;
+            pnlTop.FlowDirection = FlowDirection.LeftToRight;
+            pnlTop.Padding = new Padding(10);
+            pnlTop.AutoScroll = true; // Permitir scroll si hay muchos KPIs
+
+            pnlCenter.Height = 350;
+            pnlCenter.ColumnStyles.Clear();
+            pnlCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F)); // Gráfico más ancho
+            pnlCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F)); // Top Vendedores
+
+            pnlBottom.RowStyles.Clear();
+            pnlBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            pnlBottom.ColumnStyles.Clear();
+            pnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F)); // Categorías
+            pnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F)); // Alertas
         }
 
         private void CreateKPI(string title, string value, string percentage)
         {
-            var panel = new Panel();
-            panel.Size = new Size(250, 120);
-            panel.BackColor = Color.FromArgb(240, 255, 240); // Light green background
-            panel.BorderStyle = BorderStyle.FixedSingle;
-            panel.Padding = new Padding(10);
-            panel.Margin = new Padding(10);
-            panel.ForeColor = Color.Black;
-
-            var lblTitle = new Label
+            var panel = new Panel
             {
-                Text = title,
-                Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                Dock = DockStyle.Top
+                Size = new Size(220, 110),
+                BackColor = Color.FromArgb(240, 255, 240),
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(10)
             };
 
-            var lblValue = new Label
-            {
-                Text = value,
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = Color.FromArgb(34, 139, 58), // Green for value
-                Dock = DockStyle.Top
-            };
+            panel.Controls.Add(new Label { Text = percentage, Font = new Font("Segoe UI", 9), ForeColor = Color.Gray, Dock = DockStyle.Bottom });
+            panel.Controls.Add(new Label { Text = value, Font = new Font("Segoe UI", 14, FontStyle.Bold), ForeColor = Color.FromArgb(34, 139, 58), Dock = DockStyle.Top, Height = 30 });
+            panel.Controls.Add(new Label { Text = title, Font = new Font("Segoe UI", 11, FontStyle.Bold), Dock = DockStyle.Top });
 
-            var lblPercentage = new Label
-            {
-                Text = percentage,
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.Gray,
-                Dock = DockStyle.Bottom
-            };
-
-            panel.Controls.Add(lblPercentage);
-            panel.Controls.Add(lblValue);
-            panel.Controls.Add(lblTitle);
             pnlTop.Controls.Add(panel);
         }
 
-
-        private void CreateSalesChart()
+        private void CreateSalesChart(DashboardHomeDto data)
         {
-            var salesChart = new Chart();
-            salesChart.Dock = DockStyle.Fill;
-            salesChart.ChartAreas.Add(new ChartArea
-            {
-                BackColor = Color.WhiteSmoke, // Light background for the chart
-                AxisX = { Title = "Meses", TitleFont = new Font("Segoe UI", 10, FontStyle.Bold) }, // Title for X-axis
-                AxisY = { Title = "Ventas", TitleFont = new Font("Segoe UI", 10, FontStyle.Bold) } // Title for Y-axis
-            });
+            var chart = new Chart { Dock = DockStyle.Fill };
+            var area = new ChartArea { BackColor = Color.WhiteSmoke };
+            area.AxisX.MajorGrid.LineColor = Color.LightGray;
+            area.AxisY.MajorGrid.LineColor = Color.LightGray;
+            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 8);
+            area.AxisY.LabelStyle.Format = "C0"; // Formato moneda sin decimales
+            chart.ChartAreas.Add(area);
 
-            var series = new Series("Ventas por Mes")
+            var series = new Series
             {
+                Name = "Ventas",
                 ChartType = SeriesChartType.Column,
-                Color = Color.FromArgb(34, 139, 58), // Change to a green color
-                BorderWidth = 0
+                Color = Color.FromArgb(34, 139, 58),
+                IsValueShownAsLabel = true,
+                Font = new Font("Segoe UI", 8)
             };
 
-            series.Points.AddXY("Ene", 100000);
-            series.Points.AddXY("Feb", 120000);
-            series.Points.AddXY("Mar", 150000);
+            // Llenar con datos reales (invertimos la lista para que vaya de más antiguo a más nuevo)
+            foreach (var item in ((System.Collections.Generic.IEnumerable<VentaMensualDto>)data.EvolucionVentas).Reverse())
+            {
+                series.Points.AddXY(item.Mes, item.TotalVenta);
+            }
 
-            salesChart.Series.Add(series);
-            pnlCenter.Controls.Add(salesChart, 0, 0);
+            chart.Series.Add(series);
+            chart.Titles.Add(new Title("Evolución de Ventas (Últimos 6 meses)", Docking.Top, new Font("Segoe UI", 12, FontStyle.Bold), Color.Black));
+
+            pnlCenter.Controls.Add(chart, 0, 0);
         }
 
-
-
-        private void CreateRecentSales()
+        private void CreateTopVendedores(DashboardHomeDto data)
         {
-            var recentPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(10),
-                Margin = new Padding(5)
-            };
-
-            var layout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                RowCount = 2,
-            };
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Header
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // Lista
-            recentPanel.Controls.Add(layout);
-
-            var lblHeader = new Label
-            {
-                Text = "Ventas Recientes",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Dock = DockStyle.Top,
-                Height = 25
-            };
-            layout.Controls.Add(lblHeader, 0, 0);
+            var panel = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle, Padding = new Padding(10), Margin = new Padding(5) };
+            panel.Controls.Add(new Label { Text = "Top Vendedores del Mes", Font = new Font("Segoe UI", 11, FontStyle.Bold), Dock = DockStyle.Top, Height = 30 });
 
             var flow = new FlowLayoutPanel
             {
@@ -193,195 +156,85 @@ namespace Proyecto_Taller_2.Controls
                 FlowDirection = FlowDirection.TopDown,
                 AutoScroll = true,
                 WrapContents = false,
-                Padding = new Padding(0)
-            };
-            layout.Controls.Add(flow, 0, 1);
-
-            AddSaleItem("María González", "maria.gonzalez@email.com", "$1,250.00", flow);
-            AddSaleItem("Carlos Rodríguez", "carlos.rodriguez@email.com", "$850.00", flow);
-            AddSaleItem("Ana Martínez", "ana.martinez@email.com", "$2,100.00", flow);
-            AddSaleItem("Luis Fernández", "luis.fernandez@email.com", "$750.00", flow);
-            AddSaleItem("Carmen López", "carmen.lopez@email.com", "$1,800.00", flow);
-
-            pnlCenter.Controls.Add(recentPanel, 1, 0);
-        }
-
-
-        private void AddSaleItem(string name, string email, string amount, FlowLayoutPanel parent)
-        {
-            var item = new Panel
-            {
-                Height = 60,
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(5),
-                Margin = new Padding(0, 0, 0, 8)
+                Padding = new Padding(0, 80, 0, 0) // AQUÍ: 80 píxeles desde arriba
             };
 
-            var layout = new TableLayoutPanel
+            if (data.TopVendedores.Count > 0)
             {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 2
-            };
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70)); // texto
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30)); // monto
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-
-            var lblName = new Label
-            {
-                Text = name,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Dock = DockStyle.Fill,
-                AutoSize = true
-            };
-
-            var lblEmail = new Label
-            {
-                Text = email,
-                Font = new Font("Segoe UI", 8),
-                Dock = DockStyle.Fill,
-                AutoSize = true
-            };
-
-            var lblAmount = new Label
-            {
-                Text = amount,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = Color.FromArgb(34, 139, 58),
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleRight
-            };
-
-            layout.Controls.Add(lblName, 0, 0);
-            layout.Controls.Add(lblEmail, 0, 1);
-            layout.Controls.Add(lblAmount, 1, 0);
-            layout.SetRowSpan(lblAmount, 2);
-
-            item.Controls.Add(layout);
-            parent.Controls.Add(item);
-
-            //Ajusta ancho inicial al del padre
-            item.Width = parent.ClientSize.Width - parent.Padding.Horizontal - item.Margin.Horizontal;
-
-            //Cuando se agregan controles nuevos, también ajusta
-            parent.ControlAdded += (s, e) =>
-            {
-                e.Control.Width = parent.ClientSize.Width - parent.Padding.Horizontal - e.Control.Margin.Horizontal;
-            };
-
-            //Cuando el padre cambia de tamaño, reajusta todos los ítems
-            parent.SizeChanged += (s, e) =>
-            {
-                foreach (Control ctrl in parent.Controls)
+                int rank = 1;
+                foreach (var vendedor in data.TopVendedores)
                 {
-                    ctrl.Width = parent.ClientSize.Width - parent.Padding.Horizontal - ctrl.Margin.Horizontal;
+                    AddVendedorItem(rank++, vendedor, flow);
                 }
-            };
+            }
+            else
+            {
+                flow.Controls.Add(new Label { Text = "No hay ventas registradas este mes.", AutoSize = true, ForeColor = Color.Gray, Padding = new Padding(5) });
+            }
+
+            panel.Controls.Add(flow);
+            pnlCenter.Controls.Add(panel, 1, 0);
         }
 
-
-
-
-        private void CreateStockPanels()
+        private void AddVendedorItem(int rank, TopVendedorDto vendedor, FlowLayoutPanel parent)
         {
-            var stockContainer = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown,
-                AutoScroll = true,
-                WrapContents = false,
-                Margin = new Padding(5)
-            };
-
-
-            CreateStockBar("Electrónicos", 1250, 1500, stockContainer);
-            CreateStockBar("Oficina", 890, 1000, stockContainer);
-            CreateStockBar("Hogar", 650, 800, stockContainer);
-            CreateStockBar("Deportes", 420, 600, stockContainer);
-            CreateStockBar("Ropa", 280, 400, stockContainer);
-
-            pnlBottom.Controls.Add(stockContainer, 0, 0);
-        }
-
-        private void CreateStockBar(string category, int current, int total, Control parent)
-        {
-            var item = new Panel
-            {
-                Width = 300,
-                Height = 55,
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(5),
-                BackColor = Color.White
-            };
-
-            var lblCategory = new Label
-            {
-                Text = category,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Dock = DockStyle.Top,
-                Height = 18
-            };
-
-            var progressBar = new ProgressBar
-            {
-                Value = (int)((double)current / total * 100),
-                Dock = DockStyle.Top,
-                Height = 12
-            };
-
-            var lblStatus = new Label
-            {
-                Text = $"{current}/{total} disponible",
-                Font = new Font("Segoe UI", 8),
-                Dock = DockStyle.Top,
-                Height = 16
-            };
-
-
-            item.Controls.Add(lblStatus);
-            item.Controls.Add(progressBar);
-            item.Controls.Add(lblCategory);
+            var item = new Panel { Width = 250, Height = 60, BorderStyle = BorderStyle.FixedSingle, Margin = new Padding(0, 0, 0, 10), Padding = new Padding(5) };
+            item.Controls.Add(new Label { Text = vendedor.TotalFacturado.ToString("C0"), Dock = DockStyle.Right, TextAlign = ContentAlignment.MiddleRight, Font = new Font("Segoe UI", 9, FontStyle.Bold), ForeColor = Color.DarkGreen, AutoSize = true });
+            item.Controls.Add(new Label { Text = $"{vendedor.CantidadVentas} ventas", Dock = DockStyle.Bottom, Font = new Font("Segoe UI", 8), ForeColor = Color.Gray });
+            item.Controls.Add(new Label { Text = $"#{rank} {vendedor.Nombre}", Dock = DockStyle.Top, Font = new Font("Segoe UI", 9, FontStyle.Bold) });
             parent.Controls.Add(item);
         }
 
-        private void CreateAlertsPanels()
+        private void CreateBottomPanels(DashboardHomeDto data)
         {
-            var alertsContainer = new FlowLayoutPanel
+            // 1. Inventario por Categoría (Izquierda)
+            var stockFlow = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, AutoScroll = true, WrapContents = false, Padding = new Padding(5) };
+            foreach (var cat in data.InventarioPorCategoria)
             {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown,
-                AutoSize = true,
-                WrapContents = false,
-                Margin = new Padding(5)
-            };
+                CreateStockBar(cat.NombreCategoria, cat.StockActual, cat.StockEsperado, stockFlow);
+            }
+            pnlBottom.Controls.Add(stockFlow, 0, 0);
 
-            CreateAlert("Stock Bajo: 15 productos con stock crítico", Color.FromArgb(255, 225, 225), alertsContainer);
-            CreateAlert("Backup Completado: Último backup hace 2 horas", Color.FromArgb(225, 255, 225), alertsContainer);
+            // 2. Alertas (Derecha)
+            var alertsFlow = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, AutoScroll = true, WrapContents = false, Padding = new Padding(5) };
 
-            pnlBottom.Controls.Add(alertsContainer, 1, 0);
+            // Alerta real de Stock Bajo
+            if (data.CantidadStockBajo > 0)
+            {
+                CreateAlert($"⚠️ Stock Bajo: {data.CantidadStockBajo} productos críticos", Color.FromArgb(255, 235, 235), Color.DarkRed, alertsFlow);
+            }
+            else
+            {
+                CreateAlert("✅ Inventario saludable", Color.FromArgb(235, 255, 235), Color.DarkGreen, alertsFlow);
+            }
+
+            // Alerta simulada de Backup (puedes conectarla a datos reales luego si tienes un log de backups)
+            CreateAlert("💾 Último Backup: Hoy 09:00 AM", Color.FromArgb(240, 240, 255), Color.DarkBlue, alertsFlow);
+
+            pnlBottom.Controls.Add(alertsFlow, 1, 0);
         }
 
-        private void CreateAlert(string alertText, Color alertColor, FlowLayoutPanel parent)
+        private void CreateStockBar(string category, int current, int max, Control parent)
         {
-            var alertPanel = new Panel();
-            alertPanel.Size = new Size(400, 50);
-            alertPanel.BackColor = alertColor; // Red for critical alerts, Green for success
-            alertPanel.BorderStyle = BorderStyle.FixedSingle;
-            alertPanel.Margin = new Padding(10);
+            var p = new Panel { Width = 300, Height = 50, Margin = new Padding(0, 0, 0, 10), BorderStyle = BorderStyle.FixedSingle, BackColor = Color.White, Padding = new Padding(5) };
+            int percentage = max > 0 ? Math.Min((int)((double)current / max * 100), 100) : 0;
 
-            var lblAlert = new Label
-            {
-                Text = alertText,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                ForeColor = Color.Black,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleCenter
-            };
+            var pb = new ProgressBar { Value = percentage, Dock = DockStyle.Bottom, Height = 10 };
+            // Truco para cambiar el color de la barra si es estándar (no siempre funciona con estilos visuales activados)
+            if (percentage < 20) pb.ForeColor = Color.Red; // Conceptualmente, aunque WinForms básico no lo muestra fácil
 
-            alertPanel.Controls.Add(lblAlert);
-            parent.Controls.Add(alertPanel);
+            p.Controls.Add(new Label { Text = $"{current}/{max}", Dock = DockStyle.Right, TextAlign = ContentAlignment.MiddleRight, Font = new Font("Segoe UI", 8) });
+            p.Controls.Add(pb);
+            p.Controls.Add(new Label { Text = category, Dock = DockStyle.Left, Font = new Font("Segoe UI", 9, FontStyle.Bold) });
+
+            parent.Controls.Add(p);
         }
 
+        private void CreateAlert(string text, Color backColor, Color foreColor, Control parent)
+        {
+            var p = new Panel { Width = 250, Height = 40, BackColor = backColor, Margin = new Padding(0, 0, 0, 10), BorderStyle = BorderStyle.FixedSingle };
+            p.Controls.Add(new Label { Text = text, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, Font = new Font("Segoe UI", 9, FontStyle.Bold), ForeColor = foreColor, Padding = new Padding(5, 0, 0, 0) });
+            parent.Controls.Add(p);
+        }
     }
 }
