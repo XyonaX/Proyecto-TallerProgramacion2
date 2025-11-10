@@ -1,47 +1,148 @@
-﻿using System;
+﻿using Proyecto_Taller_2.Data.Repositories;
+using Proyecto_Taller_2.Domain.Models.Dtos;
+using System;
+using System.Configuration;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Proyecto_Taller_2.Controls
 {
     public partial class UcReportes : UserControl
     {
+        // --- CAMPOS PARA REFERENCIAS A LABELS (Data Binding) ---
+        private Label _lblIngresosMensualesValor;
+        private Label _lblIngresosVariacion;
+        private Label _lblMetaMensualValor;
+        private Label _lblMetaObjetivo;
+        private Label _lblClientesActivosValor;
+        private Label _lblClientesVariacion;
+        private Label _lblStockCriticoValor;
+        private Label _lblStockCriticoSubtitle;
+
+        // KPIs Medios
+        private Label _lblTicketPromedioValor;
+        private Label _lblConversionValor;
+        private Label _lblMargenBrutoValor;
+        private Label _lblInventarioRotacion;
+        private Label _lblInventarioValorTotal;
+        private Label _lblInventarioProductosActivos;
+        private Label _lblClientesRetencion;
+        private Label _lblClientesValorPromedio;
+        private Label _lblClientesNuevos;
+
+        private FlowLayoutPanel _flowReportesRecientes;
+        private readonly ReporteRepository _reporteRepository;
+        private ComboBox _cmbPeriodoFiltro;
+
         public UcReportes()
         {
             InitializeComponent();
+            string connectionString = ConfigurationManager.ConnectionStrings["ERP"].ConnectionString;
+            _reporteRepository = new ReporteRepository(connectionString);
             InitializeLayout();
+            this.Load += async (s, e) => await CargarDatosRangoAsync(
+                new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+                DateTime.Now
+            );
+        }
+
+        private async Task CargarDatosRangoAsync(DateTime inicio, DateTime fin)
+        {
+            try
+            {
+                this.Cursor = Cursors.WaitCursor;
+
+                var datos = await _reporteRepository.ObtenerDatosDashboardAsync(inicio, fin);
+
+                // 1. Actualizar KPIs Superiores
+                if (_lblIngresosMensualesValor != null) _lblIngresosMensualesValor.Text = $"${datos.IngresosMensuales:N0}";
+                if (_lblIngresosVariacion != null) _lblIngresosVariacion.Text = $"{datos.PorcentajeVariacionIngreso:+0.0;-0.0}% vs. mes anterior";
+                if (_lblMetaMensualValor != null) _lblMetaMensualValor.Text = $"{datos.PorcentajeMeta:N1}%";
+                if (_lblMetaObjetivo != null) _lblMetaObjetivo.Text = $"${datos.MetaMensual:N0} objetivo";
+                if (_lblClientesActivosValor != null) _lblClientesActivosValor.Text = datos.ClientesActivos.ToString("N0");
+                if (_lblStockCriticoValor != null) _lblStockCriticoValor.Text = datos.StockCritico.ToString();
+
+                // 2. Actualizar Bloques Medios
+                if (_lblMargenBrutoValor != null) _lblMargenBrutoValor.Text = $"{datos.MargenBruto:N1}%";
+                if (_lblInventarioValorTotal != null) _lblInventarioValorTotal.Text = $"${datos.ValorTotalInventario:N0}";
+                if (_lblInventarioProductosActivos != null) _lblInventarioProductosActivos.Text = datos.CantidadProductosActivos.ToString("N0");
+                if (_lblClientesNuevos != null) _lblClientesNuevos.Text = datos.NuevosClientesEsteMes.ToString();
+
+                // --- CORRECCIÓN DE PROMEDIOS ---
+                // TICKET PROMEDIO (Total Ingresos / Cantidad Ventas)
+                if (datos.CantidadVentasPeriodo > 0 && _lblTicketPromedioValor != null)
+                {
+                    _lblTicketPromedioValor.Text = $"${(datos.IngresosMensuales / datos.CantidadVentasPeriodo):N2}";
+                }
+                else if (_lblTicketPromedioValor != null)
+                {
+                    _lblTicketPromedioValor.Text = "$0.00";
+                }
+
+                // VALOR PROMEDIO CLIENTE (Total Ingresos / Total Clientes Activos)
+                if (datos.ClientesActivos > 0 && _lblClientesValorPromedio != null)
+                {
+                    decimal promedioCliente = datos.IngresosMensuales / (decimal)datos.ClientesActivos;
+                    _lblClientesValorPromedio.Text = $"${promedioCliente:N2}";
+                }
+                else if (_lblClientesValorPromedio != null)
+                {
+                    _lblClientesValorPromedio.Text = "$0.00";
+                }
+                // -------------------------------
+
+                // 3. Actualizar Lista de Reportes Recientes
+                ActualizarListaReportes(datos);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error cargando dashboard: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        private void ActualizarListaReportes(DashboardReporteDto datos)
+        {
+            if (_flowReportesRecientes == null) return;
+            _flowReportesRecientes.Controls.Clear();
+
+            foreach (var rep in datos.ReportesRecientes)
+            {
+                _flowReportesRecientes.Controls.Add(
+                    CreateReporteRecienteItem(rep.FechaGeneracion, rep.Fecha, "Venta", rep.Estado)
+                );
+            }
         }
 
         private void InitializeLayout()
         {
-            var layout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                RowCount = 3,
-                ColumnCount = 1
-            };
-
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
 
             var mainLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                RowCount = 4,
+                RowCount = 5,
                 ColumnCount = 1,
                 Padding = new Padding(20),
                 AutoScroll = true
             };
             mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Header
             mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // KPIs
-            mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Bloques medios
+            mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Bloques Medios
             mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Filtros
+            mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 500F)); // Paneles inferiores - ALTURA FIJA
+
             this.Controls.Add(mainLayout);
 
             // HEADER
             mainLayout.Controls.Add(CreateHeader(), 0, 0);
 
-            // KPIs
+            // KPIs SUPERIORES
             var kpiLayout = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -50,10 +151,12 @@ namespace Proyecto_Taller_2.Controls
                 WrapContents = true,
                 Margin = new Padding(0, 20, 0, 20)
             };
-            kpiLayout.Controls.Add(CreateCard("Ingresos Mensuales", "$847,392", "+15.3% vs. mes anterior", Color.DarkGreen));
-            kpiLayout.Controls.Add(CreateCard("Meta Mensual", "78%", "$1,085,000 objetivo", Color.DarkOliveGreen));
-            kpiLayout.Controls.Add(CreateCard("Clientes Activos", "892", "+8.2% vs. mes anterior", Color.DarkGreen));
-            kpiLayout.Controls.Add(CreateCard("Stock Crítico", "15", "productos requieren reposición", Color.OliveDrab));
+
+            kpiLayout.Controls.Add(CreateCard("Ingresos Mensuales", "$0", "...", Color.DarkGreen, out _lblIngresosMensualesValor, out _lblIngresosVariacion));
+            kpiLayout.Controls.Add(CreateCard("Meta Mensual", "0%", "$0 objetivo", Color.DarkOliveGreen, out _lblMetaMensualValor, out _lblMetaObjetivo));
+            kpiLayout.Controls.Add(CreateCard("Clientes Activos", "0", "...", Color.DarkGreen, out _lblClientesActivosValor, out _lblClientesVariacion));
+            kpiLayout.Controls.Add(CreateCard("Stock Crítico", "0", "productos requieren reposición", Color.OliveDrab, out _lblStockCriticoValor, out _lblStockCriticoSubtitle));
+
             mainLayout.Controls.Add(kpiLayout, 0, 1);
 
             // BLOQUES MEDIOS
@@ -70,68 +173,65 @@ namespace Proyecto_Taller_2.Controls
 
             middleLayout.Controls.Add(CreateMetricsBlock("Rendimiento de Ventas", new[]
             {
-                ("Ticket Promedio", "$5,432"),
-                ("Conversión", "24.8%"),
-                ("Margen Bruto", "34.2%")
-            }), 0, 0);
+                ("Ticket Promedio", "$0"),
+                ("Conversión", "0%"),
+                ("Margen Bruto", "0%")
+            }, out var lblsVentas), 0, 0);
+            _lblTicketPromedioValor = lblsVentas[0];
+            _lblConversionValor = lblsVentas[1];
+            _lblMargenBrutoValor = lblsVentas[2];
 
             middleLayout.Controls.Add(CreateMetricsBlock("Inventario", new[]
             {
-                ("Rotación", "6.2x"),
-                ("Valor Total", "$2.4M"),
-                ("Productos Activos", "3,456")
-            }), 1, 0);
+                ("Rotación", "0x"),
+                ("Valor Total", "$0"),
+                ("Productos Activos", "0")
+            }, out var lblsInv), 1, 0);
+            _lblInventarioRotacion = lblsInv[0];
+            _lblInventarioValorTotal = lblsInv[1];
+            _lblInventarioProductosActivos = lblsInv[2];
 
             middleLayout.Controls.Add(CreateMetricsBlock("Clientes", new[]
             {
-                ("Retención", "87.3%"),
-                ("Valor Promedio", "$2,847"),
-                ("Nuevos este mes", "47")
-            }), 2, 0);
+                ("Retención", "0%"),
+                ("Valor Promedio", "$0"),
+                ("Nuevos este mes", "0")
+            }, out var lblsCli), 2, 0);
+            _lblClientesRetencion = lblsCli[0];
+            _lblClientesValorPromedio = lblsCli[1];
+            _lblClientesNuevos = lblsCli[2];
 
             mainLayout.Controls.Add(middleLayout, 0, 2);
 
-            // FILTROS DE PERIODO
+            // FILTROS
             mainLayout.Controls.Add(CreateFiltersPanel(), 0, 3);
-            mainLayout.Controls.Add(layout, 0, mainLayout.RowCount++);
 
-            var pnlMiddle = new TableLayoutPanel
+            // PANELES INFERIORES (Rápidos y Recientes)
+            var pnlBottomGrid = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
+                RowCount = 1,
+                Margin = new Padding(0, 20, 0, 0),
+                AutoSize = false
             };
-            pnlMiddle.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            pnlMiddle.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+            pnlBottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+            pnlBottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+            pnlBottomGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
-            pnlMiddle.Controls.Add(CreateReportesRapidosPanel(), 0, 0);
-            pnlMiddle.Controls.Add(CreateReportesRecientesPanel(), 1, 0);
+            pnlBottomGrid.Controls.Add(CreateReportesRapidosPanel(), 0, 0);
+            pnlBottomGrid.Controls.Add(CreateReportesRecientesPanel(), 1, 0);
 
-            layout.Controls.Add(pnlMiddle, 0, 1);
-
-            // 3️⃣ Parte Inferior → Cards accesos ocultos
-            var pnlBottom = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false,
-                AutoScroll = true
-            };
-
-            pnlBottom.Controls.Add(CreateAccesoCard("Reportes de Ventas", "Análisis detallado de ventas, tendencias y rendimiento por vendedor"));
-            pnlBottom.Controls.Add(CreateAccesoCard("Reportes de Inventario", "Control de stock, rotación de productos y análisis de inventario"));
-            pnlBottom.Controls.Add(CreateAccesoCard("Reportes de Clientes", "Segmentación de clientes, análisis de comportamiento y retención"));
-
-            layout.Controls.Add(pnlBottom, 0, 2);   
+            mainLayout.Controls.Add(pnlBottomGrid, 0, 4);
         }
 
-        // ====== HEADER ======
+        // =================================================
+        // MÉTODOS AUXILIARES DE UI
+        // =================================================
+
         private Panel CreateHeader()
         {
-            var panel = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 60
-            };
+            var panel = new Panel { Dock = DockStyle.Top, Height = 60 };
 
             var lblTitle = new Label
             {
@@ -158,26 +258,16 @@ namespace Proyecto_Taller_2.Controls
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
                 Location = new Point(this.Width - 150, 10)
             };
-
-            var btnSchedule = new Button
-            {
-                Text = "Programar Reporte",
-                Width = 140,
-                Height = 30,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(this.Width - 300, 10)
-            };
+            panel.Resize += (s, e) => { btnExport.Left = panel.Width - 140; };
 
             panel.Controls.Add(lblSubtitle);
             panel.Controls.Add(lblTitle);
             panel.Controls.Add(btnExport);
-            panel.Controls.Add(btnSchedule);
 
             return panel;
         }
 
-        // ====== KPI CARD ======
-        private Panel CreateCard(string title, string value, string subtitle, Color valueColor)
+        private Panel CreateCard(string title, string value, string subtitle, Color valueColor, out Label lblValueRef, out Label lblSubtitleRef)
         {
             var panel = new Panel
             {
@@ -197,7 +287,7 @@ namespace Proyecto_Taller_2.Controls
                 AutoSize = true
             };
 
-            var lblValue = new Label
+            lblValueRef = new Label
             {
                 Text = value,
                 Font = new Font("Segoe UI", 14, FontStyle.Bold),
@@ -206,7 +296,7 @@ namespace Proyecto_Taller_2.Controls
                 AutoSize = true
             };
 
-            var lblSubtitle = new Label
+            lblSubtitleRef = new Label
             {
                 Text = subtitle,
                 Font = new Font("Segoe UI", 9),
@@ -215,15 +305,14 @@ namespace Proyecto_Taller_2.Controls
                 AutoSize = true
             };
 
-            panel.Controls.Add(lblSubtitle);
-            panel.Controls.Add(lblValue);
+            panel.Controls.Add(lblSubtitleRef);
+            panel.Controls.Add(lblValueRef);
             panel.Controls.Add(lblTitle);
 
             return panel;
         }
 
-        // ====== MÉTRICAS ======
-        private Panel CreateMetricsBlock(string title, (string, string)[] metrics)
+        private Panel CreateMetricsBlock(string title, (string, string)[] metrics, out Label[] valueLabels)
         {
             var panel = new Panel
             {
@@ -235,14 +324,13 @@ namespace Proyecto_Taller_2.Controls
                 Padding = new Padding(10)
             };
 
-            var lblTitle = new Label
+            panel.Controls.Add(new Label
             {
                 Text = title,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 Dock = DockStyle.Top,
                 AutoSize = true
-            };
-            panel.Controls.Add(lblTitle);
+            });
 
             var layout = new TableLayoutPanel
             {
@@ -251,156 +339,235 @@ namespace Proyecto_Taller_2.Controls
                 RowCount = metrics.Length,
                 AutoSize = true
             };
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70));
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40));
+
+            valueLabels = new Label[metrics.Length];
 
             for (int i = 0; i < metrics.Length; i++)
             {
-                var lblMetric = new Label
+                layout.Controls.Add(new Label
                 {
                     Text = metrics[i].Item1,
                     Font = new Font("Segoe UI", 9),
-                    Dock = DockStyle.Fill
-                };
-                var lblValue = new Label
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleLeft
+                }, 0, i);
+
+                var lblVal = new Label
                 {
                     Text = metrics[i].Item2,
                     Font = new Font("Segoe UI", 9, FontStyle.Bold),
                     Dock = DockStyle.Fill,
                     TextAlign = ContentAlignment.MiddleRight
                 };
-                layout.Controls.Add(lblMetric, 0, i);
-                layout.Controls.Add(lblValue, 1, i);
+                valueLabels[i] = lblVal;
+                layout.Controls.Add(lblVal, 1, i);
             }
 
             panel.Controls.Add(layout);
-
             return panel;
         }
 
-        // ====== FILTROS ======
         private Panel CreateFiltersPanel()
         {
             var panel = new Panel
             {
-                Height = 100,
+                Height = 70,
                 Dock = DockStyle.Top,
-                BackColor = Color.FromArgb(248, 252, 248),
-                BorderStyle = BorderStyle.FixedSingle,
-                Margin = new Padding(10),
-                Padding = new Padding(10)
+                BackColor = Color.WhiteSmoke,
+                Padding = new Padding(15)
             };
-
-            var lblTitle = new Label
-            {
-                Text = "Filtros de Período",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Dock = DockStyle.Top,
-                AutoSize = true
-            };
-            panel.Controls.Add(lblTitle);
-
-            var lblDesc = new Label
-            {
-                Text = "Seleccione el rango de fechas para los reportes",
-                Font = new Font("Segoe UI", 9),
-                ForeColor = Color.Gray,
-                Dock = DockStyle.Top,
-                AutoSize = true
-            };
-            panel.Controls.Add(lblDesc);
-
-            var cmbPeriodo = new ComboBox
-            {
-                Width = 120,
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            cmbPeriodo.Items.AddRange(new[] { "Este mes", "Último mes", "Últimos 3 meses" });
-            cmbPeriodo.SelectedIndex = 0;
-
-            var cmbComparar = new ComboBox
-            {
-                Width = 150,
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            cmbComparar.Items.AddRange(new[] { "Periodo anterior", "Mismo periodo año pasado" });
-            cmbComparar.SelectedIndex = 0;
-
-            var btnAplicar = new Button
-            {
-                Text = "Aplicar Filtros",
-                Width = 120,
-                Height = 30,
-                BackColor = Color.DarkGreen,
-                ForeColor = Color.White
-            };
-
-            var filtersLayout = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                FlowDirection = FlowDirection.LeftToRight,
-                AutoSize = true,
-                Margin = new Padding(0, 10, 0, 0)
-            };
-
-            filtersLayout.Controls.Add(new Label { Text = "Periodo:", AutoSize = true, Padding = new Padding(0, 5, 5, 0) });
-            filtersLayout.Controls.Add(cmbPeriodo);
-            filtersLayout.Controls.Add(new Label { Text = "Comparar con:", AutoSize = true, Padding = new Padding(10, 5, 5, 0) });
-            filtersLayout.Controls.Add(cmbComparar);
-            filtersLayout.Controls.Add(btnAplicar);
-
-            panel.Controls.Add(filtersLayout);
-
-            return panel;
-        }
-        private Panel CreateReportesRapidosPanel()
-        {
-            var panel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(245, 250, 245),
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(10)
-            };
-
-            var lblTitle = new Label
-            {
-                Text = "Reportes Rápidos",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Dock = DockStyle.Top,
-                Height = 25
-            };
-            panel.Controls.Add(lblTitle);
 
             var flow = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                AutoSize = false
             };
 
-            flow.Controls.Add(CreateReporteRapidoItem("Ventas Diarias", "Resumen de ventas del día"));
-            flow.Controls.Add(CreateReporteRapidoItem("Top Productos", "Productos más vendidos"));
-            flow.Controls.Add(CreateReporteRapidoItem("Rendimiento Vendedores", "Performance del equipo"));
-            flow.Controls.Add(CreateReporteRapidoItem("Tendencias Mensuales", "Análisis de tendencias"));
+            var lbl = new Label { Text = "Período:", AutoSize = true, Font = new Font("Segoe UI", 10, FontStyle.Bold), Margin = new Padding(0, 8, 10, 0) };
+
+            _cmbPeriodoFiltro = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Width = 150,
+                Font = new Font("Segoe UI", 10),
+                Margin = new Padding(0, 5, 15, 0)
+            };
+            _cmbPeriodoFiltro.Items.AddRange(new object[] { "Este Mes", "Mes Pasado", "Este Año", "Todo" });
+            _cmbPeriodoFiltro.SelectedIndex = 0;
+
+            var btnAplicar = new Button
+            {
+                Text = "Aplicar Filtro",
+                BackColor = Color.DarkGreen,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                Height = 35,
+                Width = 120,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Margin = new Padding(0, 0, 0, 0)
+            };
+            btnAplicar.FlatAppearance.BorderSize = 0;
+            btnAplicar.Click += async (s, e) => await AplicarFiltrosAsync();
+
+            flow.Controls.Add(lbl);
+            flow.Controls.Add(_cmbPeriodoFiltro);
+            flow.Controls.Add(btnAplicar);
 
             panel.Controls.Add(flow);
             return panel;
         }
 
-        private Panel CreateReporteRapidoItem(string title, string subtitle)
+        private async Task AplicarFiltrosAsync()
         {
-            var item = new Panel { Width = 350, Height = 50, Margin = new Padding(5) };
+            DateTime inicio = DateTime.Now;
+            DateTime fin = DateTime.Now;
 
-            var lblTitle = new Label { Text = title, Font = new Font("Segoe UI", 9, FontStyle.Bold), Location = new Point(5, 5), AutoSize = true };
-            var lblSubtitle = new Label { Text = subtitle, Font = new Font("Segoe UI", 8), Location = new Point(5, 25), AutoSize = true };
+            switch (_cmbPeriodoFiltro.SelectedIndex)
+            {
+                case 0: // Este Mes
+                    inicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    break;
+                case 1: // Mes Pasado
+                    inicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+                    fin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+                    break;
+                case 2: // Este Año
+                    inicio = new DateTime(DateTime.Now.Year, 1, 1);
+                    break;
+                case 3: // Todo
+                    inicio = DateTime.Now.AddYears(-5);
+                    break;
+            }
 
-            var btnGenerar = new Button { Text = "Generar", Width = 80, Height = 30, Location = new Point(250, 10) };
+            await CargarDatosRangoAsync(inicio, fin);
+        }
 
-            item.Controls.Add(lblTitle);
-            item.Controls.Add(lblSubtitle);
-            item.Controls.Add(btnGenerar);
+        private Panel CreateReportesRapidosPanel()
+        {
+            var panel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(250, 252, 250),
+                BorderStyle = BorderStyle.FixedSingle,
+                Padding = new Padding(15),
+                AutoSize = false
+            };
 
-            return item;
+            var lblTitulo = new Label
+            {
+                Text = "Accesos Directos",
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                Dock = DockStyle.Top,
+                Height = 50,
+                AutoSize = false,
+                Padding = new Padding(0, 0, 0, 15)
+            };
+            panel.Controls.Add(lblTitulo);
+
+            var flow = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.TopDown,
+                AutoScroll = false,
+                WrapContents = false,
+                Padding = new Padding(0, 80, 0, 0),
+                AutoSize = false
+            };
+
+            flow.SizeChanged += (s, e) =>
+            {
+                foreach (Control c in flow.Controls)
+                    c.Width = flow.ClientSize.Width - 5;
+            };
+
+            flow.Controls.Add(CreateReporteRapidoItem("Ventas del Día", "Resumen de hoy", "VENTAS_HOY"));
+            flow.Controls.Add(CreateReporteRapidoItem("Top Productos", "Más vendidos del mes", "TOP_PRODUCTOS"));
+            flow.Controls.Add(CreateReporteRapidoItem("Stock Bajo", "Productos a reponer urgentes", "STOCK_BAJO"));
+
+            panel.Controls.Add(flow);
+            return panel;
+        }
+
+        private Panel CreateReporteRapidoItem(string title, string subtitle, string actionTag)
+        {
+            var p = new Panel
+            {
+                Height = 90,
+                Margin = new Padding(0, 0, 0, 20),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White
+            };
+
+            var lblT = new Label { Text = title, Font = new Font("Segoe UI", 10, FontStyle.Bold), Location = new Point(15, 15), AutoSize = true };
+            var lblS = new Label { Text = subtitle, Font = new Font("Segoe UI", 9), ForeColor = Color.Gray, Location = new Point(15, 42), AutoSize = true };
+
+            var btn = new Button
+            {
+                Text = "Ver",
+                Tag = actionTag,
+                Size = new Size(70, 30),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(p.Width - 85, 30),
+                BackColor = Color.FromArgb(240, 240, 240),
+                FlatStyle = FlatStyle.Flat
+            };
+            btn.FlatAppearance.BorderSize = 0;
+            btn.Click += BtnReporteRapido_Click;
+
+            p.SizeChanged += (s, e) => { btn.Left = p.Width - 85; };
+
+            p.Controls.AddRange(new Control[] { lblT, lblS, btn });
+            return p;
+        }
+
+        private async void BtnReporteRapido_Click(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string action)
+            {
+                try
+                {
+                    this.Cursor = Cursors.WaitCursor;
+                    string mensaje = "Cargando...";
+                    string titulo = "Reporte Rápido";
+                    MessageBoxIcon icono = MessageBoxIcon.Information;
+
+                    switch (action)
+                    {
+                        case "STOCK_BAJO":
+                            titulo = "Productos con Stock Bajo";
+                            mensaje = await _reporteRepository.ObtenerStockBajoAsync();
+                            icono = MessageBoxIcon.Warning;
+                            break;
+
+                        case "TOP_PRODUCTOS":
+                            titulo = "Top Productos del Mes";
+                            mensaje = await _reporteRepository.ObtenerTopProductosAsync();
+                            break;
+
+                        case "VENTAS_HOY":
+                            titulo = "Resumen de Ventas de Hoy";
+                            mensaje = await _reporteRepository.ObtenerVentasHoyAsync();
+                            break;
+
+                        default:
+                            mensaje = "Acción no reconocida.";
+                            break;
+                    }
+
+                    this.Cursor = Cursors.Default;
+                    MessageBox.Show(mensaje, titulo, MessageBoxButtons.OK, icono);
+                }
+                catch (Exception ex)
+                {
+                    this.Cursor = Cursors.Default;
+                    MessageBox.Show("Error al cargar el reporte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private Panel CreateReportesRecientesPanel()
@@ -408,73 +575,57 @@ namespace Proyecto_Taller_2.Controls
             var panel = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(245, 250, 245),
+                BackColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(10)
+                Padding = new Padding(15),
+                AutoSize = false
             };
 
-            var lblTitle = new Label
+            var lblTitulo = new Label
             {
-                Text = "Reportes Recientes",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Text = "Últimas Actividades",
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 Dock = DockStyle.Top,
-                Height = 25
+                Height = 50,
+                AutoSize = false,
+                Padding = new Padding(0, 0, 0, 15)
             };
-            panel.Controls.Add(lblTitle);
+            panel.Controls.Add(lblTitulo);
 
-            var flow = new FlowLayoutPanel
+            _flowReportesRecientes = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown
+                FlowDirection = FlowDirection.TopDown,
+                AutoScroll = true,
+                WrapContents = false,
+                Padding = new Padding(0, 80, 0, 0),
+                AutoSize = false
             };
 
-            flow.Controls.Add(CreateReporteRecienteItem("Reporte de Ventas - Enero 2024", "30/1/2024", "Ventas", "Completado"));
-            flow.Controls.Add(CreateReporteRecienteItem("Análisis de Inventario - Q4 2023", "14/1/2024", "Inventario", "Completado"));
-            flow.Controls.Add(CreateReporteRecienteItem("Segmentación de Clientes", "9/1/2024", "Clientes", "Procesando"));
-            flow.Controls.Add(CreateReporteRecienteItem("KPIs Ejecutivos - Diciembre", "4/1/2024", "Ejecutivo", "Completado"));
-
-            panel.Controls.Add(flow);
+            panel.Controls.Add(_flowReportesRecientes);
             return panel;
         }
 
         private Panel CreateReporteRecienteItem(string title, string date, string category, string status)
         {
-            var item = new Panel { Width = 350, Height = 50, Margin = new Padding(5) };
+            var item = new Panel { Width = 380, Height = 65, Margin = new Padding(0, 0, 0, 10), BackColor = Color.FromArgb(250, 250, 250), Padding = new Padding(5) };
 
-            var lblTitle = new Label { Text = title, Font = new Font("Segoe UI", 9, FontStyle.Bold), Location = new Point(5, 5), AutoSize = true };
-            var lblDate = new Label { Text = date, Font = new Font("Segoe UI", 8), Location = new Point(5, 25), AutoSize = true };
+            var lblTitle = new Label { Text = title, Font = new Font("Segoe UI", 9, FontStyle.Bold), Location = new Point(10, 12), AutoSize = true };
+            var lblDate = new Label { Text = date, Font = new Font("Segoe UI", 8, FontStyle.Regular), ForeColor = Color.Gray, Location = new Point(10, 35), AutoSize = true };
+            var lblCat = new Label { Text = category.ToUpper(), Font = new Font("Segoe UI", 7, FontStyle.Bold), ForeColor = Color.DarkSlateGray, Location = new Point(200, 22), AutoSize = true };
 
-            var lblCategory = new Label { Text = category, Font = new Font("Segoe UI", 8, FontStyle.Bold), ForeColor = Color.DarkOliveGreen, Location = new Point(150, 5), AutoSize = true };
-            var lblStatus = new Label { Text = status, Font = new Font("Segoe UI", 8, FontStyle.Bold), ForeColor = (status == "Completado" ? Color.DarkGreen : Color.Orange), Location = new Point(150, 25), AutoSize = true };
-
-            item.Controls.Add(lblTitle);
-            item.Controls.Add(lblDate);
-            item.Controls.Add(lblCategory);
-            item.Controls.Add(lblStatus);
-
-            return item;
-        }
-
-        private Panel CreateAccesoCard(string title, string description)
-        {
-            var card = new Panel
+            var lblStatus = new Label
             {
-                Width = 250,
-                Height = 120,
-                BackColor = Color.FromArgb(240, 250, 240),
-                BorderStyle = BorderStyle.FixedSingle,
-                Margin = new Padding(10),
-                Padding = new Padding(10),
-                Cursor = Cursors.Hand
+                Text = status,
+                Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                ForeColor = status == "Completada" ? Color.Green : Color.Orange,
+                Location = new Point(280, 22),
+                AutoSize = true,
+                TextAlign = ContentAlignment.MiddleRight
             };
 
-            var lblTitle = new Label { Text = title, Font = new Font("Segoe UI", 10, FontStyle.Bold), Dock = DockStyle.Top };
-            var lblDescription = new Label { Text = description, Font = new Font("Segoe UI", 8), Dock = DockStyle.Fill };
-
-            card.Controls.Add(lblDescription);
-            card.Controls.Add(lblTitle);
-
-            return card;
+            item.Controls.AddRange(new Control[] { lblTitle, lblDate, lblCat, lblStatus });
+            return item;
         }
     }
 }
