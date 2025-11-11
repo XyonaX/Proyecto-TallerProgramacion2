@@ -20,9 +20,7 @@ packages/
 # Archivos de Visual Studio que ya están en las carpetas del proyecto
 # Esto es para evitar que se suban si estuvieran sueltos
 # Nota: La mejor practica es mover todos estos archivos a la carpeta principal del proyecto
-*.csproj
 *.user
-*.config
 *.pdb
 *.psess
 *.vsp
