@@ -5,6 +5,8 @@ namespace Proyecto_Taller_2.Domain.Models
 {
     public class Producto
     {
+        public object Costo;
+
         public int IdProducto { get; set; }
         public string? Sku { get; set; } = "";
         public string Nombre { get; set; } = "";
@@ -27,7 +29,6 @@ namespace Proyecto_Taller_2.Domain.Models
         public int Stock { get; set; }
         public int Minimo { get; set; }
         public decimal Precio { get; set; }
-        public decimal Costo { get; set; } = 0; // Costo del producto (para cálculo de margen)
         public string Proveedor { get; set; } = "";
         public bool Activo { get; set; } = true;
         public DateTime FechaAlta { get; set; } = DateTime.Now;
