@@ -1,0 +1,44 @@
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfoInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfo.cs
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.AssemblyReference.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfoInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfo.cs
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.CoreCompileInputs.cache
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\yoni_\Desktop\Dev\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.AssemblyReference.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfoInputs.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfo.cs
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.sourcelink.json
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\Proyecto_Taller_2.Domain.pdb
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\BCrypt.Net-Next.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\System.Buffers.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\System.Memory.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\System.Numerics.Vectors.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\bin\Debug\net472\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.AssemblyReference.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfoInputs.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.AssemblyInfo.cs
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.sourcelink.json
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto.BE2BAE80.Up2Date
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.dll
+C:\Users\Lisandro\OneDrive\Desktop\Trabajos\Proyecto de taller 2\Proyecto_Taller_2.Domain\obj\Debug\net472\Proyecto_Taller_2.Domain.pdb
