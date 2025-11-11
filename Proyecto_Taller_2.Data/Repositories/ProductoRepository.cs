@@ -16,6 +16,7 @@ namespace Proyecto_Taller_2.Data.Repositories
             var lista = new List<Producto>();
             using var cn = new SqlConnection(_connStr);
 
+            // AGREGADO: p.Costo en el SELECT
             var sql = @"
 SELECT 
     p.IdProducto,
@@ -27,6 +28,7 @@ SELECT
     p.Ubicacion,
     p.Stock,
     p.Minimo,
+    p.Costo,   -- <--- NUEVO
     p.Precio,
     p.Proveedor,
     p.Activo,
@@ -55,7 +57,6 @@ WHERE 1=1";
                 cmd.Parameters.Add("@cat", SqlDbType.Int).Value = categoriaId.Value;
             }
 
-            // filtro "solo bajo"
             if (soloBajo == true)
                 sql += " AND p.Stock <= p.Minimo";
 
@@ -78,6 +79,7 @@ WHERE 1=1";
                     Ubicacion = dr.IsDBNull(dr.GetOrdinal("Ubicacion")) ? "" : dr.GetString(dr.GetOrdinal("Ubicacion")),
                     Stock = dr.GetInt32(dr.GetOrdinal("Stock")),
                     Minimo = dr.GetInt32(dr.GetOrdinal("Minimo")),
+                    Costo = dr.GetDecimal(dr.GetOrdinal("Costo")),   // <--- NUEVO: LEER COSTO
                     Precio = dr.GetDecimal(dr.GetOrdinal("Precio")),
                     Proveedor = dr.IsDBNull(dr.GetOrdinal("Proveedor")) ? "" : dr.GetString(dr.GetOrdinal("Proveedor")),
                     Activo = dr.GetBoolean(dr.GetOrdinal("Activo")),
@@ -91,6 +93,7 @@ WHERE 1=1";
         public Producto ObtenerPorId(int id)
         {
             using var cn = new SqlConnection(_connStr);
+            // AGREGADO: p.Costo en el SELECT
             var sql = @"
 SELECT 
     p.IdProducto,
@@ -102,6 +105,7 @@ SELECT
     p.Ubicacion,
     p.Stock,
     p.Minimo,
+    p.Costo,   -- <--- NUEVO
     p.Precio,
     p.Proveedor,
     p.Activo,
@@ -129,6 +133,7 @@ WHERE p.IdProducto = @id";
                     Ubicacion = dr.IsDBNull(dr.GetOrdinal("Ubicacion")) ? "" : dr.GetString(dr.GetOrdinal("Ubicacion")),
                     Stock = dr.GetInt32(dr.GetOrdinal("Stock")),
                     Minimo = dr.GetInt32(dr.GetOrdinal("Minimo")),
+                    Costo = dr.GetDecimal(dr.GetOrdinal("Costo")),   // <--- NUEVO: LEER COSTO
                     Precio = dr.GetDecimal(dr.GetOrdinal("Precio")),
                     Proveedor = dr.IsDBNull(dr.GetOrdinal("Proveedor")) ? "" : dr.GetString(dr.GetOrdinal("Proveedor")),
                     Activo = dr.GetBoolean(dr.GetOrdinal("Activo")),
@@ -143,11 +148,12 @@ WHERE p.IdProducto = @id";
         public int Agregar(Producto p)
         {
             using var cn = new SqlConnection(_connStr);
+            // AGREGADO: Costo en INSERT
             const string sql = @"
-INSERT INTO Producto (Sku, Nombre, Descripcion, IdCategoria, Ubicacion, Stock, Minimo, Precio, Proveedor, Activo, FechaAlta, Actualizado)
-VALUES (@Sku, @Nombre, @Descripcion, @IdCategoria, @Ubicacion, @Stock, @Minimo, @Precio, @Proveedor, @Activo, @FechaAlta, @Actualizado);
+INSERT INTO Producto (Sku, Nombre, Descripcion, IdCategoria, Ubicacion, Stock, Minimo, Costo, Precio, Proveedor, Activo, FechaAlta, Actualizado)
+VALUES (@Sku, @Nombre, @Descripcion, @IdCategoria, @Ubicacion, @Stock, @Minimo, @Costo, @Precio, @Proveedor, @Activo, @FechaAlta, @Actualizado);
 SELECT SCOPE_IDENTITY();";
-            
+
             using var cmd = new SqlCommand(sql, cn);
             cmd.Parameters.Add("@Sku", SqlDbType.VarChar, 50).Value = (object)p.Sku ?? DBNull.Value;
             cmd.Parameters.Add("@Nombre", SqlDbType.VarChar, 200).Value = p.Nombre;
@@ -156,12 +162,14 @@ SELECT SCOPE_IDENTITY();";
             cmd.Parameters.Add("@Ubicacion", SqlDbType.VarChar, 100).Value = (object)p.Ubicacion ?? DBNull.Value;
             cmd.Parameters.Add("@Stock", SqlDbType.Int).Value = p.Stock;
             cmd.Parameters.Add("@Minimo", SqlDbType.Int).Value = p.Minimo;
+            // AGREGADO: Parámetro Costo
+            cmd.Parameters.Add("@Costo", SqlDbType.Decimal).Value = p.Costo;
             cmd.Parameters.Add("@Precio", SqlDbType.Decimal).Value = p.Precio;
             cmd.Parameters.Add("@Proveedor", SqlDbType.VarChar, 200).Value = (object)p.Proveedor ?? DBNull.Value;
             cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = p.Activo;
             cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = p.FechaAlta;
             cmd.Parameters.Add("@Actualizado", SqlDbType.DateTime).Value = p.Actualizado;
-            
+
             cn.Open();
             var id = Convert.ToInt32(cmd.ExecuteScalar());
             return id;
@@ -170,13 +178,14 @@ SELECT SCOPE_IDENTITY();";
         public int Actualizar(Producto p)
         {
             using var cn = new SqlConnection(_connStr);
+            // AGREGADO: Costo=@Costo en UPDATE
             const string sql = @"
 UPDATE Producto SET
     Sku=@Sku, Nombre=@Nombre, Descripcion=@Descripcion, IdCategoria=@IdCategoria, 
-    Ubicacion=@Ubicacion, Stock=@Stock, Minimo=@Minimo, Precio=@Precio, 
+    Ubicacion=@Ubicacion, Stock=@Stock, Minimo=@Minimo, Costo=@Costo, Precio=@Precio, 
     Proveedor=@Proveedor, Activo=@Activo, Actualizado=@Actualizado
 WHERE IdProducto=@Id";
-            
+
             using var cmd = new SqlCommand(sql, cn);
             cmd.Parameters.Add("@Id", SqlDbType.Int).Value = p.IdProducto;
             cmd.Parameters.Add("@Sku", SqlDbType.VarChar, 50).Value = (object)p.Sku ?? DBNull.Value;
@@ -186,11 +195,13 @@ WHERE IdProducto=@Id";
             cmd.Parameters.Add("@Ubicacion", SqlDbType.VarChar, 100).Value = (object)p.Ubicacion ?? DBNull.Value;
             cmd.Parameters.Add("@Stock", SqlDbType.Int).Value = p.Stock;
             cmd.Parameters.Add("@Minimo", SqlDbType.Int).Value = p.Minimo;
+            // AGREGADO: Parámetro Costo
+            cmd.Parameters.Add("@Costo", SqlDbType.Decimal).Value = p.Costo;
             cmd.Parameters.Add("@Precio", SqlDbType.Decimal).Value = p.Precio;
             cmd.Parameters.Add("@Proveedor", SqlDbType.VarChar, 200).Value = (object)p.Proveedor ?? DBNull.Value;
             cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = p.Activo;
             cmd.Parameters.Add("@Actualizado", SqlDbType.DateTime).Value = DateTime.Now;
-            
+
             cn.Open();
             return cmd.ExecuteNonQuery();
         }
@@ -199,11 +210,11 @@ WHERE IdProducto=@Id";
         {
             using var cn = new SqlConnection(_connStr);
             const string sql = "UPDATE Producto SET Activo = 0, Actualizado = @actualizado WHERE IdProducto = @id";
-            
+
             using var cmd = new SqlCommand(sql, cn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Parameters.AddWithValue("@actualizado", DateTime.Now);
-            
+
             cn.Open();
             cmd.ExecuteNonQuery();
         }
@@ -214,7 +225,7 @@ WHERE IdProducto=@Id";
 
             using var cn = new SqlConnection(_connStr);
             var sql = "SELECT COUNT(*) FROM Producto WHERE Sku = @sku";
-            
+
             if (excluirId.HasValue)
                 sql += " AND IdProducto != @excluirId";
 
@@ -241,10 +252,10 @@ WHERE IdProducto=@Id";
         {
             using var cn = new SqlConnection(_connStr);
             const string sql = "SELECT COUNT(*) FROM Producto WHERE IdCategoria = @categoriaId AND Activo = 1";
-            
+
             using var cmd = new SqlCommand(sql, cn);
             cmd.Parameters.AddWithValue("@categoriaId", categoriaId);
-            
+
             cn.Open();
             return (int)cmd.ExecuteScalar();
         }
@@ -263,12 +274,12 @@ WHERE IdProducto=@Id";
                 SET Stock = @Stock, 
                     Actualizado = @Actualizado
                 WHERE IdProducto = @IdProducto";
-            
+
             using var cmd = new SqlCommand(sql, cn);
             cmd.Parameters.Add("@IdProducto", SqlDbType.Int).Value = idProducto;
             cmd.Parameters.Add("@Stock", SqlDbType.Int).Value = nuevoStock;
             cmd.Parameters.Add("@Actualizado", SqlDbType.DateTime).Value = DateTime.Now;
-            
+
             cn.Open();
             return cmd.ExecuteNonQuery();
         }
@@ -282,32 +293,32 @@ WHERE IdProducto=@Id";
         public int ReducirStock(int idProducto, int cantidadAReducir)
         {
             using var cn = new SqlConnection(_connStr);
-            
+
             // Primero verificar que hay suficiente stock
             const string sqlVerificar = "SELECT Stock FROM Producto WHERE IdProducto = @IdProducto";
             using var cmdVerificar = new SqlCommand(sqlVerificar, cn);
             cmdVerificar.Parameters.AddWithValue("@IdProducto", idProducto);
-            
+
             cn.Open();
             var stockActual = Convert.ToInt32(cmdVerificar.ExecuteScalar() ?? 0);
-            
+
             if (stockActual < cantidadAReducir)
             {
                 throw new InvalidOperationException($"Stock insuficiente. Stock actual: {stockActual}, cantidad a reducir: {cantidadAReducir}");
             }
-            
+
             // Reducir el stock
             const string sqlReducir = @"
                 UPDATE Producto 
                 SET Stock = Stock - @CantidadAReducir, 
                     Actualizado = @Actualizado
                 WHERE IdProducto = @IdProducto";
-            
+
             using var cmdReducir = new SqlCommand(sqlReducir, cn);
             cmdReducir.Parameters.Add("@IdProducto", SqlDbType.Int).Value = idProducto;
             cmdReducir.Parameters.Add("@CantidadAReducir", SqlDbType.Int).Value = cantidadAReducir;
             cmdReducir.Parameters.Add("@Actualizado", SqlDbType.DateTime).Value = DateTime.Now;
-            
+
             return cmdReducir.ExecuteNonQuery();
         }
     }

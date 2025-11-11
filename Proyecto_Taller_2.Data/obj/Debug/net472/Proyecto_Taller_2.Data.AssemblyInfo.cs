@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Proyecto_Taller_2.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3cba5d66c5ba5646144fffb00580dd3ff5e0229f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f4a6372d294d1abd0d117535b28ac5c79946468")]
 [assembly: System.Reflection.AssemblyProductAttribute("Proyecto_Taller_2.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Proyecto_Taller_2.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -15,6 +15,7 @@ namespace Proyecto_Taller_2.Domain.Entities
         public string Ubicacion { get; set; }
         public int Stock { get; set; }
         public int Minimo { get; set; }
+        public decimal Costo { get; set; }
         public decimal Precio { get; set; }
         public string Proveedor { get; set; }
         public bool Activo { get; set; }
